@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Pin shape -->
+    <path
+        android:fillColor="@color/gas_station_primary"
+        android:pathData="M24,2C14.1,2 6,10.1 6,20C6,35 24,46 24,46C24,46 42,35 42,20C42,10.1 33.9,2 24,2Z"/>
+
+    <!-- White background circle -->
+    <path
+        android:fillColor="@color/splash_text"
+        android:pathData="M24,10C19.6,10 16,13.6 16,18C16,22.4 19.6,26 24,26C28.4,26 32,22.4 32,18C32,13.6 28.4,10 24,10Z"/>
+
+    <!-- Gas pump icon inside -->
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M21,14C20,14 19,15 19,16L19,22C19,22.6 19.4,23 20,23L28,23C28.6,23 29,22.6 29,22L29,16C29,15 28,14 27,14Z"
+        android:strokeWidth="0.5"
+        android:strokeColor="@color/gas_station_primary"/>
+
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M24,23L24,24.5L24,24.5C24,25 24.4,25.4 25,25.4L23,25.4C22.4,25.4 22,25 22,24.5L22,23Z"/>
+
+</vector>

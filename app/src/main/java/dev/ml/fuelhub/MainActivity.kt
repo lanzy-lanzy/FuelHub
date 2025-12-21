@@ -51,6 +51,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.runtime.collectAsState
 import dev.ml.fuelhub.presentation.viewmodel.DriverManagementViewModel
 import dev.ml.fuelhub.presentation.viewmodel.VehicleManagementViewModel
@@ -333,7 +336,7 @@ fun FuelHubApp(
                         }
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Settings, "Wallet") },
+                        icon = { Icon(Icons.Default.AccountBalance, "Wallet") },
                         label = { Text("Wallet") },
                         selected = selectedTab == 1,
                         onClick = {
@@ -353,7 +356,7 @@ fun FuelHubApp(
                         }
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Receipt, "Gas Slips") },
+                        icon = { Icon(Icons.Default.LocalGasStation, "Gas Slips") },
                         label = { Text("Gas Slips") },
                         selected = selectedTab == 2,
                         onClick = {
@@ -364,7 +367,7 @@ fun FuelHubApp(
                         }
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Info, "Reports") },
+                        icon = { Icon(Icons.Default.BarChart, "Reports") },
                         label = { Text("Reports") },
                         selected = selectedTab == 3,
                         onClick = {

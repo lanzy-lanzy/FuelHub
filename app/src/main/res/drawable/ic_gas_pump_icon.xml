@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Background circle -->
+    <path
+        android:fillColor="@color/splash_accent"
+        android:pathData="M100,20C156,20 200,64 200,120C200,176 156,220 100,220C44,220 0,176 0,120C0,64 44,20 100,20Z"/>
+
+    <!-- Main pump body -->
+    <path
+        android:fillColor="@color/splash_text"
+        android:pathData="M70,60C65,60 62,63 62,68L62,100C62,102 64,104 66,104L134,104C136,104 138,102 138,100L138,68C138,63 135,60 130,60Z"/>
+
+    <!-- Pump screen display -->
+    <path
+        android:fillColor="@color/gas_station_primary"
+        android:pathData="M75,70C73,70 71,72 71,74L71,94C71,96 73,98 75,98L125,98C127,98 129,96 129,94L129,74C129,72 127,70 125,70Z"/>
+
+    <!-- Pump nozzle -->
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M100,104L100,135C100,137 102,139 104,139L96,139C94,139 92,137 92,135L92,104Z"/>
+
+    <!-- Nozzle tip -->
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M94,135C94,138 98,142 100,142C102,142 106,138 106,135Z"/>
+
+    <!-- Fuel hose curve -->
+    <path
+        android:strokeColor="@color/gas_pump_color"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M100,135Q80,150 75,175"
+        android:fillColor="@android:color/transparent"/>
+
+    <!-- Decorative gas station building -->
+    <path
+        android:fillColor="@color/gas_station_secondary"
+        android:pathData="M40,150L60,150L60,180L40,180Z"
+        android:alpha="0.7"/>
+
+    <!-- Window 1 -->
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M45,155L50,155L50,160L45,160Z"
+        android:alpha="0.9"/>
+
+    <!-- Window 2 -->
+    <path
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M55,155L60,155L60,160L55,160Z"
+        android:alpha="0.9"/>
+
+</vector>

@@ -4,81 +4,29 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    
-    <!-- Fuel pump icon with modern design -->
-    
-    <!-- Pump nozzle top (rounded) -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M42,14C42,11.24 44.24,9 47,9L61,9C63.76,9 66,11.24 66,14L66,22C66,22 66,24 64,24L44,24C42,24 42,22 42,22Z" />
+        android:fillColor="@color/splash_text"
+        android:pathData="M54,10C30,10 10,30 10,54C10,78 30,98 54,98C78,98 98,78 98,54C98,30 78,10 54,10Z"/>
     
-    <!-- Pump nozzle connector -->
+    <!-- Gas pump icon -->
     <path
-        android:fillColor="#E8F5E9"
-        android:pathData="M46,24L46,28C46,29.1 46.9,30 48,30L60,30C61.1,30 62,29.1 62,28L62,24Z" />
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M50,25C48,25 47,26 47,28L47,45C47,46.1 47.9,47 49,47L59,47C60.1,47 61,46.1 61,45L61,28C61,26 60,25 58,25Z"/>
     
-    <!-- Main pump body (large rounded rectangle) -->
+    <!-- Pump nozzle -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M38,30C36.9,30 36,30.9 36,32L36,82C36,83.1 36.9,84 38,84L70,84C71.1,84 72,83.1 72,82L72,32C72,30.9 71.1,30 70,30ZM40,34L68,34L68,80L40,80Z" />
+        android:fillColor="@color/gas_pump_color"
+        android:pathData="M54,47L54,65C54,66.1 54.9,67 56,67L56,69C56,70.1 55.1,71 54,71L54,75C54,76.1 53.1,77 52,77L56,77C57.1,77 58,76.1 58,75L58,69C59.1,69 60,70.1 60,71L60,65C60,63.9 59.1,63 58,63L54,63Z"/>
     
-    <!-- Digital display area -->
+    <!-- Fuel drop indicator -->
     <path
-        android:fillColor="#2196F3"
-        android:pathData="M42,38L66,38L66,50L42,50Z" />
+        android:fillColor="@color/gas_station_secondary"
+        android:pathData="M48,50C48,48.9 47.1,48 46,48C44.9,48 44,48.9 44,50C44,52 46,54 48,54C50,54 52,52 52,50C52,48.9 51.1,48 50,48C48.9,48 48,48.9 48,50Z"/>
     
-    <!-- Display text segments (fuel amount) -->
+    <!-- Gas station entrance line -->
     <path
-        android:fillColor="#4CAF50"
-        android:pathData="M45,40L45,48" 
+        android:fillColor="@color/gas_station_secondary"
+        android:pathData="M42,60L66,60C67.1,60 68,60.9 68,62L68,80C68,81.1 67.1,82 66,82L42,82C40.9,82 40,81.1 40,80L40,62C40,60.9 40.9,60 42,60Z"
         android:strokeWidth="1.5"
-        android:strokeColor="#4CAF50" />
-    <path
-        android:fillColor="#4CAF50"
-        android:pathData="M50,40L50,48"
-        android:strokeWidth="1.5"
-        android:strokeColor="#4CAF50" />
-    <path
-        android:fillColor="#4CAF50"
-        android:pathData="M55,40L55,48"
-        android:strokeWidth="1.5"
-        android:strokeColor="#4CAF50" />
-    <path
-        android:fillColor="#4CAF50"
-        android:pathData="M60,40L60,48"
-        android:strokeWidth="1.5"
-        android:strokeColor="#4CAF50" />
-    
-    <!-- Fuel level indicator (wave pattern) -->
-    <path
-        android:fillColor="#FFB74D"
-        android:pathData="M42,56C42,56 44,52 48,52C52,52 54,56 54,56L54,70C54,71.1 53.1,72 52,72L44,72C42.9,72 42,71.1 42,70Z" />
-    
-    <!-- Fuel pump handle -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M58,56L68,56C68.6,56 69,56.4 69,57L69,65C69,65.6 68.6,66 68,66L58,66L58,60Z" />
-    
-    <!-- Handle details (grip lines) -->
-    <path
-        android:fillColor="#FF9800"
-        android:pathData="M59,58L67,58"
-        android:strokeWidth="1"
-        android:strokeColor="#FF9800" />
-    <path
-        android:fillColor="#FF9800"
-        android:pathData="M59,61L67,61"
-        android:strokeWidth="1"
-        android:strokeColor="#FF9800" />
-    <path
-        android:fillColor="#FF9800"
-        android:pathData="M59,64L67,64"
-        android:strokeWidth="1"
-        android:strokeColor="#FF9800" />
-    
-    <!-- Drop accent symbol -->
-    <path
-        android:fillColor="#4CAF50"
-        android:pathData="M54,72C54,72 52,76 52,78C52,79.1 52.9,80 54,80C55.1,80 56,79.1 56,78C56,76 54,72 54,72Z" />
-    
+        android:strokeColor="@color/gas_station_secondary"/>
 </vector>
