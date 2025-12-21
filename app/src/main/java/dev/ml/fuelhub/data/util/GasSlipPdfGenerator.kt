@@ -1,6 +1,7 @@
 package dev.ml.fuelhub.data.util
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Environment
 import com.itextpdf.io.font.constants.StandardFonts
 import com.itextpdf.io.image.ImageDataFactory
@@ -25,6 +26,7 @@ import com.itextpdf.layout.properties.VerticalAlignment
 import dev.ml.fuelhub.data.model.GasSlip
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.time.format.DateTimeFormatter
 
 /**
@@ -45,160 +47,177 @@ class GasSlipPdfGenerator(private val context: Context) {
         
         val pdfWriter = PdfWriter(file)
         val pdfDocument = PdfDocument(pdfWriter)
-        // 3.5x5 inch index card size in points (72 DPI)
-        // Width: 3.5 * 72 = 252
-        // Height: 5.0 * 72 = 360
+        // 3.5x5 inch index card size (252 x 360 points)
         val receiptPageSize = PageSize(252f, 360f)
         val document = Document(pdfDocument, receiptPageSize)
         
         try {
-            // Set margins for receipt (minimal margins to maximize space)
-            document.setMargins(10f, 10f, 10f, 10f)
+            // Margins: Compact for single page - Top 10, Bottom 8, Left/Right 10
+            document.setMargins(10f, 10f, 8f, 10f)
             
             val titleFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)
             val regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA)
             
             // ═══ HEADER ═══
-            // MDRRMO Logo
             val logoImage = loadImageFromAssets("mdrrmo.png")
             if (logoImage != null) {
-                logoImage.setWidth(40f)
-                logoImage.setHeight(40f)
+                logoImage.setWidth(32f)
+                logoImage.setHeight(32f)
                 logoImage.setHorizontalAlignment(HorizontalAlignment.CENTER)
                 document.add(logoImage)
             }
             
-            // Title
-            val title = Paragraph("FUEL DISPENSING SLIP")
+            document.add(Paragraph("FUEL DISPENSING SLIP")
                 .setFont(titleFont)
-                .setFontSize(11f)
+                .setFontSize(10f)
                 .setTextAlignment(TextAlignment.CENTER)
-                .setMarginBottom(0f)
-                .setMarginTop(2f)
-            document.add(title)
+                .setMarginTop(0f)
+                .setMarginBottom(0f))
             
-            // Reference Number (Subtle)
-            val refPara = Paragraph("REF: ${gasSlip.referenceNumber.uppercase()}")
+            document.add(Paragraph("REF: ${gasSlip.referenceNumber.uppercase()}")
                 .setFont(regularFont)
-                .setFontSize(7f)
+                .setFontSize(6f)
                 .setFontColor(DeviceGray.GRAY)
                 .setTextAlignment(TextAlignment.CENTER)
-                .setMarginBottom(8f)
-            document.add(refPara)
+                .setMarginBottom(6f))
 
-            // ═══ FUEL ALLOCATION (Key Info - Boxed/Highlighted) ═══
-            val fuelTable = Table(UnitValue.createPercentArray(floatArrayOf(1f)))
+            // ═══ HERO SECTION (Fuel Allocation) ═══
+            // Light gray box for key info
+            val fuelTable = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1.2f)))
                 .setWidth(UnitValue.createPercentValue(100f))
                 .setMarginBottom(8f)
+                
+            val fuelCellCommon = Cell()
+                .setBorder(null)
+                .setBackgroundColor(DeviceGray(0.96f)) // Very light gray modern look
+                .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                .setPadding(8f)
 
-            val fuelCell = Cell()
-                .setBorder(SolidBorder(DeviceGray.BLACK, 1f))
-                .setPadding(6f)
-                .setBackgroundColor(DeviceGray(0.95f)) // Light gray background
+            // Fuel Type (Left)
+            val typeCell = fuelCellCommon.clone(true)
+            typeCell.add(Paragraph("FUEL TYPE")
+                .setFont(regularFont).setFontSize(5f).setFontColor(DeviceGray.GRAY))
+            typeCell.add(Paragraph(gasSlip.fuelType.name.uppercase())
+                .setFont(titleFont).setFontSize(11f).setFontColor(DeviceGray.BLACK))
                 
-            fuelCell.add(Paragraph("FUEL ALLOCATION")
-                .setFont(titleFont)
-                .setFontSize(8f)
-                .setTextAlignment(TextAlignment.CENTER)
-                .setMarginBottom(4f))
-            
-            val fuelDetailsTable = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
-                .setWidth(UnitValue.createPercentValue(100f))
-            
-            // Large Fuel Type
-            fuelDetailsTable.addCell(Cell().add(Paragraph(gasSlip.fuelType.name.uppercase())
-                .setFont(titleFont)
-                .setFontSize(12f)
-                .setTextAlignment(TextAlignment.CENTER))
-                .setBorder(null))
+            // Liters (Right - Highlighted)
+            val amountCell = fuelCellCommon.clone(true)
+                .setTextAlignment(TextAlignment.RIGHT)
+            amountCell.add(Paragraph("ALLOCATION")
+                .setFont(regularFont).setFontSize(5f).setFontColor(DeviceGray.GRAY))
+            amountCell.add(Paragraph("${gasSlip.litersToPump} L")
+                .setFont(titleFont).setFontSize(16f).setFontColor(DeviceGray.BLACK)) // Large & Bold
                 
-            // Large Liters
-            fuelDetailsTable.addCell(Cell().add(Paragraph("${gasSlip.litersToPump}L")
-                .setFont(titleFont)
-                .setFontSize(14f)
-                .setBold()
-                .setTextAlignment(TextAlignment.CENTER))
-                .setBorder(null))
-                
-            fuelCell.add(fuelDetailsTable)
-            fuelTable.addCell(fuelCell)
+            fuelTable.addCell(typeCell)
+            fuelTable.addCell(amountCell)
             document.add(fuelTable)
 
             // ═══ DETAILS GRID ═══
-            val detailsTable = Table(UnitValue.createPercentArray(floatArrayOf(0.8f, 2f)))
+            val detailsTable = Table(UnitValue.createPercentArray(floatArrayOf(1f, 2.5f)))
                 .setWidth(UnitValue.createPercentValue(100f))
                 .setMarginBottom(8f)
             
-            // Rows
-            addDetailRow(detailsTable, "Plate:", gasSlip.vehiclePlateNumber.uppercase(), true)
-            addDetailRow(detailsTable, "Vehicle:", gasSlip.vehicleType.uppercase(), false)
+            // Combined Vehicle Info
+            addDetailRow(detailsTable, "VEHICLE", "${gasSlip.vehicleType.uppercase()} • ${gasSlip.vehiclePlateNumber.uppercase()}")
             
-            // Display full name if available, otherwise fall back to driver name
+            // Driver
             val displayDriverName = gasSlip.driverFullName?.uppercase() ?: gasSlip.driverName.uppercase()
-            addDetailRow(detailsTable, "Driver:", displayDriverName, true)
+            addDetailRow(detailsTable, "DRIVER", displayDriverName)
             
-            addDetailRow(detailsTable, "Purpose:", gasSlip.tripPurpose.uppercase(), false)
-            addDetailRow(detailsTable, "Destination:", gasSlip.destination.uppercase(), true)
+            addDetailRow(detailsTable, "PURPOSE", gasSlip.tripPurpose.uppercase())
+            addDetailRow(detailsTable, "DESTINATION", gasSlip.destination.uppercase())
             
             document.add(detailsTable)
             
-            // ═══ SIGNATURE SECTION ═══
-            // Push to bottom using fixed positioning or spacer? 
-            // Since it's a small card, likely just flow is fine, but let's add some space.
-            
-            val signatureTable = Table(UnitValue.createPercentArray(floatArrayOf(1f, 1f)))
+            // ═══ FOOTER & SIGNATURES ═══
+            // Layout: QR Code (Left) | Signatures (Right Checkbox style)
+            val footerTable = Table(UnitValue.createPercentArray(floatArrayOf(0.8f, 1.2f)))
                 .setWidth(UnitValue.createPercentValue(100f))
-                .setMarginTop(10f)
             
-            // Left: Authorized By
-            val authCell = Cell().setBorder(null).setPadding(4f)
-            authCell.add(Paragraph("Authorized By:")
-                .setFont(regularFont).setFontSize(6f).setFontColor(DeviceGray.GRAY))
+            // 1. QR Code Column
+            val qrCell = Cell().setBorder(null).setVerticalAlignment(VerticalAlignment.MIDDLE)
+                .setPadding(0f)
             
-            // Signature Image
-            val sigImage = loadImageFromAssets("signature.png")
-            if (sigImage != null) {
-                sigImage.setWidth(75f)
-                sigImage.setHeight(40f)
-                sigImage.setHorizontalAlignment(HorizontalAlignment.LEFT)
-                authCell.add(sigImage)
-            } else {
-                authCell.add(Paragraph("\n__________________").setFontSize(6f))
+            val transactionData = QRCodeGenerator.createTransactionData(
+                referenceNumber = gasSlip.referenceNumber,
+                vehiclePlate = gasSlip.vehiclePlateNumber,
+                driverName = displayDriverName,
+                fuelType = gasSlip.fuelType.name,
+                liters = gasSlip.litersToPump,
+                date = gasSlip.generatedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+            )
+            
+            val qrCodeBitmap = QRCodeGenerator.generateQRCode(transactionData, 200)
+            if (qrCodeBitmap != null) {
+                val qrFile = saveBitmapToTemp(qrCodeBitmap)
+                if (qrFile != null) {
+                    val qrImage = Image(ImageDataFactory.create(qrFile.absolutePath))
+                    qrImage.setWidth(85f)
+                    qrImage.setHeight(85f)
+                    qrCell.add(qrImage)
+                }
             }
             
-            // Right: Recipient
-            val recipCell = Cell().setBorder(null).setPadding(4f)
-                .setVerticalAlignment(VerticalAlignment.BOTTOM)
-                .setTextAlignment(TextAlignment.RIGHT)
-            
-            recipCell.add(Paragraph("Recipient Signature:")
-                .setFont(regularFont).setFontSize(6f).setFontColor(DeviceGray.GRAY))
-            recipCell.add(Paragraph("\n__________________")
-                .setFont(regularFont).setFontSize(6f).setTextAlignment(TextAlignment.RIGHT))
+            // 2. Signatures Column
+            val sigCell = Cell().setBorder(null).setVerticalAlignment(VerticalAlignment.MIDDLE)
+                .setPaddingLeft(12f)
                 
-            val dateStr = gasSlip.generatedAt.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")).uppercase()
-            recipCell.add(Paragraph(dateStr)
-                .setFont(regularFont).setFontSize(6f).setTextAlignment(TextAlignment.RIGHT).setMarginTop(2f))
-
-            signatureTable.addCell(authCell)
-            signatureTable.addCell(recipCell)
-            document.add(signatureTable)
-
-            // ═══ FOOTER ═══
-            val footer = Paragraph("FuelHub System • Official Receipt")
-                .setFont(regularFont)
-                .setFontSize(5f)
-                .setTextAlignment(TextAlignment.CENTER)
-                .setFontColor(DeviceGray.GRAY)
-                .setFixedPosition(10f, 15f, receiptPageSize.width - 20f)
-            document.add(footer)
+            // Auth Signature
+            sigCell.add(Paragraph("AUTHORIZED BY:")
+                .setFont(titleFont).setFontSize(5f).setFontColor(DeviceGray.GRAY)
+                .setMarginBottom(1f))
             
-            // Draw border LAST to ensure page exists
+            val sigImage = loadImageFromAssets("signature.png")
+            if (sigImage != null) {
+                sigImage.setWidth(70f)
+                sigImage.setHeight(38f)
+                sigCell.add(sigImage)
+            } else {
+                sigCell.add(Paragraph("").setFontSize(24f))
+            }
+            sigCell.add(Paragraph("_______________________")
+                .setFont(regularFont).setFontSize(5f).setFontColor(ColorConstants.LIGHT_GRAY)
+                .setMarginTop(-3f)) // Pull line up slightly to overlap/sit under signature nicely
+                
+            // Recipient Signature
+            sigCell.add(Paragraph("RECEIVED BY:")
+                .setFont(titleFont).setFontSize(5f).setFontColor(DeviceGray.GRAY)
+                .setMarginTop(7f)) // More separation
+                
+            sigCell.add(Paragraph("").setFontSize(18f)) // Space for manual signing
+            sigCell.add(Paragraph("_______________________")
+                .setFont(regularFont).setFontSize(5f).setFontColor(ColorConstants.LIGHT_GRAY)
+                .setMarginTop(12f))
+
+            footerTable.addCell(qrCell)
+            footerTable.addCell(sigCell)
+            document.add(footerTable)
+
+            // Bottom Brand & Statement - Compact
+            // Brand line with date
+            document.add(Paragraph("MDRRMO • ${gasSlip.generatedAt.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))}")
+                .setFont(titleFont)
+                .setFontSize(4.5f)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.DARK_GRAY)
+                .setMarginTop(12f)
+                .setMarginBottom(2f))
+            
+            // Legal statement with better spacing
+            document.add(Paragraph("This Fuel Dispensing Slip is system-generated and valid only upon QR code verification. Unauthorized reproduction, alteration, or misuse is strictly prohibited.")
+                .setFont(regularFont)
+                .setFontSize(3.5f)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.GRAY)
+                .setMultipliedLeading(1.1f)
+                .setMarginBottom(0f)
+                .setMarginTop(1f))
+            // Optional: Thin border around content
             if (pdfDocument.numberOfPages > 0) {
                 val canvas = PdfCanvas(pdfDocument.getPage(1))
-                canvas.rectangle(10.0, 10.0, receiptPageSize.width - 20.0, receiptPageSize.height - 20.0)
                 canvas.setStrokeColor(DeviceGray.BLACK)
-                canvas.setLineWidth(1f)
+                canvas.setLineWidth(0.5f)
+                canvas.rectangle(10.0, 10.0, receiptPageSize.width - 20.0, receiptPageSize.height - 20.0)
                 canvas.stroke()
             }
             
@@ -209,19 +228,19 @@ class GasSlipPdfGenerator(private val context: Context) {
         return file.absolutePath
     }
     
-    private fun addDetailRow(table: Table, label: String, value: String, isGrayBg: Boolean) {
-        val bgArgs = if (isGrayBg) DeviceGray(0.98f) else null // Very subtle alternate row
-        
-        val labelCell = Cell().add(Paragraph(label).setFontSize(8f).setBold())
+    private fun addDetailRow(table: Table, label: String, value: String) {
+        val labelCell = Cell().add(Paragraph(label).setFontSize(6f).setBold().setFontColor(DeviceGray.GRAY))
             .setBorder(null)
-            .setPadding(2f)
+            .setBorderBottom(SolidBorder(DeviceGray(0.85f), 0.5f))
+            .setPaddingTop(2f)
+            .setPaddingBottom(2f)
         
-        val valueCell = Cell().add(Paragraph(value).setFontSize(8f))
+        val valueCell = Cell().add(Paragraph(value).setFontSize(8f).setTextAlignment(TextAlignment.RIGHT))
             .setBorder(null)
-            .setPadding(2f)
+            .setBorderBottom(SolidBorder(DeviceGray(0.85f), 0.5f))
+            .setPaddingTop(2f)
+            .setPaddingBottom(2f)
 
-        // IText7 basics for background if needed, but simple clean white is often better for print.
-        // Let's stick to clean white.
         table.addCell(labelCell)
         table.addCell(valueCell)
     }
@@ -246,6 +265,22 @@ class GasSlipPdfGenerator(private val context: Context) {
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to load image from assets: $assetName")
+            null
+        }
+    }
+    
+    private fun saveBitmapToTemp(bitmap: Bitmap): File? {
+        return try {
+            val tempDir = context.cacheDir
+            val tempFile = File(tempDir, "qr_code_temp_${System.currentTimeMillis()}.png")
+            
+            FileOutputStream(tempFile).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            }
+            
+            tempFile
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to save QR code bitmap to temp file")
             null
         }
     }

@@ -91,6 +91,9 @@ dependencies {
     // PDF Generation
     implementation("com.itextpdf:itext7-core:7.2.5")
     
+    // QR Code Generation
+    implementation("com.google.zxing:core:3.5.1")
+    
     // Logging
     implementation("com.jakewharton.timber:timber:5.0.1")
 

@@ -1,0 +1,264 @@
+================================================================================
+  OPTIMIZED LAYOUT - DETAILED VISUAL REFERENCE
+================================================================================
+
+PAGE SIZE: 3.5" × 5" (252pt × 360pt)
+MARGINS: 10pt (all sides)
+USABLE AREA: 232pt × 340pt
+
+================================================================================
+  FULL PAGE LAYOUT
+================================================================================
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                                                          ┃
+┃  10pt margin top                                                         ┃
+┃                                                                          ┃
+┃                        [LOGO - 40×40pt]                                 ┃
+┃                                                                          ┃
+┃                   FUEL DISPENSING SLIP                                  ┃
+┃                    (11pt bold, centered)                                ┃
+┃                                                                          ┃
+┃                  REF: FS-97533507-9363                                  ┃
+┃                    (7pt gray, centered)                                 ┃
+┃                                                                          ┃
+┃  ─────────────────────────────────────────────────────────────────────  ┃
+┃                                                                          ┃
+┃                      FUEL ALLOCATION                                    ┃
+┃                   DIESEL        25.0L                                   ┃
+┃                  (12pt + 14pt bold)                                     ┃
+┃                                                                          ┃
+┃  ─────────────────────────────────────────────────────────────────────  ┃
+┃                                                                          ┃
+┃  Plate:       MD1                 (7pt font)                            ┃
+┃  Vehicle:     RESCUE VEHICLE RED  (7pt font)                            ┃
+┃  Driver:      ARNEL RUPENTA       (7pt font)                            ┃
+┃  Purpose:     TRANSPORT PATIENT   (7pt font)                            ┃
+┃  Destination: OZAMIS CITY         (7pt font)                            ┃
+┃                                                                          ┃
+┃  ─────────────────────────────────────────────────────────────────────  ┃
+┃                                                                          ┃
+┃  ┌─────────────────────────────────────────────────────────────────┐   ┃
+┃  │                                                                 │   ┃
+┃  │   Auth By:     │  QR CODE   │  Recipient Sig:                 │   ┃
+┃  │   (5pt)        │  (80×80pt) │  (5pt)                          │   ┃
+┃  │                │            │                                 │   ┃
+┃  │  [sig]        │  ▓▓▓▓▓▓▓▓  │  ________________               │   ┃
+┃  │  50×25pt      │  ▓      ▓  │  8pt underline                  │   ┃
+┃  │                │  ▓  ▓  ▓  │                                 │   ┃
+┃  │                │  ▓▓▓▓▓▓▓▓  │  DEC 21, 2025                   │   ┃
+┃  │                │            │  (5pt)                          │   ┃
+┃  │   1/3 width    │ 1/3 width  │   1/3 width                     │   ┃
+┃  │                │  (CENTER)  │                                 │   ┃
+┃  │                │  PROMINENT │                                 │   ┃
+┃  │                │  POSITION  │                                 │   ┃
+┃  │                │            │                                 │   ┃
+┃  └─────────────────────────────────────────────────────────────────┘   ┃
+┃                                                                          ┃
+┃  ─────────────────────────────────────────────────────────────────────  ┃
+┃                                                                          ┃
+┃            FuelHub System • Official Receipt                            ┃
+┃              (5pt gray, centered, footer)                              ┃
+┃                                                                          ┃
+┃  10pt margin bottom                                                     ┃
+┃                                                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+================================================================================
+  SIGNATURE & QR CODE SECTION - DETAILED VIEW
+================================================================================
+
+SECTION DIMENSIONS:
+  - Total height: ~80pt
+  - Total width: 232pt (minus margins)
+  - Top margin: 4pt
+  - Bottom margin: 4pt
+
+THREE-COLUMN LAYOUT (Equal Width):
+
+┌─────────────────────┬──────────────────┬──────────────────┐
+│    LEFT COLUMN      │   CENTER COLUMN  │   RIGHT COLUMN   │
+│    (77.3pt wide)    │   (77.3pt wide)  │  (77.3pt wide)   │
+├─────────────────────┼──────────────────┼──────────────────┤
+│                     │                  │                  │
+│  "Authorized By:"   │                  │  "Recipient Sig" │
+│  5pt gray text      │                  │  5pt gray text   │
+│  centered           │                  │  centered        │
+│                     │                  │                  │
+│  [SIGNATURE IMAGE]  │  [QR CODE]       │  [LINE]          │
+│  50pt wide          │  80pt × 80pt     │  8pt wide        │
+│  25pt tall          │  (prominent)     │                  │
+│                     │  centered        │  ________       │
+│                     │                  │                  │
+│                     │                  │  "DEC 21, 2025"  │
+│                     │                  │  5pt black       │
+│                     │                  │                  │
+│  Padding: 1pt       │  Padding: 0pt    │  Padding: 1pt    │
+│  Centered text      │  Centered text   │  Centered text   │
+│                     │                  │                  │
+└─────────────────────┴──────────────────┴──────────────────┘
+
+================================================================================
+  SIZE SPECIFICATIONS
+================================================================================
+
+HEADER SECTION:
+  - Logo: 40pt × 40pt
+  - Title font: 11pt bold
+  - Reference font: 7pt gray
+  - Section spacing: 2pt
+
+FUEL ALLOCATION BOX:
+  - Label: 8pt bold
+  - Type (DIESEL): 12pt bold
+  - Amount (25.0L): 14pt bold
+  - Box padding: 6pt
+  - Border: 1pt solid
+
+DETAILS GRID:
+  - Font size: 7pt (body text)
+  - Column width ratio: 0.7 : 1.8
+  - Cell padding: 1pt
+  - Row height: ~7pt each
+  - 5 rows total: ~35pt
+
+SIGNATURE & QR SECTION:
+  - Font size (labels): 5pt
+  - Font size (date): 5pt
+  - Signature image: 50pt × 25pt
+  - QR code: 80pt × 80pt
+  - Signature line: 8pt wide
+  - Cell padding: 1pt / 0pt
+  - Total height: ~80pt
+
+FOOTER:
+  - Font size: 5pt gray
+  - Centered
+  - Fixed position at bottom
+
+================================================================================
+  SPACING BREAKDOWN
+================================================================================
+
+From Top to Bottom:
+
+10pt    Top margin
+ 5pt    Logo top spacing
+50pt    Header section (logo + title + ref)
+ 6pt    Space between sections
+35pt    Fuel allocation box
+ 6pt    Space between sections
+35pt    Details grid (5 rows)
+ 4pt    Space before signature section
+80pt    Signature & QR code section (main content)
+ 4pt    Space before footer
+10pt    Footer
+10pt    Bottom margin
+────────
+340pt   TOTAL (usable height - perfect fit!)
+
+================================================================================
+  QR CODE SPECIFICATIONS
+================================================================================
+
+SIZE IN PDF:
+  - 80pt × 80pt (perfect for 3.5"×5" card)
+  - Aspect ratio: 1:1 (square)
+  - Position: Center of middle column
+  - Alignment: Centered both horizontally and vertically
+
+GENERATED SIZE:
+  - 180 × 180 pixels
+  - Scaled down to 80×80pt in PDF
+  - Color: Black on white
+  - Format: PNG compressed at 100% quality
+
+SCANNING SPECIFICATIONS:
+  - Scannable distance: 2-12 inches optimal
+  - Error correction: Level H (30% recovery)
+  - Standard: ISO 18004 QR Code
+  - Compatibility: All QR readers (iOS, Android, apps)
+
+DATA ENCODED:
+  - Reference number: FS-97533507-9363
+  - Vehicle plate: MD1
+  - Driver name: ARNEL RUPENTA
+  - Fuel type: DIESEL
+  - Liters: 25.0
+  - Date/Time: 2025-12-21 14:30
+
+FORMAT (Pipe-separated):
+  REF:FS-97533507-9363|PLATE:MD1|DRIVER:ARNEL RUPENTA|FUEL:DIESEL|LITERS:25.0|DATE:2025-12-21 14:30
+
+================================================================================
+  COLUMN WIDTHS & ALIGNMENT
+================================================================================
+
+DETAILS GRID (Above Signature Section):
+  ┌──────┬──────────────────────────┐
+  │      │                          │
+  │Label │  Value                   │
+  │(23%) │  (77%)                   │
+  │      │                          │
+  └──────┴──────────────────────────┘
+  
+  Ratio: 0.7 : 1.8
+  Font: 7pt
+  Padding: 1pt
+  Alignment: Left/Left
+
+SIGNATURE & QR SECTION (Bottom):
+  ┌───────────────┬──────────────┬────────────────┐
+  │               │              │                │
+  │   Left 33%    │  Center 33%  │   Right 33%    │
+  │               │              │                │
+  │  (77.3pt)     │  (77.3pt)    │  (77.3pt)      │
+  │               │              │                │
+  │ Authorized    │   QR CODE    │  Recipient     │
+  │               │   (80×80)    │   Signature    │
+  │               │              │                │
+  │  Signature    │              │  Line          │
+  │  (50×25pt)    │  PROMINENT   │  (8pt)         │
+  │               │              │                │
+  │  Centered     │  Centered    │  Date          │
+  │               │              │  Below         │
+  │               │              │                │
+  └───────────────┴──────────────┴────────────────┘
+
+================================================================================
+  FONT SIZE SUMMARY
+================================================================================
+
+Title:          11pt bold
+Reference:       7pt gray
+Section Header:  8pt bold
+Details:         7pt (regular & bold)
+Labels (Sig):    5pt gray
+Date:            5pt black
+Footer:          5pt gray
+Signature line:  4pt underline
+
+================================================================================
+  OPTIMAL PRINT SETTINGS
+================================================================================
+
+Paper Size: 3.5" × 5" (index card)
+Print Margins: None (full bleed preferred)
+Color Mode: Color (for logo) or B&W (for B&W printing)
+Quality: High (300+ DPI for crisp QR code)
+Font Rendering: Smooth (for text clarity)
+
+QR Code Print Quality:
+  - Must be crisp and dark
+  - No smudging or bleeding
+  - Clear white space around code
+  - Minimum resolution: 200 DPI
+
+================================================================================
+
+STATUS: ✅ LAYOUT OPTIMIZED
+FITS: 3.5" × 5" ✅
+QR CODE: 80×80pt (SCANNABLE) ✅
+SINGLE PAGE: ✅
+
+================================================================================
