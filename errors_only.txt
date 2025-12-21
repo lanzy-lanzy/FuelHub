@@ -1,0 +1,114 @@
+﻿
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+177:34 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+184:34 Unresolved reference 'Receipt'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+305:53 Unresolved reference 'AccountBalanceWallet'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+375:38 Unresolved reference 'AccountBalanceWallet'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+387:38 Unresolved reference 'Assessment'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+394:38 Unresolved reference 'History'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:
+518:53 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:131
+:45 Unresolved reference 'Assessment'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:147
+:40 Unresolved reference 'Today'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:149
+:42 Unresolved reference 'CalendarMonth'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:266
+:42 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:273
+:42 Unresolved reference 'Receipt'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:338
+:42 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:345
+:42 Unresolved reference 'TrendingUp'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:409
+:42 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:416
+:42 Unresolved reference 'TrendingUp'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:502
+:49 Unresolved reference 'CalendarToday'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:682
+:53 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:119:46 Unresolved reference 'DirectionsCar'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:126:46 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:141:46 Unresolved reference 'Description'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:148:46 Unresolved reference 'Group'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:326:18 Unresolved reference 'PREMIUM'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.k
+t:368:49 Unresolved reference 'LocalGasStation'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:201
+:49 Unresolved reference 'AccountBalanceWallet'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:320
+:11 Unresolved reference 'Dp'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:336
+:34 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:336
+:41 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:336
+:61 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:336
+:68 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:347
+:34 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:347
+:41 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:347
+:61 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:347
+:68 Overload resolution ambiguity between candidates:
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:371
+:34 Unresolved reference 'TrendingDown'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:378
+:34 Unresolved reference 'Inventory'.
+e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/
+main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:565
+:78 Unresolved reference 'Remove'.
+
+

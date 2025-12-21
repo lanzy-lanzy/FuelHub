@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "244724940436",
+    "project_id": "drrfuel",
+    "storage_bucket": "drrfuel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244724940436:android:104d24abcc7e443d367e81",
+        "android_client_info": {
+          "package_name": "dev.ml.fuelhub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmaBkb5RiDJrykVVnfwMal3JM7xjHIFGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,290 @@
+﻿
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:177:34 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:184:34 Unresolved reference 'Receipt'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:305:53 Unresolved reference 'AccountBalanceWallet'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:375:38 Unresolved reference 'AccountBalanceWallet'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:387:38 Unresolved reference 'Assessment'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:394:38 Unresolved reference 'History'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.k
+t:518:53 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:1
+31:45 Unresolved reference 'Assessment'.
+  Kotlin source files: C:\Users\gerla\AndroidStudioProjects\Fuel
+Hub\app\src\main\java\dev\ml\fuelhub\data\database\converter\Loc
+alDateTimeConverter.kt, C:\Users\gerla\AndroidStudioProjects\Fue
+lHub\app\src\main\java\dev\ml\fuelhub\data\database\dao\AuditLog
+Dao.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\mai
+n\java\dev\ml\fuelhub\data\database\dao\FuelTransactionDao.kt, C
+:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\de
+v\ml\fuelhub\data\database\dao\FuelWalletDao.kt, C:\Users\gerla\
+AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\d
+ata\database\dao\GasSlipDao.kt, C:\Users\gerla\AndroidStudioProj
+ects\FuelHub\app\src\main\java\dev\ml\fuelhub\data\database\dao\
+UserDao.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src
+\main\java\dev\ml\fuelhub\data\database\dao\VehicleDao.kt, C:\Us
+ers\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml
+\fuelhub\data\database\entity\AuditLogEntity.kt, C:\Users\gerla\
+AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\d
+ata\database\entity\FuelTransactionEntity.kt, C:\Users\gerla\And
+roidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\data
+\database\entity\FuelWalletEntity.kt, C:\Users\gerla\AndroidStud
+ioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\data\databas
+e\entity\GasSlipEntity.kt, C:\Users\gerla\AndroidStudioProjects\
+FuelHub\app\src\main\java\dev\ml\fuelhub\data\database\entity\Us
+erEntity.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\sr
+c\main\java\dev\ml\fuelhub\data\database\entity\VehicleEntity.kt
+, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\java
+\dev\ml\fuelhub\data\database\FuelHubDatabase.kt, C:\Users\gerla
+\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\
+data\model\AuditLog.kt, C:\Users\gerla\AndroidStudioProjects\Fue
+lHub\app\src\main\java\dev\ml\fuelhub\data\model\FuelTransaction
+.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\j
+ava\dev\ml\fuelhub\data\model\FuelType.kt, C:\Users\gerla\Androi
+dStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\data\mo
+del\FuelWallet.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\
+app\src\main\java\dev\ml\fuelhub\data\model\GasSlip.kt, C:\Users
+\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fu
+elhub\data\model\TransactionStatus.kt, C:\Users\gerla\AndroidStu
+dioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\data\model\
+User.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\ma
+in\java\dev\ml\fuelhub\data\model\UserRole.kt, C:\Users\gerla\An
+droidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\dat
+a\model\Vehicle.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub
+\app\src\main\java\dev\ml\fuelhub\data\repository\AuditLogReposi
+toryImpl.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\sr
+c\main\java\dev\ml\fuelhub\data\repository\FuelTransactionReposi
+toryImpl.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\sr
+c\main\java\dev\ml\fuelhub\data\repository\FuelWalletRepositoryI
+mpl.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\mai
+n\java\dev\ml\fuelhub\data\repository\GasSlipRepositoryImpl.kt, 
+C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\d
+ev\ml\fuelhub\data\repository\UserRepositoryImpl.kt, C:\Users\ge
+rla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelh
+ub\data\repository\VehicleRepositoryImpl.kt, C:\Users\gerla\Andr
+oidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\data\
+util\GasSlipPdfGenerator.kt, C:\Users\gerla\AndroidStudioProject
+s\FuelHub\app\src\main\java\dev\ml\fuelhub\domain\exception\Fuel
+HubException.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\ap
+p\src\main\java\dev\ml\fuelhub\domain\repository\AuditLogReposit
+ory.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\mai
+n\java\dev\ml\fuelhub\domain\repository\FuelTransactionRepositor
+y.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\
+java\dev\ml\fuelhub\domain\repository\FuelWalletRepository.kt, C
+:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\de
+v\ml\fuelhub\domain\repository\GasSlipRepository.kt, C:\Users\ge
+rla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelh
+ub\domain\repository\UserRepository.kt, C:\Users\gerla\AndroidSt
+udioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\domain\rep
+ository\VehicleRepository.kt, C:\Users\gerla\AndroidStudioProjec
+ts\FuelHub\app\src\main\java\dev\ml\fuelhub\domain\usecase\Appro
+veTransactionUseCase.kt, C:\Users\gerla\AndroidStudioProjects\Fu
+elHub\app\src\main\java\dev\ml\fuelhub\domain\usecase\CreateFuel
+TransactionUseCase.kt, C:\Users\gerla\AndroidStudioProjects\Fuel
+Hub\app\src\main\java\dev\ml\fuelhub\domain\usecase\GenerateDail
+yReportUseCase.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\
+app\src\main\java\dev\ml\fuelhub\domain\usecase\GenerateMonthlyR
+eportUseCase.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\ap
+p\src\main\java\dev\ml\fuelhub\domain\usecase\GenerateWeeklyRepo
+rtUseCase.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\s
+rc\main\java\dev\ml\fuelhub\MainActivity.kt, C:\Users\gerla\Andr
+oidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\prese
+ntation\screen\DashboardScreen.kt, C:\Users\gerla\AndroidStudioP
+rojects\FuelHub\app\src\main\java\dev\ml\fuelhub\presentation\sc
+reen\GasSlipScreen.kt, C:\Users\gerla\AndroidStudioProjects\Fuel
+Hub\app\src\main\java\dev\ml\fuelhub\presentation\screen\ReportS
+creen.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\m
+ain\java\dev\ml\fuelhub\presentation\screen\TransactionScreen.kt
+, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main\java
+\dev\ml\fuelhub\presentation\screen\WalletScreen.kt, C:\Users\ge
+rla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelh
+ub\presentation\state\TransactionUiState.kt, C:\Users\gerla\Andr
+oidStudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\prese
+ntation\state\WalletUiState.kt, C:\Users\gerla\AndroidStudioProj
+ects\FuelHub\app\src\main\java\dev\ml\fuelhub\presentation\viewm
+odel\TransactionViewModel.kt, C:\Users\gerla\AndroidStudioProjec
+ts\FuelHub\app\src\main\java\dev\ml\fuelhub\presentation\viewmod
+el\WalletViewModel.kt, C:\Users\gerla\AndroidStudioProjects\Fuel
+Hub\app\src\main\java\dev\ml\fuelhub\ui\theme\Color.kt, C:\Users
+\gerla\AndroidStudioProjects\FuelHub\app\src\main\java\dev\ml\fu
+elhub\ui\theme\Theme.kt, C:\Users\gerla\AndroidStudioProjects\Fu
+elHub\app\src\main\java\dev\ml\fuelhub\ui\theme\Type.kt
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:1
+47:40 Unresolved reference 'Today'.
+  Java source files: C:\Users\gerla\AndroidStudioProjects\FuelHu
+b\app\build\generated\source\kapt\debug\dev\ml\fuelhub\data\data
+base\dao\AuditLogDao_Impl.java, C:\Users\gerla\AndroidStudioProj
+ects\FuelHub\app\build\generated\source\kapt\debug\dev\ml\fuelhu
+b\data\database\dao\FuelTransactionDao_Impl.java, C:\Users\gerla
+\AndroidStudioProjects\FuelHub\app\build\generated\source\kapt\d
+ebug\dev\ml\fuelhub\data\database\dao\FuelWalletDao_Impl.java, C
+:\Users\gerla\AndroidStudioProjects\FuelHub\app\build\generated\
+source\kapt\debug\dev\ml\fuelhub\data\database\dao\GasSlipDao_Im
+pl.java, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\build\
+generated\source\kapt\debug\dev\ml\fuelhub\data\database\dao\Use
+rDao_Impl.java, C:\Users\gerla\AndroidStudioProjects\FuelHub\app
+\build\generated\source\kapt\debug\dev\ml\fuelhub\data\database\
+dao\VehicleDao_Impl.java, C:\Users\gerla\AndroidStudioProjects\F
+uelHub\app\build\generated\source\kapt\debug\dev\ml\fuelhub\data
+\database\FuelHubDatabase_Impl.java
+  Script source files: 
+  Script file extensions: 
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:1
+49:42 Unresolved reference 'CalendarMonth'.
+  Options for KOTLIN DAEMON: IncrementalCompilationOptions(super
+=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, 
+targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, 
+requestedCompilationResults=[0], kotlinScriptExtensions=[]), 
+areFileChangesKnown=true, modifiedFiles=[C:\Users\gerla\AndroidS
+tudioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\presentat
+ion\screen\ReportScreen.kt, C:\Users\gerla\AndroidStudioProjects
+\FuelHub\app\src\main\java\dev\ml\fuelhub\presentation\screen\Tr
+ansactionScreen.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub
+\app\src\main\java\dev\ml\fuelhub\presentation\screen\WalletScre
+en.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\main
+\java\dev\ml\fuelhub\ui\theme\Color.kt, C:\Users\gerla\AndroidSt
+udioProjects\FuelHub\app\src\main\java\dev\ml\fuelhub\ui\theme\T
+heme.kt, C:\Users\gerla\AndroidStudioProjects\FuelHub\app\src\ma
+in\java\dev\ml\fuelhub\presentation\screen\DashboardScreen.kt], 
+deletedFiles=[], classpathChanges=NoChanges, workingDir=C:\Users
+\gerla\AndroidStudioProjects\FuelHub\app\build\kotlin\compileDeb
+ugKotlin\cacheable, multiModuleICSettings=MultiModuleICSettings(
+buildHistoryFile=C:\Users\gerla\AndroidStudioProjects\FuelHub\ap
+p\build\kotlin\compileDebugKotlin\local-state\build-history.bin,
+ useModuleDetection=true), usePreciseJavaTracking=true, icFeatur
+es=IncrementalCompilationFeatures(withAbiSnapshot=false, 
+preciseCompilationResultsBackup=true, 
+keepIncrementalCompilationCachesInMemory=true, 
+enableUnsafeIncrementalCompilationForMultiplatform=false), outpu
+tFiles=[C:\Users\gerla\AndroidStudioProjects\FuelHub\app\build\t
+mp\kotlin-classes\debug, C:\Users\gerla\AndroidStudioProjects\Fu
+elHub\app\build\kotlin\compileDebugKotlin\cacheable, C:\Users\ge
+rla\AndroidStudioProjects\FuelHub\app\build\kotlin\compileDebugK
+otlin\local-state])
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:2
+66:42 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:2
+73:42 Unresolved reference 'Receipt'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:3
+38:42 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:3
+45:42 Unresolved reference 'TrendingUp'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:4
+09:42 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:4
+16:42 Unresolved reference 'TrendingUp'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:5
+02:49 Unresolved reference 'CalendarToday'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:6
+82:53 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:119:46 Unresolved reference 'DirectionsCar'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:126:46 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:141:46 Unresolved reference 'Description'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:148:46 Unresolved reference 'Group'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:326:18 Unresolved reference 'PREMIUM'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen
+.kt:368:49 Unresolved reference 'LocalGasStation'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:2
+01:49 Unresolved reference 'AccountBalanceWallet'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+20:11 Unresolved reference 'Dp'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+36:34 Overload resolution ambiguity between candidates:
+  fun Dp.toPx(): Float
+  fun TextUnit.toPx(): Float
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+36:41 Overload resolution ambiguity between candidates:
+  fun <T> Iterable<T>.minus(element: T): List<T>
+  fun <K, V> Map<out K, V>.minus(key: K): Map<K, V>
+  fun <T> Set<T>.minus(element: T): Set<T>
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+36:61 Overload resolution ambiguity between candidates:
+  fun Dp.toPx(): Float
+  fun TextUnit.toPx(): Float
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+36:68 Overload resolution ambiguity between candidates:
+  fun <T> Iterable<T>.minus(element: T): List<T>
+  fun <K, V> Map<out K, V>.minus(key: K): Map<K, V>
+  fun <T> Set<T>.minus(element: T): Set<T>
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+47:34 Overload resolution ambiguity between candidates:
+  fun Dp.toPx(): Float
+  fun TextUnit.toPx(): Float
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+47:41 Overload resolution ambiguity between candidates:
+  fun <T> Iterable<T>.minus(element: T): List<T>
+  fun <K, V> Map<out K, V>.minus(key: K): Map<K, V>
+  fun <T> Set<T>.minus(element: T): Set<T>
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+47:61 Overload resolution ambiguity between candidates:
+  fun Dp.toPx(): Float
+  fun TextUnit.toPx(): Float
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+47:68 Overload resolution ambiguity between candidates:
+  fun <T> Iterable<T>.minus(element: T): List<T>
+  fun <K, V> Map<out K, V>.minus(key: K): Map<K, V>
+  fun <T> Set<T>.minus(element: T): Set<T>
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+71:34 Unresolved reference 'TrendingDown'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:3
+78:34 Unresolved reference 'Inventory'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:5
+65:78 Unresolved reference 'ArrowDownward'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:5
+65:111 Unresolved reference 'ArrowUpward'.
+> e: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/sr
+c/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:6
+08:45 Unresolved reference 'Error'.
+  Finished executing kotlin compiler using DAEMON strategy
+  Restoring task outputs to pre-compilation state
+  System.Management.Automation.RemoteException
+
+

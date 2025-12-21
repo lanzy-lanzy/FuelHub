@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Fuel pump icon with modern design -->
+    
+    <!-- Pump nozzle top (rounded) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M42,14C42,11.24 44.24,9 47,9L61,9C63.76,9 66,11.24 66,14L66,22C66,22 66,24 64,24L44,24C42,24 42,22 42,22Z" />
+    
+    <!-- Pump nozzle connector -->
+    <path
+        android:fillColor="#E8F5E9"
+        android:pathData="M46,24L46,28C46,29.1 46.9,30 48,30L60,30C61.1,30 62,29.1 62,28L62,24Z" />
+    
+    <!-- Main pump body (large rounded rectangle) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,30C36.9,30 36,30.9 36,32L36,82C36,83.1 36.9,84 38,84L70,84C71.1,84 72,83.1 72,82L72,32C72,30.9 71.1,30 70,30ZM40,34L68,34L68,80L40,80Z" />
+    
+    <!-- Digital display area -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M42,38L66,38L66,50L42,50Z" />
+    
+    <!-- Display text segments (fuel amount) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M45,40L45,48" 
+        android:strokeWidth="1.5"
+        android:strokeColor="#4CAF50" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M50,40L50,48"
+        android:strokeWidth="1.5"
+        android:strokeColor="#4CAF50" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M55,40L55,48"
+        android:strokeWidth="1.5"
+        android:strokeColor="#4CAF50" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M60,40L60,48"
+        android:strokeWidth="1.5"
+        android:strokeColor="#4CAF50" />
+    
+    <!-- Fuel level indicator (wave pattern) -->
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M42,56C42,56 44,52 48,52C52,52 54,56 54,56L54,70C54,71.1 53.1,72 52,72L44,72C42.9,72 42,71.1 42,70Z" />
+    
+    <!-- Fuel pump handle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M58,56L68,56C68.6,56 69,56.4 69,57L69,65C69,65.6 68.6,66 68,66L58,66L58,60Z" />
+    
+    <!-- Handle details (grip lines) -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M59,58L67,58"
+        android:strokeWidth="1"
+        android:strokeColor="#FF9800" />
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M59,61L67,61"
+        android:strokeWidth="1"
+        android:strokeColor="#FF9800" />
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M59,64L67,64"
+        android:strokeWidth="1"
+        android:strokeColor="#FF9800" />
+    
+    <!-- Drop accent symbol -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M54,72C54,72 52,76 52,78C52,79.1 52.9,80 54,80C55.1,80 56,79.1 56,78C56,76 54,72 54,72Z" />
+    
+</vector>
