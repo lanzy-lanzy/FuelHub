@@ -39,6 +39,18 @@ import dev.ml.fuelhub.data.model.TransactionStatus
 import dev.ml.fuelhub.presentation.viewmodel.ReportsViewModel
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
+import java.text.NumberFormat
+import java.util.Locale
+
+/**
+ * Format a number with thousands separator comma
+ */
+fun formatNumberWithComma(value: Double): String {
+    val formatter = NumberFormat.getInstance(Locale.US)
+    formatter.minimumFractionDigits = 0
+    formatter.maximumFractionDigits = 0
+    return formatter.format(value.toLong())
+}
 
 /**
  * Enhanced Reports Screen with advanced filtering and export capabilities
@@ -1083,12 +1095,12 @@ fun SummaryStatsRow(filteredData: dev.ml.fuelhub.presentation.viewmodel.ReportFi
                 modifier = Modifier.weight(1f)
             )
             MiniStatCard(
-                title = "Total Cost",
-                value = "₱${String.format("%.2f", filteredData.totalCost)}",
-                icon = Icons.Default.AttachMoney,
-                gradient = listOf(Color(0xFFFFB74D), Color(0xFFFFA726)),
-                modifier = Modifier.weight(1f)
-            )
+                 title = "Total Cost",
+                 value = "₱${formatNumberWithComma(filteredData.totalCost)}.${String.format("%02d", (filteredData.totalCost % 1 * 100).toInt())}",
+                 icon = Icons.Default.AttachMoney,
+                 gradient = listOf(Color(0xFFFFB74D), Color(0xFFFFA726)),
+                 modifier = Modifier.weight(1f)
+             )
         }
 
         Row(
@@ -1096,19 +1108,19 @@ fun SummaryStatsRow(filteredData: dev.ml.fuelhub.presentation.viewmodel.ReportFi
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MiniStatCard(
-                title = "Transactions",
-                value = filteredData.transactionCount.toString(),
-                icon = Icons.Default.Receipt,
-                gradient = listOf(AccentOrange, AccentAmber),
-                modifier = Modifier.weight(1f)
-            )
+                 title = "Transactions",
+                 value = formatNumberWithComma(filteredData.transactionCount.toDouble()),
+                 icon = Icons.Default.Receipt,
+                 gradient = listOf(AccentOrange, AccentAmber),
+                 modifier = Modifier.weight(1f)
+             )
             MiniStatCard(
-                title = "Completed",
-                value = filteredData.completedCount.toString(),
-                icon = Icons.Default.CheckCircle,
-                gradient = listOf(SuccessGreen, NeonTeal),
-                modifier = Modifier.weight(1f)
-            )
+                 title = "Completed",
+                 value = formatNumberWithComma(filteredData.completedCount.toDouble()),
+                 icon = Icons.Default.CheckCircle,
+                 gradient = listOf(SuccessGreen, NeonTeal),
+                 modifier = Modifier.weight(1f)
+             )
         }
 
         Row(
@@ -1116,19 +1128,24 @@ fun SummaryStatsRow(filteredData: dev.ml.fuelhub.presentation.viewmodel.ReportFi
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MiniStatCard(
-                title = "Pending",
-                value = filteredData.pendingCount.toString(),
-                icon = Icons.Default.Schedule,
-                gradient = listOf(WarningYellow, AccentOrange),
-                modifier = Modifier.weight(1f)
-            )
+                 title = "Pending",
+                 value = formatNumberWithComma(filteredData.pendingCount.toDouble()),
+                 icon = Icons.Default.Schedule,
+                 gradient = listOf(WarningYellow, AccentOrange),
+                 modifier = Modifier.weight(1f)
+             )
             MiniStatCard(
-                title = "Avg Cost/Liter",
-                value = if (filteredData.totalLiters > 0) "₱${String.format("%.2f", filteredData.totalCost / filteredData.totalLiters)}" else "₱0.00",
-                icon = Icons.Default.TrendingUp,
-                gradient = listOf(Color(0xFF81C784), Color(0xFF66BB6A)),
-                modifier = Modifier.weight(1f)
-            )
+                 title = "Avg Cost/Liter",
+                 value = if (filteredData.totalLiters > 0) {
+                     val avgCost = filteredData.totalCost / filteredData.totalLiters
+                     "₱${formatNumberWithComma(avgCost)}.${String.format("%02d", (avgCost % 1 * 100).toInt())}"
+                 } else {
+                     "₱0.00"
+                 },
+                 icon = Icons.Default.TrendingUp,
+                 gradient = listOf(Color(0xFF81C784), Color(0xFF66BB6A)),
+                 modifier = Modifier.weight(1f)
+             )
         }
     }
 }
@@ -1236,17 +1253,17 @@ fun TransactionDetailRow(transaction: dev.ml.fuelhub.data.model.FuelTransaction)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    "Cost per Liter: ₱${String.format("%.2f", transaction.costPerLiter)}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextSecondary
-                )
-            }
-            Text(
-                "Total: ₱${String.format("%.2f", transaction.getTotalCost())}",
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFFFFB74D)
-            )
+                     "Cost per Liter: ₱${formatNumberWithComma(transaction.costPerLiter)}.${String.format("%02d", (transaction.costPerLiter % 1 * 100).toInt())}",
+                     style = MaterialTheme.typography.labelSmall,
+                     color = TextSecondary
+                 )
+                 }
+                 Text(
+                     "Total: ₱${formatNumberWithComma(transaction.getTotalCost())}.${String.format("%02d", (transaction.getTotalCost() % 1 * 100).toInt())}",
+                     style = MaterialTheme.typography.bodySmall,
+                     fontWeight = FontWeight.SemiBold,
+                     color = Color(0xFFFFB74D)
+                 )
         }
     }
 }
