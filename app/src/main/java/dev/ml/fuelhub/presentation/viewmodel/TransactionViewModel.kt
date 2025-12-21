@@ -11,6 +11,7 @@ import dev.ml.fuelhub.domain.exception.TransactionValidationException
 import dev.ml.fuelhub.domain.exception.UnauthorizedException
 import dev.ml.fuelhub.domain.repository.UserRepository
 import dev.ml.fuelhub.domain.repository.VehicleRepository
+import dev.ml.fuelhub.domain.repository.FuelTransactionRepository
 import dev.ml.fuelhub.presentation.state.TransactionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,24 +25,26 @@ import timber.log.Timber
 class TransactionViewModel(
     private val createFuelTransactionUseCase: CreateFuelTransactionUseCase,
     private val userRepository: UserRepository,
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val transactionRepository: FuelTransactionRepository
 ) : ViewModel() {
-    
+     
     private val _uiState = MutableStateFlow<TransactionUiState>(TransactionUiState.Idle)
     val uiState: StateFlow<TransactionUiState> = _uiState
-    
+     
     private val _transactionHistory = MutableStateFlow<List<FuelTransaction>>(emptyList())
     val transactionHistory: StateFlow<List<FuelTransaction>> = _transactionHistory
-    
+     
     private val _drivers = MutableStateFlow<List<User>>(emptyList())
     val drivers: StateFlow<List<User>> = _drivers
-    
+     
     private val _vehicles = MutableStateFlow<List<Vehicle>>(emptyList())
     val vehicles: StateFlow<List<Vehicle>> = _vehicles
-    
+     
     init {
         loadDrivers()
         loadVehicles()
+        loadTransactionHistory()
     }
     
     fun loadDrivers() {
@@ -66,6 +69,23 @@ class TransactionViewModel(
                 Timber.e(e, "Error loading vehicles")
             }
         }
+    }
+    
+    fun loadTransactionHistory() {
+        viewModelScope.launch {
+            try {
+                val transactionsList = transactionRepository.getAllTransactionsFromServer()
+                _transactionHistory.value = transactionsList.sortedByDescending { it.createdAt }
+                Timber.d("Loaded ${transactionsList.size} transactions from server")
+            } catch (e: Exception) {
+                Timber.e(e, "Error loading transaction history")
+                _transactionHistory.value = emptyList()
+            }
+        }
+    }
+    
+    fun refreshTransactions() {
+        loadTransactionHistory()
     }
     
     fun createTransaction(

@@ -21,11 +21,13 @@ object ViewModelModule {
     fun provideTransactionViewModel(
         createFuelTransactionUseCase: CreateFuelTransactionUseCase,
         userRepository: UserRepository,
-        vehicleRepository: VehicleRepository
+        vehicleRepository: VehicleRepository,
+        transactionRepository: FuelTransactionRepository
     ): TransactionViewModel = TransactionViewModel(
         createFuelTransactionUseCase = createFuelTransactionUseCase,
         userRepository = userRepository,
-        vehicleRepository = vehicleRepository
+        vehicleRepository = vehicleRepository,
+        transactionRepository = transactionRepository
     )
     
     @Provides

@@ -18,8 +18,10 @@ import com.itextpdf.layout.properties.UnitValue
 import dev.ml.fuelhub.presentation.viewmodel.ReportFilteredData
 import timber.log.Timber
 import java.io.File
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  * Utility class for generating PDF reports.
@@ -28,6 +30,20 @@ import java.time.format.DateTimeFormatter
 class ReportPdfGenerator(private val context: Context) {
     
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private val numberFormatter = NumberFormat.getInstance(Locale.US)
+    
+    init {
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 0
+    }
+    
+    private fun formatNumberWithComma(value: Double): String {
+        return numberFormatter.format(value.toLong())
+    }
+    
+    private fun formatCurrency(value: Double): String {
+        return "PHP ${numberFormatter.format(value.toLong())}.${String.format("%02d", (value % 1 * 100).toInt())}"
+    }
     
     /**
      * Generate a report PDF with filtered transaction data.
@@ -107,26 +123,26 @@ class ReportPdfGenerator(private val context: Context) {
             summaryTable.addCell(createDataCell(String.format("%.2f L", filteredData.totalLiters)))
             
             summaryTable.addCell(createDataCell("Total Transactions"))
-            summaryTable.addCell(createDataCell(filteredData.transactionCount.toString()))
+            summaryTable.addCell(createDataCell(formatNumberWithComma(filteredData.transactionCount.toDouble())))
             
             summaryTable.addCell(createDataCell("Completed"))
-            summaryTable.addCell(createDataCell(filteredData.completedCount.toString()))
+            summaryTable.addCell(createDataCell(formatNumberWithComma(filteredData.completedCount.toDouble())))
             
             summaryTable.addCell(createDataCell("Pending"))
-            summaryTable.addCell(createDataCell(filteredData.pendingCount.toString()))
+            summaryTable.addCell(createDataCell(formatNumberWithComma(filteredData.pendingCount.toDouble())))
             
             summaryTable.addCell(createDataCell("Failed"))
-            summaryTable.addCell(createDataCell(filteredData.failedCount.toString()))
+            summaryTable.addCell(createDataCell(formatNumberWithComma(filteredData.failedCount.toDouble())))
             
             summaryTable.addCell(createDataCell("Average Liters/Transaction"))
             summaryTable.addCell(createDataCell(String.format("%.2f L", filteredData.averageLitersPerTransaction)))
             
             summaryTable.addCell(createDataCell("Total Cost"))
-            summaryTable.addCell(createDataCell(String.format("PHP %.2f", filteredData.totalCost)))
+            summaryTable.addCell(createDataCell(formatCurrency(filteredData.totalCost)))
             
             summaryTable.addCell(createDataCell("Average Cost per Liter"))
             val avgCostPerLiter = if (filteredData.totalLiters > 0) filteredData.totalCost / filteredData.totalLiters else 0.0
-            summaryTable.addCell(createDataCell(String.format("PHP %.2f", avgCostPerLiter)))
+            summaryTable.addCell(createDataCell(formatCurrency(avgCostPerLiter)))
             
             document.add(summaryTable)
             
@@ -166,8 +182,8 @@ class ReportPdfGenerator(private val context: Context) {
                     transTable.addCell(createDataCell(driverDisplay))
                     transTable.addCell(createDataCell(transaction.vehicleType))
                     transTable.addCell(createDataCell(String.format("%.2f", transaction.litersToPump)))
-                    transTable.addCell(createDataCell(String.format("PHP %.2f", transaction.costPerLiter)))
-                    transTable.addCell(createDataCell(String.format("PHP %.2f", transaction.getTotalCost())))
+                    transTable.addCell(createDataCell(formatCurrency(transaction.costPerLiter)))
+                    transTable.addCell(createDataCell(formatCurrency(transaction.getTotalCost())))
                     transTable.addCell(createDataCell(transaction.status.name))
                 }
                 

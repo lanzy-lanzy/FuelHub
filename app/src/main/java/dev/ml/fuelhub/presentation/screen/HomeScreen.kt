@@ -116,7 +116,7 @@ fun HomeScreen(
         // Insights & Alerts
         item {
             SectionTitle("Alerts & Insights")
-            InsightsAlerts()
+            InsightsAlerts(transactionViewModel, walletViewModel)
         }
 
         // Footer spacing
@@ -577,13 +577,14 @@ fun VehicleFleetSection(transactionViewModel: TransactionViewModel? = null) {
     val vehicles by vm.vehicles.collectAsState()
     val transactions by vm.transactionHistory.collectAsState()
     
-    // Calculate usage percentage for each vehicle
+    // Calculate usage for each vehicle
+    val allVehiclesTotal = transactions.sumOf { it.litersToPump }
     val vehicleUsageMap = vehicles.associate { vehicle ->
         val vehicleTransactions = transactions.filter { it.vehicleId == vehicle.id }
         val usage = vehicleTransactions.sumOf { it.litersToPump }
-        // Estimate usage percentage (assuming 100L tank capacity for demo)
-        val percentage = (usage % 100.0) / 100.0 * 100
-        vehicle.id to Pair(percentage, vehicleTransactions.sumOf { it.litersToPump })
+        // Calculate percentage based on total fuel usage across all vehicles
+        val percentage = if (allVehiclesTotal > 0) (usage / allVehiclesTotal) * 100.0 else 0.0
+        vehicle.id to Pair(percentage, usage)
     }
     
     val colorMap = mapOf(
@@ -597,16 +598,26 @@ fun VehicleFleetSection(transactionViewModel: TransactionViewModel? = null) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        vehicles.take(5).forEachIndexed { index, vehicle ->
-            val (percentage, totalUsage) = vehicleUsageMap[vehicle.id] ?: Pair(0.0, 0.0)
-            VehicleCard(
-                VehicleInfo(
-                    name = vehicle.plateNumber,
-                    fuelType = vehicle.fuelType.name,
-                    usage = "%.0f%%".format(percentage),
-                    color = colorMap[index] ?: SuccessGreen
-                )
+        if (vehicles.isEmpty()) {
+            Text(
+                "No vehicles available",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSecondary,
+                modifier = Modifier.padding(16.dp)
             )
+        } else {
+            vehicles.take(5).forEachIndexed { index, vehicle ->
+                val (percentage, totalUsage) = vehicleUsageMap[vehicle.id] ?: Pair(0.0, 0.0)
+                VehicleCard(
+                    VehicleInfo(
+                        name = vehicle.plateNumber,
+                        fuelType = vehicle.fuelType.name,
+                        usage = "%.1f%%".format(percentage),
+                        color = colorMap[index] ?: SuccessGreen,
+                        totalUsage = "%.1f L".format(totalUsage)
+                    )
+                )
+            }
         }
     }
 }
@@ -615,7 +626,8 @@ data class VehicleInfo(
     val name: String,
     val fuelType: String,
     val usage: String,
-    val color: Color
+    val color: Color,
+    val totalUsage: String = ""
 )
 
 @Composable
@@ -668,14 +680,24 @@ fun VehicleCard(vehicle: VehicleInfo) {
                 }
             }
             Column(
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    vehicle.usage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = TextPrimary
-                )
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        vehicle.usage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    if (vehicle.totalUsage.isNotEmpty()) {
+                        Text(
+                            vehicle.totalUsage,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary
+                        )
+                    }
+                }
                 LinearProgressIndicator(
                     progress = { vehicle.usage.removeSuffix("%").toFloat() / 100f },
                     modifier = Modifier
@@ -920,33 +942,102 @@ fun TransactionDetailCard(transaction: TransactionDetail) {
 }
 
 @Composable
-fun InsightsAlerts() {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        AlertCard(
-            type = "info",
-            title = "Optimization Tip",
-            message = "Your fuel efficiency improved by 12% this month",
-            icon = Icons.Default.Info,
-            color = ElectricBlue
-        )
-        AlertCard(
-            type = "warning",
-            title = "Wallet Low",
-            message = "Your fuel wallet is at 62.3% capacity",
-            icon = Icons.Default.Warning,
-            color = WarningYellow
-        )
-        AlertCard(
-            type = "success",
-            title = "Goal Achieved",
-            message = "You've completed 47 fuel transactions this month!",
-            icon = Icons.Default.CheckCircle,
-            color = SuccessGreen
-        )
-    }
-}
+fun InsightsAlerts(transactionViewModel: TransactionViewModel? = null, walletViewModel: WalletViewModel? = null) {
+     val transVM = transactionViewModel ?: viewModel<TransactionViewModel>()
+     val walletVM = walletViewModel ?: viewModel<WalletViewModel>()
+     
+     val transactions by transVM.transactionHistory.collectAsState()
+     val walletState by walletVM.uiState.collectAsState()
+     
+     val wallet = when (walletState) {
+         is WalletUiState.Success -> (walletState as WalletUiState.Success).wallet
+         else -> null
+     }
+     
+     // Calculate current month efficiency
+     val monthStart = LocalDate.now().withDayOfMonth(1)
+     val monthTransactions = transactions.filter { 
+         it.createdAt.toLocalDate() >= monthStart
+     }
+     val currentEfficiency = calculateEfficiency(monthTransactions)
+     
+     // Calculate previous month efficiency for comparison
+     val prevMonthStart = monthStart.minusMonths(1)
+     val prevMonthEnd = monthStart.minusDays(1)
+     val prevMonthTransactions = transactions.filter { 
+         val date = it.createdAt.toLocalDate()
+         date >= prevMonthStart && date <= prevMonthEnd
+     }
+     val prevEfficiency = calculateEfficiency(prevMonthTransactions)
+     val efficiencyChange = currentEfficiency - prevEfficiency
+     
+     // Wallet capacity
+     val balance = wallet?.balanceLiters ?: 0.0
+     val maxCapacity = wallet?.maxCapacityLiters ?: 2000.0
+     val walletPercentage = (balance / maxCapacity) * 100
+     
+     // Total transactions this month
+     val monthlyTransactionCount = monthTransactions.size
+     
+     Column(
+         verticalArrangement = Arrangement.spacedBy(10.dp)
+     ) {
+         // Efficiency insight
+         if (efficiencyChange >= 0) {
+             AlertCard(
+                 type = "success",
+                 title = "Efficiency Improved",
+                 message = "Your fuel efficiency improved by ${String.format("%.1f", efficiencyChange)}% this month",
+                 icon = Icons.Default.TrendingUp,
+                 color = SuccessGreen
+             )
+         } else {
+             AlertCard(
+                 type = "warning",
+                 title = "Efficiency Declined",
+                 message = "Your fuel efficiency declined by ${String.format("%.1f", -efficiencyChange)}% compared to last month",
+                 icon = Icons.AutoMirrored.Filled.TrendingUp,
+                 color = WarningYellow
+             )
+         }
+         
+         // Wallet status
+         if (walletPercentage > 80) {
+             AlertCard(
+                 type = "success",
+                 title = "Wallet Full",
+                 message = "Your fuel wallet is at ${String.format("%.1f", walletPercentage)}% capacity",
+                 icon = Icons.Default.CheckCircle,
+                 color = SuccessGreen
+             )
+         } else if (walletPercentage < 30) {
+             AlertCard(
+                 type = "warning",
+                 title = "Low Wallet Balance",
+                 message = "Your fuel wallet is at ${String.format("%.1f", walletPercentage)}% capacity - Consider refilling",
+                 icon = Icons.Default.Warning,
+                 color = WarningYellow
+             )
+         } else {
+             AlertCard(
+                 type = "info",
+                 title = "Wallet Status",
+                 message = "Your fuel wallet is at ${String.format("%.1f", walletPercentage)}% capacity",
+                 icon = Icons.Default.Info,
+                 color = ElectricBlue
+             )
+         }
+         
+         // Monthly transaction milestone
+         AlertCard(
+             type = "info",
+             title = "Monthly Progress",
+             message = "You've completed $monthlyTransactionCount fuel transactions this month!",
+             icon = Icons.Default.CheckCircle,
+             color = ElectricBlue
+         )
+     }
+ }
 
 @Composable
 fun AlertCard(
