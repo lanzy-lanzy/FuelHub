@@ -39,6 +39,11 @@ interface UserRepository {
     suspend fun getAllActiveUsers(): List<User>
     
     /**
+     * Get all users (including inactive).
+     */
+    suspend fun getAllUsers(): List<User>
+    
+    /**
      * Deactivate a user.
      */
     suspend fun deactivateUser(userId: String): User?

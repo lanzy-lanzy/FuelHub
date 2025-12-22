@@ -127,6 +127,18 @@ class FirebaseGasSlipRepositoryImpl : GasSlipRepository {
         }
     }
     
+    override suspend fun getAllGasSlips(): List<GasSlip> {
+        return try {
+            Timber.d("Fetching all gas slips from Firestore (including dispensed)")
+            val allSlips = FirebaseDataSource.getAllGasSlipsOneTime()
+            Timber.d("Successfully fetched ${allSlips.size} gas slips total")
+            allSlips
+        } catch (e: Exception) {
+            Timber.e(e, "Error getting all gas slips: ${e.message}")
+            emptyList()
+        }
+    }
+    
     override suspend fun getGasSlipsByDate(date: LocalDate): List<GasSlip> {
         return try {
             // Query Firestore for gas slips created on the given date
@@ -144,6 +156,76 @@ class FirebaseGasSlipRepositoryImpl : GasSlipRepository {
         } catch (e: Exception) {
             Timber.e(e, "Error getting gas slips for office: $officeId")
             emptyList()
+        }
+    }
+    
+    override suspend fun cancelGasSlip(gasSlipId: String): GasSlip? {
+        return try {
+            val gasSlip = getGasSlipById(gasSlipId) ?: return null
+            val cancelledSlip = gasSlip.copy(
+                status = GasSlipStatus.CANCELLED
+            )
+            FirebaseDataSource.updateGasSlip(cancelledSlip).getOrThrow()
+            Timber.d("Gas slip cancelled: $gasSlipId")
+            
+            // Also cancel the corresponding transaction to sync the status
+            try {
+                val transaction = FirebaseDataSource.getTransactionById(gasSlip.transactionId).getOrNull()
+                if (transaction != null && transaction.status == TransactionStatus.PENDING) {
+                    val cancelledTransaction = transaction.copy(
+                        status = TransactionStatus.CANCELLED,
+                        completedAt = LocalDateTime.now()
+                    )
+                    FirebaseDataSource.updateTransaction(cancelledTransaction).getOrThrow()
+                    Timber.d("Corresponding transaction also cancelled: ${gasSlip.transactionId}")
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Could not cancel corresponding transaction: ${gasSlip.transactionId}")
+                // Don't fail the entire operation if transaction cancellation fails
+            }
+            
+            cancelledSlip
+        } catch (e: Exception) {
+            Timber.e(e, "Error cancelling gas slip: $gasSlipId")
+            null
+        }
+    }
+    
+    override suspend fun bulkMarkPendingAsDispensed(gasSlipIds: List<String>): Boolean {
+        return try {
+            gasSlipIds.forEach { gasSlipId ->
+                val gasSlip = getGasSlipById(gasSlipId) ?: return@forEach
+                
+                // Only mark if status is PENDING
+                if (gasSlip.status == GasSlipStatus.PENDING) {
+                    val dispensedSlip = gasSlip.copy(
+                        status = GasSlipStatus.DISPENSED,
+                        dispensedAt = LocalDateTime.now(),
+                        dispensedLiters = gasSlip.litersToPump
+                    )
+                    FirebaseDataSource.updateGasSlip(dispensedSlip).getOrThrow()
+                    
+                    // Also update the associated FuelTransaction to COMPLETED
+                    try {
+                        val transaction = FirebaseDataSource.getTransactionById(gasSlip.transactionId).getOrNull()
+                        if (transaction != null) {
+                            val completedTransaction = transaction.copy(
+                                status = TransactionStatus.COMPLETED,
+                                completedAt = LocalDateTime.now()
+                            )
+                            FirebaseDataSource.updateTransaction(completedTransaction).getOrThrow()
+                        }
+                    } catch (e: Exception) {
+                        Timber.w(e, "Warning: Failed to update associated transaction for gas slip: $gasSlipId")
+                    }
+                    
+                    Timber.d("Bulk marked gas slip as dispensed: $gasSlipId")
+                }
+            }
+            true
+        } catch (e: Exception) {
+            Timber.e(e, "Error in bulk mark as dispensed: ${e.message}")
+            false
         }
     }
 }

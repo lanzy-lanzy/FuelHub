@@ -73,6 +73,16 @@ class FirebaseUserRepositoryImpl : UserRepository {
         }
     }
     
+    override suspend fun getAllUsers(): List<User> {
+        return try {
+            // Get all users (including inactive) from Firestore
+            FirebaseDataSource.getAllUsers().first()
+        } catch (e: Exception) {
+            Timber.e(e, "Error getting all users")
+            emptyList()
+        }
+    }
+    
     override suspend fun deactivateUser(userId: String): User? {
         return try {
             val user = getUserById(userId) ?: return null

@@ -53,6 +53,7 @@ object QRCodeGenerator {
     /**
      * Create transaction data string for QR encoding.
      * Encodes key transaction details for verification.
+     * Format: REF:xxx|PLATE:xxx|DRIVER:xxx|FUEL:xxx|LITERS:xxx|DATE:xxx
      */
     fun createTransactionData(
         referenceNumber: String,
@@ -62,13 +63,10 @@ object QRCodeGenerator {
         liters: Double,
         date: String
     ): String {
-        return """
-            REF:$referenceNumber|
-            PLATE:$vehiclePlate|
-            DRIVER:$driverName|
-            FUEL:$fuelType|
-            LITERS:$liters|
-            DATE:$date
-        """.trimIndent().replace("\n", "")
+        // Build the string directly without extra spaces or line breaks
+        return "REF:$referenceNumber|PLATE:$vehiclePlate|DRIVER:$driverName|FUEL:$fuelType|LITERS:$liters|DATE:$date"
+            .also { data ->
+                Timber.d("📱 QR Code Data Generated: $data")
+            }
     }
 }

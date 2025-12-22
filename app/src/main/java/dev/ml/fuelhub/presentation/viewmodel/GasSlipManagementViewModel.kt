@@ -19,6 +19,7 @@ sealed class GasSlipUiState {
     data class Error(val message: String) : GasSlipUiState()
     object PrintSuccess : GasSlipUiState()
     object ExportSuccess : GasSlipUiState()
+    object BulkActionSuccess : GasSlipUiState()
 }
 
 class GasSlipManagementViewModel(
@@ -59,6 +60,13 @@ class GasSlipManagementViewModel(
     private val _sortByLatest = MutableStateFlow<Boolean>(true) // Sort newest first
     val sortByLatest: StateFlow<Boolean> = _sortByLatest
     
+    // Selection state for bulk operations
+    private val _selectedForBulkAction = MutableStateFlow<Set<String>>(emptySet())
+    val selectedForBulkAction: StateFlow<Set<String>> = _selectedForBulkAction
+    
+    private val _isBulkActionMode = MutableStateFlow<Boolean>(false)
+    val isBulkActionMode: StateFlow<Boolean> = _isBulkActionMode
+    
     init {
         try {
             loadAllGasSlips()
@@ -72,7 +80,7 @@ class GasSlipManagementViewModel(
         viewModelScope.launch {
             _uiState.value = GasSlipUiState.Loading
             try {
-                val slips = gasSlipRepository.getUnusedGasSlips()
+                val slips = gasSlipRepository.getAllGasSlips()
                 _allGasSlips.value = slips
                 _uiState.value = GasSlipUiState.Success(slips)
                 Timber.d("Loaded ${slips.size} gas slips")
@@ -251,5 +259,68 @@ class GasSlipManagementViewModel(
     
     fun resetState() {
         _uiState.value = GasSlipUiState.Idle
+    }
+    
+    fun toggleBulkActionMode() {
+        _isBulkActionMode.value = !_isBulkActionMode.value
+        if (!_isBulkActionMode.value) {
+            clearBulkSelection()
+        }
+    }
+    
+    fun toggleSelection(gasSlipId: String) {
+        val current = _selectedForBulkAction.value.toMutableSet()
+        if (current.contains(gasSlipId)) {
+            current.remove(gasSlipId)
+        } else {
+            current.add(gasSlipId)
+        }
+        _selectedForBulkAction.value = current
+    }
+    
+    fun selectAll(gasSlipIds: List<String>) {
+        _selectedForBulkAction.value = gasSlipIds.toSet()
+    }
+    
+    fun clearBulkSelection() {
+        _selectedForBulkAction.value = emptySet()
+    }
+    
+    fun cancelGasSlip(gasSlipId: String) {
+        viewModelScope.launch {
+            try {
+                gasSlipRepository.cancelGasSlip(gasSlipId)
+                loadAllGasSlips()
+                Timber.d("Gas slip cancelled: $gasSlipId")
+            } catch (e: Exception) {
+                _uiState.value = GasSlipUiState.Error("Failed to cancel gas slip: ${e.message}")
+                Timber.e(e, "Error cancelling gas slip")
+            }
+        }
+    }
+    
+    fun bulkMarkPendingAsDispensed() {
+        viewModelScope.launch {
+            try {
+                val selected = _selectedForBulkAction.value.toList()
+                if (selected.isEmpty()) {
+                    _uiState.value = GasSlipUiState.Error("No gas slips selected")
+                    return@launch
+                }
+                
+                val success = gasSlipRepository.bulkMarkPendingAsDispensed(selected)
+                if (success) {
+                    clearBulkSelection()
+                    loadAllGasSlips()
+                    _uiState.value = GasSlipUiState.BulkActionSuccess
+                    Timber.d("Bulk marked ${selected.size} gas slips as dispensed")
+                } else {
+                    _uiState.value = GasSlipUiState.Error("Failed to bulk mark gas slips")
+                }
+            } catch (e: Exception) {
+                _uiState.value = GasSlipUiState.Error("Bulk action failed: ${e.message}")
+                Timber.e(e, "Error in bulk mark as dispensed")
+            }
+        }
     }
 }

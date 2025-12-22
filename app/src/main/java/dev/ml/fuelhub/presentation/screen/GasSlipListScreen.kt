@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.PaddingValues
 import dev.ml.fuelhub.data.model.GasSlip
 import dev.ml.fuelhub.data.model.FuelType
+import dev.ml.fuelhub.data.model.GasSlipStatus
 import dev.ml.fuelhub.presentation.viewmodel.GasSlipUiState
 import dev.ml.fuelhub.presentation.viewmodel.GasSlipManagementViewModel
 import dev.ml.fuelhub.ui.theme.*
@@ -36,15 +37,19 @@ fun GasSlipListScreen(
     onGasSlipSelected: (GasSlip) -> Unit = {},
     onPrintClick: (GasSlip) -> Unit = {},
     onShareClick: (GasSlip) -> Unit = {},
+    onCancelClick: (gasSlipId: String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var selectedFilter by remember { mutableStateOf("ALL") }
     var showAdvancedFilters by remember { mutableStateOf(false) }
+    var showBulkActionBar by remember { mutableStateOf(false) }
     
     val uiState by gasSlipViewModel.uiState.collectAsState()
     val allGasSlips by gasSlipViewModel.allGasSlips.collectAsState()
     val searchQuery by gasSlipViewModel.searchQuery.collectAsState()
     val sortByLatest by gasSlipViewModel.sortByLatest.collectAsState()
+    val isBulkActionMode by gasSlipViewModel.isBulkActionMode.collectAsState()
+    val selectedForBulkAction by gasSlipViewModel.selectedForBulkAction.collectAsState()
     
     val filteredGasSlips = gasSlipViewModel.getFilteredAndSearchedGasSlips()
     
@@ -59,45 +64,86 @@ fun GasSlipListScreen(
                 .padding(16.dp)
         ) {
             // Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        "Gas Slips",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = VibrantCyan,
-                        fontSize = 28.sp
-                    )
-                    Text(
-                        "Manage fuel slips & dispensing",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                IconButton(
-                    onClick = { gasSlipViewModel.loadAllGasSlips() },
+            if (isBulkActionMode) {
+                // Bulk Action Header
+                Row(
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                         .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(ElectricBlue, VibrantCyan)
-                            )
+                            color = VibrantCyan.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(12.dp)
                         )
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Refresh",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Column {
+                        Text(
+                            "${selectedForBulkAction.size} selected",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = VibrantCyan
+                        )
+                        Text(
+                            "Bulk Actions Available",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSecondary
+                        )
+                    }
+                    IconButton(
+                        onClick = { gasSlipViewModel.toggleBulkActionMode() },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Exit Bulk Mode",
+                            tint = ErrorRed,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            "Gas Slips",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = VibrantCyan,
+                            fontSize = 28.sp
+                        )
+                        Text(
+                            "Manage fuel slips & dispensing",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    IconButton(
+                        onClick = { gasSlipViewModel.loadAllGasSlips() },
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(ElectricBlue, VibrantCyan)
+                                )
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Refresh",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
             
@@ -147,6 +193,52 @@ fun GasSlipListScreen(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodyMedium
             )
+            
+            // Bulk Action Toolbar
+            if (isBulkActionMode && selectedForBulkAction.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                        .background(
+                            color = SuccessGreen.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            gasSlipViewModel.selectAll(filteredGasSlips.map { it.id })
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Select All", fontSize = 11.sp)
+                    }
+                    
+                    Button(
+                        onClick = { gasSlipViewModel.bulkMarkPendingAsDispensed() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = SuccessGreen),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Mark Dispensed", fontSize = 11.sp)
+                    }
+                }
+            }
             
             // Custom Filter Tabs + Controls
             Row(
@@ -255,6 +347,22 @@ fun GasSlipListScreen(
                         modifier = Modifier.size(20.dp)
                     )
                 }
+                
+                // Bulk Actions Button
+                IconButton(
+                    onClick = { gasSlipViewModel.toggleBulkActionMode() },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isBulkActionMode) ElectricBlue else SurfaceDark)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SelectAll,
+                        contentDescription = "Bulk Actions",
+                        tint = if (isBulkActionMode) Color.White else VibrantCyan,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
             
             // Advanced Filters Panel
@@ -310,7 +418,11 @@ fun GasSlipListScreen(
                                     gasSlip = gasSlip,
                                     onSelect = { onGasSlipSelected(gasSlip) },
                                     onPrint = { onPrintClick(gasSlip) },
-                                    onShare = { onShareClick(gasSlip) }
+                                    onShare = { onShareClick(gasSlip) },
+                                    onCancel = { onCancelClick(gasSlip.id) },
+                                    isBulkActionMode = isBulkActionMode,
+                                    isSelected = selectedForBulkAction.contains(gasSlip.id),
+                                    onSelectForBulk = { gasSlipViewModel.toggleSelection(gasSlip.id) }
                                 )
                             }
                         }
@@ -359,7 +471,11 @@ fun GasSlipCard(
     gasSlip: GasSlip,
     onSelect: () -> Unit,
     onPrint: () -> Unit,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onCancel: () -> Unit = {},
+    isBulkActionMode: Boolean = false,
+    isSelected: Boolean = false,
+    onSelectForBulk: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     
@@ -369,9 +485,21 @@ fun GasSlipCard(
             .animateContentSize()
             .clip(RoundedCornerShape(16.dp))
             .shadow(4.dp, RoundedCornerShape(16.dp))
-            .clickable { expanded = !expanded },
+            .clickable {
+                if (isBulkActionMode) {
+                    onSelectForBulk()
+                } else {
+                    expanded = !expanded
+                }
+            }
+            .background(
+                if (isSelected) VibrantCyan.copy(alpha = 0.1f) else Color.Transparent
+            ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceDark)
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) SurfaceDark.copy(alpha = 0.8f) else SurfaceDark
+        ),
+        border = if (isSelected) androidx.compose.foundation.BorderStroke(2.dp, VibrantCyan) else null
     ) {
         Column(
             modifier = Modifier
@@ -386,6 +514,14 @@ fun GasSlipCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                if (isBulkActionMode) {
+                    androidx.compose.material3.Checkbox(
+                        checked = isSelected,
+                        onCheckedChange = { onSelectForBulk() },
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         gasSlip.referenceNumber,
@@ -402,10 +538,10 @@ fun GasSlipCard(
                 
                 // Status Badge
                 val statusColor = when (gasSlip.status) {
-                    dev.ml.fuelhub.data.model.GasSlipStatus.PENDING -> AccentOrange
-                    dev.ml.fuelhub.data.model.GasSlipStatus.DISPENSED -> SuccessGreen
-                    dev.ml.fuelhub.data.model.GasSlipStatus.USED -> VibrantCyan
-                    dev.ml.fuelhub.data.model.GasSlipStatus.CANCELLED -> ErrorRed
+                    GasSlipStatus.PENDING -> AccentOrange
+                    GasSlipStatus.DISPENSED -> SuccessGreen
+                    GasSlipStatus.USED -> VibrantCyan
+                    GasSlipStatus.CANCELLED -> ErrorRed
                 }
                 Box(
                     modifier = Modifier
@@ -454,63 +590,103 @@ fun GasSlipCard(
                 }
                 
                 // Action Buttons
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = onSelect,
+                if (!isBulkActionMode) {
+                    Column(
                         modifier = Modifier
-                            .weight(1f)
-                            .height(40.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
-                        shape = RoundedCornerShape(8.dp)
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("View", fontSize = 12.sp)
-                    }
-                    
-                    Button(
-                        onClick = onPrint,
-                        enabled = gasSlip.status != dev.ml.fuelhub.data.model.GasSlipStatus.CANCELLED,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(40.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = VibrantCyan),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Print,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = DeepBlue
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Print", fontSize = 12.sp, color = DeepBlue)
-                    }
-                    
-                    Button(
-                        onClick = onShare,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(40.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = SuccessGreen),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Share", fontSize = 12.sp)
+                        // First row: View, Print, Share
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Button(
+                                onClick = onSelect,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(44.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Visibility,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("View", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                            
+                            Button(
+                                onClick = onPrint,
+                                enabled = gasSlip.status != GasSlipStatus.CANCELLED,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(44.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = VibrantCyan,
+                                    disabledContainerColor = VibrantCyan.copy(alpha = 0.5f)
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Print,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = if (gasSlip.status == GasSlipStatus.CANCELLED) DeepBlue.copy(alpha = 0.5f) else DeepBlue
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    "Print",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if (gasSlip.status == GasSlipStatus.CANCELLED) DeepBlue.copy(alpha = 0.5f) else DeepBlue
+                                )
+                            }
+                            
+                            Button(
+                                onClick = onShare,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(44.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = SuccessGreen),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Share,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Share", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                        
+                        // Cancel button (if pending) - full width
+                        if (gasSlip.status == GasSlipStatus.PENDING) {
+                            Button(
+                                onClick = onCancel,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(44.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = ErrorRed),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Cancel Slip", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                        }
                     }
                 }
             }

@@ -50,4 +50,26 @@ object UseCaseModule {
     fun provideGenerateMonthlyReportUseCase(
         transactionRepository: FuelTransactionRepository
     ): GenerateMonthlyReportUseCase = GenerateMonthlyReportUseCase(transactionRepository)
+    
+    @Provides
+    @Singleton
+    fun provideApproveTransactionUseCase(
+        transactionRepository: FuelTransactionRepository,
+        userRepository: UserRepository,
+        auditLogRepository: AuditLogRepository
+    ): ApproveTransactionUseCase = ApproveTransactionUseCase(
+        transactionRepository = transactionRepository,
+        userRepository = userRepository,
+        auditLogRepository = auditLogRepository
+    )
+    
+    @Provides
+    @Singleton
+    fun provideCompleteTransactionUseCase(
+        transactionRepository: FuelTransactionRepository,
+        walletRepository: FuelWalletRepository
+    ): CompleteTransactionUseCase = CompleteTransactionUseCase(
+        transactionRepository = transactionRepository,
+        walletRepository = walletRepository
+    )
 }

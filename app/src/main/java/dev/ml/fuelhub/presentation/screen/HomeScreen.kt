@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.ml.fuelhub.ui.theme.*
 import dev.ml.fuelhub.presentation.viewmodel.WalletViewModel
 import dev.ml.fuelhub.presentation.viewmodel.TransactionViewModel
+import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
 import dev.ml.fuelhub.presentation.state.WalletUiState
 import dev.ml.fuelhub.data.model.FuelWallet
 import java.time.LocalDateTime
@@ -45,9 +46,11 @@ fun HomeScreen(
     onNavigateToWallet: () -> Unit = {},
     onNavigateToReports: () -> Unit = {},
     onNavigateToHistory: () -> Unit = {},
+    onLogout: () -> Unit = {},
     modifier: Modifier = Modifier,
     transactionViewModel: TransactionViewModel? = null,
-    walletViewModel: WalletViewModel? = null
+    walletViewModel: WalletViewModel? = null,
+    authViewModel: AuthViewModel? = null
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "homeGradient")
     val animatedOffset by infiniteTransition.animateFloat(
@@ -69,7 +72,7 @@ fun HomeScreen(
     ) {
         // Premium Header with Profile
         item {
-            HomeHeader()
+            HomeHeader(onLogout = onLogout, authViewModel = authViewModel)
         }
 
         // Key Metrics Section
@@ -127,7 +130,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeHeader() {
+fun HomeHeader(onLogout: () -> Unit = {}, authViewModel: AuthViewModel? = null) {
+    var showProfileMenu by remember { mutableStateOf(false) }
+    val vm = authViewModel ?: viewModel<AuthViewModel>()
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -155,7 +161,7 @@ fun HomeHeader() {
             )
         }
 
-        // Profile Circle with Notification Badge
+        // Profile Circle with Notification Badge and Dropdown Menu
         Box {
             Box(
                 modifier = Modifier
@@ -166,7 +172,7 @@ fun HomeHeader() {
                             colors = listOf(ElectricBlue, VibrantCyan)
                         )
                     )
-                    .clickable { },
+                    .clickable { showProfileMenu = true },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -190,6 +196,35 @@ fun HomeHeader() {
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            
+            // Dropdown Menu
+            DropdownMenu(
+                expanded = showProfileMenu,
+                onDismissRequest = { showProfileMenu = false },
+                modifier = Modifier.background(SurfaceDark)
+            ) {
+                DropdownMenuItem(
+                    text = { 
+                        Text(
+                            "Logout",
+                            color = TextPrimary,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    onClick = {
+                        showProfileMenu = false
+                        vm.logout()
+                        onLogout()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "Logout",
+                            tint = WarningYellow
+                        )
+                    }
                 )
             }
         }

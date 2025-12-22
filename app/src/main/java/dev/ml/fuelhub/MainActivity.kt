@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import dev.ml.fuelhub.domain.usecase.GenerateDailyReportUseCase
 import dev.ml.fuelhub.domain.usecase.GenerateMonthlyReportUseCase
 import dev.ml.fuelhub.domain.usecase.GenerateWeeklyReportUseCase
 import dev.ml.fuelhub.presentation.screen.GasSlipScreen
+import dev.ml.fuelhub.presentation.screen.GasStationScreen
 import dev.ml.fuelhub.presentation.screen.HomeScreen
 import dev.ml.fuelhub.presentation.screen.ReportScreen
 import dev.ml.fuelhub.presentation.screen.ReportScreenEnhanced
@@ -44,6 +47,10 @@ import dev.ml.fuelhub.presentation.screen.WalletScreenEnhanced
 import dev.ml.fuelhub.presentation.viewmodel.TransactionViewModel
 import dev.ml.fuelhub.presentation.viewmodel.WalletViewModel
 import dev.ml.fuelhub.presentation.viewmodel.ReportsViewModel
+import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
+import dev.ml.fuelhub.presentation.screen.LoginScreen
+import dev.ml.fuelhub.presentation.screen.RegisterScreen
+import dev.ml.fuelhub.domain.repository.AuthRepository
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.ml.fuelhub.ui.theme.FuelHubTheme
 import timber.log.Timber
@@ -123,6 +130,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var gasSlipManagementViewModel: GasSlipManagementViewModel
     
+    @Inject
+    lateinit var authRepository: AuthRepository
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -170,7 +180,8 @@ class MainActivity : ComponentActivity() {
                     pdfPrintManager = pdfPrintManager,
                     generateDailyReportUseCase = generateDailyReportUseCase,
                     generateWeeklyReportUseCase = generateWeeklyReportUseCase,
-                    generateMonthlyReportUseCase = generateMonthlyReportUseCase
+                    generateMonthlyReportUseCase = generateMonthlyReportUseCase,
+                    authRepository = authRepository
                 )
             }
         }
@@ -187,330 +198,500 @@ fun FuelHubApp(
     pdfPrintManager: PdfPrintManager,
     generateDailyReportUseCase: GenerateDailyReportUseCase,
     generateWeeklyReportUseCase: GenerateWeeklyReportUseCase,
-    generateMonthlyReportUseCase: GenerateMonthlyReportUseCase
+    generateMonthlyReportUseCase: GenerateMonthlyReportUseCase,
+    authRepository: AuthRepository
 ) {
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = hiltViewModel()
     var selectedTab by remember { mutableIntStateOf(0) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val isUserLoggedIn = authRepository.isUserLoggedIn()
     
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
-                drawerContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            ) {
-                // Header Section with Gradient
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(170.dp)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                                    androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer
+    // Determine start destination based on user role
+    val startDestination = if (isUserLoggedIn) {
+        val userRole = runBlocking {
+            val userId = authRepository.getCurrentUserId()
+            userId?.let { authRepository.getUserRole(it) } ?: ""
+        }
+        if (userRole == "GAS_STATION") "gasstation" else "home"
+    } else {
+        "login"
+    }
+    var currentRoute by remember { mutableStateOf(startDestination) }
+    
+    // Only show drawer and full layout for non-gas-station users
+    if (currentRoute != "gasstation") {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
+                    drawerContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                ) {
+                    // Header Section with Gradient
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(170.dp)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                                        androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer
+                                    )
                                 )
                             )
-                        )
-                ) {
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(24.dp)
+                        ) {
+                            // Header Icon
+                            androidx.compose.foundation.layout.Box(
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                                    .background(
+                                        color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                                        shape = androidx.compose.foundation.shape.CircleShape
+                                    )
+                                    .padding(8.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.DirectionsCar,
+                                    "Fleet",
+                                    modifier = Modifier.height(32.dp),
+                                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                            
+                            Text(
+                                "Fleet Management",
+                                style = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Menu Items
                     Column(
                         modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(24.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp)
                     ) {
-                        // Header Icon
-                        androidx.compose.foundation.layout.Box(
-                            modifier = Modifier
-                                .padding(bottom = 12.dp)
-                                .background(
-                                    color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-                                    shape = androidx.compose.foundation.shape.CircleShape
-                                )
-                                .padding(8.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.DirectionsCar,
-                                "Fleet",
-                                modifier = Modifier.height(32.dp),
-                                tint = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                        NavigationDrawerItem(
+                            icon = { 
+                                Icon(
+                                    Icons.Default.Person, 
+                                    "Drivers"
+                                ) 
+                            },
+                            label = { Text("Drivers") },
+                            selected = false,
+                            onClick = {
+                                navController.navigate("drivers") {
+                                    popUpTo("drivers") { inclusive = true }
+                                }
+                                scope.launch { drawerState.close() }
+                            },
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        
+                        NavigationDrawerItem(
+                            icon = { 
+                                Icon(
+                                    Icons.Default.DirectionsCar, 
+                                    "Vehicles"
+                                ) 
+                            },
+                            label = { Text("Vehicles") },
+                            selected = false,
+                            onClick = {
+                                navController.navigate("vehicles") {
+                                    popUpTo("vehicles") { inclusive = true }
+                                }
+                                scope.launch { drawerState.close() }
+                            },
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+                    
+                    // Divider
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp)
+                    )
+                    
+                    // Settings Section
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp)
+                    ) {
+                        NavigationDrawerItem(
+                            icon = { 
+                                Icon(
+                                    Icons.Default.Settings, 
+                                    "Settings"
+                                ) 
+                            },
+                            label = { Text("Settings") },
+                            selected = false,
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                            },
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+                }
+            }
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                bottomBar = {
+                    // Hide bottom bar on login/register/gasstation screens
+                    if (currentRoute !in listOf("login", "register", "gasstation")) {
+                        NavigationBar {
+                            NavigationBarItem(
+                                icon = { Icon(Icons.Default.Home, "Home") },
+                                label = { Text("Home") },
+                                selected = selectedTab == 0,
+                                onClick = {
+                                    selectedTab = 0
+                                    navController.navigate("home") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
+                                }
+                            )
+                            NavigationBarItem(
+                                icon = { Icon(Icons.Default.AccountBalance, "Wallet") },
+                                label = { Text("Wallet") },
+                                selected = selectedTab == 1,
+                                onClick = {
+                                    selectedTab = 1
+                                    navController.navigate("wallet") {
+                                        popUpTo("wallet") { inclusive = true }
+                                    }
+                                }
+                            )
+                            // Center space for FAB
+                            NavigationBarItem(
+                                icon = { Icon(Icons.Default.Menu, "Menu") },
+                                label = { Text("Menu") },
+                                selected = false,
+                                onClick = {
+                                    scope.launch { drawerState.open() }
+                                }
+                            )
+                            NavigationBarItem(
+                                icon = { Icon(Icons.Default.LocalGasStation, "Gas Slips") },
+                                label = { Text("Gas Slips") },
+                                selected = selectedTab == 2,
+                                onClick = {
+                                    selectedTab = 2
+                                    navController.navigate("gasslips") {
+                                        popUpTo("gasslips") { inclusive = true }
+                                    }
+                                }
+                            )
+                            NavigationBarItem(
+                                icon = { Icon(Icons.Default.BarChart, "Reports") },
+                                label = { Text("Reports") },
+                                selected = selectedTab == 3,
+                                onClick = {
+                                    selectedTab = 3
+                                    navController.navigate("reports") {
+                                        popUpTo("reports") { inclusive = true }
+                                    }
+                                }
                             )
                         }
-                        
-                        Text(
-                            "Fleet Management",
-                            style = androidx.compose.material3.MaterialTheme.typography.titleLarge,
-                            color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
-                        )
                     }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Menu Items
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
-                ) {
-                    NavigationDrawerItem(
-                        icon = { 
-                            Icon(
-                                Icons.Default.Person, 
-                                "Drivers"
-                            ) 
-                        },
-                        label = { Text("Drivers") },
-                        selected = false,
-                        onClick = {
-                            navController.navigate("drivers") {
-                                popUpTo("drivers") { inclusive = true }
-                            }
-                            scope.launch { drawerState.close() }
-                        },
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                    
-                    NavigationDrawerItem(
-                        icon = { 
-                            Icon(
-                                Icons.Default.DirectionsCar, 
-                                "Vehicles"
-                            ) 
-                        },
-                        label = { Text("Vehicles") },
-                        selected = false,
-                        onClick = {
-                            navController.navigate("vehicles") {
-                                popUpTo("vehicles") { inclusive = true }
-                            }
-                            scope.launch { drawerState.close() }
-                        },
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
-                
-                // Divider
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp)
-                )
-                
-                // Settings Section
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
-                ) {
-                    NavigationDrawerItem(
-                        icon = { 
-                            Icon(
-                                Icons.Default.Settings, 
-                                "Settings"
-                            ) 
-                        },
-                        label = { Text("Settings") },
-                        selected = false,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                        },
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            bottomBar = {
-                NavigationBar {
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.Home, "Home") },
-                        label = { Text("Home") },
-                        selected = selectedTab == 0,
-                        onClick = {
-                            selectedTab = 0
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                        }
-                    )
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.AccountBalance, "Wallet") },
-                        label = { Text("Wallet") },
-                        selected = selectedTab == 1,
-                        onClick = {
-                            selectedTab = 1
-                            navController.navigate("wallet") {
-                                popUpTo("wallet") { inclusive = true }
-                            }
-                        }
-                    )
-                    // Center space for FAB
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.Menu, "Menu") },
-                        label = { Text("Menu") },
-                        selected = false,
-                        onClick = {
-                            scope.launch { drawerState.open() }
-                        }
-                    )
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.LocalGasStation, "Gas Slips") },
-                        label = { Text("Gas Slips") },
-                        selected = selectedTab == 2,
-                        onClick = {
-                            selectedTab = 2
-                            navController.navigate("gasslips") {
-                                popUpTo("gasslips") { inclusive = true }
-                            }
-                        }
-                    )
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.BarChart, "Reports") },
-                        label = { Text("Reports") },
-                        selected = selectedTab == 3,
-                        onClick = {
-                            selectedTab = 3
-                            navController.navigate("reports") {
-                                popUpTo("reports") { inclusive = true }
-                            }
-                        }
-                    )
-                }
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        selectedTab = 4
-                        navController.navigate("transaction") {
-                            popUpTo("transaction") { inclusive = true }
-                        }
-                    }
-                ) {
-                    Icon(Icons.Default.Add, "Create Transaction")
-                }
-            }
-        ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = "home",
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable("home") {
-                    HomeScreen(
-                        onNavigateToTransactions = {
-                            selectedTab = 4
-                            navController.navigate("transaction")
-                        },
-                        onNavigateToWallet = {
-                            selectedTab = 1
-                            navController.navigate("wallet")
-                        },
-                        onNavigateToReports = {
-                            selectedTab = 3
-                            navController.navigate("reports")
-                        },
-                        onNavigateToHistory = {
-                            // Navigate to history or a separate history screen
-                            Timber.d("History navigation clicked")
-                        },
-                        transactionViewModel = transactionViewModel,
-                        walletViewModel = walletViewModel
-                    )
-                }
-                
-                composable("transaction") {
-                    val vehicleState by vehicleManagementViewModel.uiState.collectAsState()
-                    val availableVehicles = when (vehicleState) {
-                        is VehicleManagementUiState.Success -> (vehicleState as VehicleManagementUiState.Success).vehicles
-                        else -> emptyList()
-                    }
-                    
-                    TransactionScreenEnhanced(
-                        transactionViewModel = transactionViewModel,
-                        availableVehicles = availableVehicles,
-                        onTransactionCreated = {
-                            Timber.d("Transaction created successfully")
-                            // Navigate back to home after successful transaction
-                            selectedTab = 0
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                        },
-                        pdfPrintManager = pdfPrintManager,
-                        gasSlipViewModel = gasSlipManagementViewModel
-                    )
-                }
-                
-                composable("wallet") {
-                    WalletScreenEnhanced(
-                        walletViewModel = walletViewModel,
-                        walletId = "default-wallet-id",
-                        onRefillClick = { walletId ->
-                            Timber.d("Refill clicked for wallet: $walletId")
-                        }
-                    )
-                }
-                
-                composable("drivers") {
-                    DriverManagementScreen(driverManagementViewModel)
-                }
-                
-                composable("vehicles") {
-                    VehicleManagementScreen(vehicleManagementViewModel)
-                }
-                
-                composable("gasslips") {
-                    var selectedGasSlip by remember { mutableStateOf<dev.ml.fuelhub.data.model.GasSlip?>(null) }
-                    
-                    if (selectedGasSlip == null) {
-                        GasSlipListScreen(
-                            gasSlipViewModel = gasSlipManagementViewModel,
-                            onGasSlipSelected = { gasSlip ->
-                                selectedGasSlip = gasSlip
-                                Timber.d("Gas slip selected: ${gasSlip.referenceNumber}")
-                            },
-                            onPrintClick = { gasSlip ->
-                                pdfPrintManager.generateAndPrintGasSlip(gasSlip)
-                                Timber.d("Print initiated for gas slip: ${gasSlip.referenceNumber}")
-                            },
-                            onShareClick = { gasSlip ->
-                                val pdfPath = pdfPrintManager.generatePdfOnly(gasSlip)
-                                if (pdfPath != null) {
-                                    pdfPrintManager.sharePdfFile(pdfPath)
-                                    Timber.d("Share initiated for gas slip: ${gasSlip.referenceNumber}")
+                },
+                floatingActionButton = {
+                    // Hide FAB on login/register/gasstation screens
+                    if (currentRoute !in listOf("login", "register", "gasstation")) {
+                        FloatingActionButton(
+                            onClick = {
+                                selectedTab = 4
+                                navController.navigate("transaction") {
+                                    popUpTo("transaction") { inclusive = true }
                                 }
                             }
-                        )
-                    } else {
-                        dev.ml.fuelhub.presentation.screen.GasSlipDetailScreen(
-                            gasSlip = selectedGasSlip!!,
-                            onPrint = { gasSlip ->
-                                pdfPrintManager.generateAndPrintGasSlip(gasSlip)
-                                Timber.d("Print initiated from detail screen: ${gasSlip.referenceNumber}")
-                            },
-                            onMarkDispensed = { gasSlip ->
-                                gasSlipManagementViewModel.markAsDispensed(gasSlip.id)
-                                selectedGasSlip = null
-                                Timber.d("Gas slip marked as dispensed: ${gasSlip.referenceNumber}")
-                            },
-                            onBack = {
-                                selectedGasSlip = null
-                                gasSlipManagementViewModel.loadAllGasSlips()
-                            }
-                        )
+                        ) {
+                            Icon(Icons.Default.Add, "Create Transaction")
+                        }
                     }
                 }
-                
-                composable("reports") {
-                    val reportsViewModel: ReportsViewModel = hiltViewModel()
-                    ReportScreenEnhanced(
-                        viewModel = reportsViewModel,
-                        pdfPrintManager = pdfPrintManager
-                    )
+            ) { innerPadding ->
+                FuelHubNavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                    modifier = Modifier.padding(innerPadding),
+                    currentRoute = currentRoute,
+                    onRouteChange = { newRoute -> 
+                        currentRoute = newRoute 
+                    },
+                    selectedTab = selectedTab,
+                    onTabChange = { newTab -> 
+                        selectedTab = newTab 
+                    },
+                    transactionViewModel = transactionViewModel,
+                    walletViewModel = walletViewModel,
+                    driverManagementViewModel = driverManagementViewModel,
+                    vehicleManagementViewModel = vehicleManagementViewModel,
+                    gasSlipManagementViewModel = gasSlipManagementViewModel,
+                    pdfPrintManager = pdfPrintManager,
+                    authViewModel = authViewModel
+                )
+            }
+        }
+    } else {
+        // Gas station dedicated layout - use NavHost but without drawer/scaffold
+        FuelHubNavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.fillMaxSize(),
+            currentRoute = currentRoute,
+            onRouteChange = { newRoute -> 
+                currentRoute = newRoute 
+            },
+            selectedTab = selectedTab,
+            onTabChange = { newTab -> 
+                selectedTab = newTab 
+            },
+            transactionViewModel = transactionViewModel,
+            walletViewModel = walletViewModel,
+            driverManagementViewModel = driverManagementViewModel,
+            vehicleManagementViewModel = vehicleManagementViewModel,
+            gasSlipManagementViewModel = gasSlipManagementViewModel,
+            pdfPrintManager = pdfPrintManager,
+            authViewModel = authViewModel
+        )
+    }
+}
+
+@Composable
+fun FuelHubNavHost(
+    navController: NavHostController,
+    startDestination: String,
+    modifier: Modifier = Modifier,
+    currentRoute: String,
+    onRouteChange: (String) -> Unit,
+    selectedTab: Int,
+    onTabChange: (Int) -> Unit,
+    transactionViewModel: TransactionViewModel,
+    walletViewModel: WalletViewModel,
+    driverManagementViewModel: DriverManagementViewModel,
+    vehicleManagementViewModel: VehicleManagementViewModel,
+    gasSlipManagementViewModel: GasSlipManagementViewModel,
+    pdfPrintManager: PdfPrintManager,
+    authViewModel: AuthViewModel
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
+    ) {
+        composable("login") {
+            LaunchedEffect(Unit) {
+                onRouteChange("login")
+            }
+            LoginScreen(
+                viewModel = authViewModel,
+                onLoginSuccess = {
+                    // Route based on user role
+                    val userRole = authViewModel.uiState.value.userRole
+                    val destination = when (userRole) {
+                        "GAS_STATION" -> "gasstation"
+                        else -> "home"
+                    }
+                    navController.navigate(destination) {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate("register")
+                }
+            )
+        }
+        
+        composable("register") {
+            LaunchedEffect(Unit) {
+                onRouteChange("register")
+            }
+            RegisterScreen(
+                viewModel = authViewModel,
+                onRegisterSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onBackClick = {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        composable("home") {
+            LaunchedEffect(Unit) {
+                onRouteChange("home")
+            }
+            HomeScreen(
+                onNavigateToTransactions = {
+                    onTabChange(4)
+                    navController.navigate("transaction")
+                },
+                onNavigateToWallet = {
+                    onTabChange(1)
+                    navController.navigate("wallet")
+                },
+                onNavigateToReports = {
+                    onTabChange(3)
+                    navController.navigate("reports")
+                },
+                onNavigateToHistory = {
+                    Timber.d("History navigation clicked")
+                },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
+                transactionViewModel = transactionViewModel,
+                walletViewModel = walletViewModel,
+                authViewModel = authViewModel
+            )
+        }
+        
+        composable("transaction") {
+            val vehicleState by vehicleManagementViewModel.uiState.collectAsState()
+            val availableVehicles = when (vehicleState) {
+                is VehicleManagementUiState.Success -> (vehicleState as VehicleManagementUiState.Success).vehicles
+                else -> emptyList()
+            }
+            
+            TransactionScreenEnhanced(
+                transactionViewModel = transactionViewModel,
+                availableVehicles = availableVehicles,
+                onTransactionCreated = {
+                    Timber.d("Transaction created successfully")
+                    onTabChange(0)
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
+                pdfPrintManager = pdfPrintManager,
+                gasSlipViewModel = gasSlipManagementViewModel
+            )
+        }
+        
+        composable("wallet") {
+            WalletScreenEnhanced(
+                walletViewModel = walletViewModel,
+                walletId = "default-wallet-id",
+                onRefillClick = { walletId ->
+                    Timber.d("Refill clicked for wallet: $walletId")
+                }
+            )
+        }
+        
+        composable("drivers") {
+            DriverManagementScreen(driverManagementViewModel)
+        }
+        
+        composable("vehicles") {
+            VehicleManagementScreen(vehicleManagementViewModel)
+        }
+        
+        composable("gasslips") {
+            var selectedGasSlip by remember { mutableStateOf<dev.ml.fuelhub.data.model.GasSlip?>(null) }
+            
+            if (selectedGasSlip == null) {
+                GasSlipListScreen(
+                    gasSlipViewModel = gasSlipManagementViewModel,
+                    onGasSlipSelected = { gasSlip ->
+                        selectedGasSlip = gasSlip
+                        Timber.d("Gas slip selected: ${gasSlip.referenceNumber}")
+                    },
+                    onPrintClick = { gasSlip ->
+                        pdfPrintManager.generateAndPrintGasSlip(gasSlip)
+                        Timber.d("Print initiated for gas slip: ${gasSlip.referenceNumber}")
+                    },
+                    onShareClick = { gasSlip ->
+                        val pdfPath = pdfPrintManager.generatePdfOnly(gasSlip)
+                        if (pdfPath != null) {
+                            pdfPrintManager.sharePdfFile(pdfPath)
+                            Timber.d("Share initiated for gas slip: ${gasSlip.referenceNumber}")
+                        }
+                    },
+                    onCancelClick = { gasSlipId ->
+                        gasSlipManagementViewModel.cancelGasSlip(gasSlipId)
+                        gasSlipManagementViewModel.loadAllGasSlips()
+                        Timber.d("Gas slip cancelled: $gasSlipId")
+                    }
+                )
+            } else {
+                dev.ml.fuelhub.presentation.screen.GasSlipDetailScreen(
+                    gasSlip = selectedGasSlip!!,
+                    onPrint = { gasSlip ->
+                        pdfPrintManager.generateAndPrintGasSlip(gasSlip)
+                        Timber.d("Print initiated from detail screen: ${gasSlip.referenceNumber}")
+                    },
+                    onMarkDispensed = { gasSlip ->
+                        gasSlipManagementViewModel.markAsDispensed(gasSlip.id)
+                        selectedGasSlip = null
+                        Timber.d("Gas slip marked as dispensed: ${gasSlip.referenceNumber}")
+                    },
+                    onCancel = { gasSlipId ->
+                        gasSlipManagementViewModel.cancelGasSlip(gasSlipId)
+                        selectedGasSlip = null
+                        gasSlipManagementViewModel.loadAllGasSlips()
+                        Timber.d("Gas slip cancelled: $gasSlipId")
+                    },
+                    onBack = {
+                        selectedGasSlip = null
+                        gasSlipManagementViewModel.loadAllGasSlips()
+                    }
+                )
+            }
+        }
+        
+        composable("reports") {
+            val reportsViewModel: ReportsViewModel = hiltViewModel()
+            ReportScreenEnhanced(
+                viewModel = reportsViewModel,
+                pdfPrintManager = pdfPrintManager
+            )
+        }
+        
+        composable("gasstation") {
+            var shouldLogout by remember { mutableStateOf(false) }
+            
+            LaunchedEffect(Unit) {
+                onRouteChange("gasstation")
+            }
+            
+            LaunchedEffect(shouldLogout) {
+                if (shouldLogout) {
+                    authViewModel.logout()
                 }
             }
+            
+            GasStationScreen(
+                transactionViewModel = transactionViewModel,
+                onNavigateBack = {
+                    // Logout for gas station users
+                    shouldLogout = true
+                    navController.navigate("login") {
+                        popUpTo("gasstation") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

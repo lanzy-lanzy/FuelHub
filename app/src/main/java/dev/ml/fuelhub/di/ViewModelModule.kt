@@ -20,14 +20,20 @@ object ViewModelModule {
     @Singleton
     fun provideTransactionViewModel(
         createFuelTransactionUseCase: CreateFuelTransactionUseCase,
+        completeTransactionUseCase: CompleteTransactionUseCase,
         userRepository: UserRepository,
         vehicleRepository: VehicleRepository,
-        transactionRepository: FuelTransactionRepository
+        transactionRepository: FuelTransactionRepository,
+        walletRepository: FuelWalletRepository,
+        gasSlipRepository: GasSlipRepository
     ): TransactionViewModel = TransactionViewModel(
         createFuelTransactionUseCase = createFuelTransactionUseCase,
+        completeTransactionUseCase = completeTransactionUseCase,
         userRepository = userRepository,
         vehicleRepository = vehicleRepository,
-        transactionRepository = transactionRepository
+        transactionRepository = transactionRepository,
+        walletRepository = walletRepository,
+        gasSlipRepository = gasSlipRepository
     )
     
     @Provides

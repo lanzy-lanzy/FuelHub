@@ -39,4 +39,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAuditLogRepository(): AuditLogRepository = FirebaseAuditLogRepositoryImpl()
+    
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        firebaseAuthRepository: FirebaseAuthRepository
+    ): AuthRepository = firebaseAuthRepository
 }

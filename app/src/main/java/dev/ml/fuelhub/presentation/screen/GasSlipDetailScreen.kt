@@ -9,6 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,8 +32,11 @@ fun GasSlipDetailScreen(
     gasSlip: GasSlip,
     onPrint: (GasSlip) -> Unit,
     onMarkDispensed: (GasSlip) -> Unit = {},
+    onCancel: (String) -> Unit = {},
     onBack: () -> Unit
 ) {
+    var showCancelDialog by remember { mutableStateOf(false) }
+    
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -300,42 +307,73 @@ fun GasSlipDetailScreen(
             ) {
                 // Mark as Dispensed Button (if pending)
                 if (gasSlip.status == GasSlipStatus.PENDING) {
-                    Button(
-                        onClick = { onMarkDispensed(gasSlip) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = SuccessGreen)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.CheckCircle,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.White
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Mark as Dispensed", fontWeight = FontWeight.Bold)
+                        Button(
+                            onClick = { onMarkDispensed(gasSlip) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = SuccessGreen)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Mark Dispensed", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        }
+                        
+                        Button(
+                            onClick = { showCancelDialog = true },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6B6B))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Cancel", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        }
                     }
                 }
 
                 // Print Button
                 Button(
                     onClick = { onPrint(gasSlip) },
+                    enabled = gasSlip.status != GasSlipStatus.CANCELLED,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = VibrantCyan)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = VibrantCyan,
+                        disabledContainerColor = VibrantCyan.copy(alpha = 0.5f)
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Print,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
-                        tint = DeepBlue
+                        tint = if (gasSlip.status == GasSlipStatus.CANCELLED) DeepBlue.copy(alpha = 0.5f) else DeepBlue
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Print Slip", fontWeight = FontWeight.Bold, color = DeepBlue)
+                    Text(
+                        "Print Slip",
+                        fontWeight = FontWeight.Bold,
+                        color = if (gasSlip.status == GasSlipStatus.CANCELLED) DeepBlue.copy(alpha = 0.5f) else DeepBlue
+                    )
                 }
 
                 // Close Button
@@ -359,6 +397,74 @@ fun GasSlipDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+    
+    // Cancel Confirmation Dialog
+    if (showCancelDialog) {
+        AlertDialog(
+            onDismissRequest = { showCancelDialog = false },
+            title = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.WarningAmber,
+                        contentDescription = null,
+                        tint = Color(0xFFFF6B6B),
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Text(
+                        "Cancel Slip?",
+                        color = Color(0xFFFF6B6B),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        "Are you sure you want to cancel this fuel slip?",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextPrimary
+                    )
+                    Text(
+                        "Reference: ${gasSlip.referenceNumber}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "This action cannot be undone. The slip will be marked as cancelled and cannot be dispensed.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onCancel(gasSlip.id)
+                        showCancelDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6B6B))
+                ) {
+                    Text("Cancel Slip", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCancelDialog = false }) {
+                    Text("Keep Slip", color = TextSecondary)
+                }
+            },
+            containerColor = SurfaceDark,
+            textContentColor = TextPrimary
+        )
     }
 }
 

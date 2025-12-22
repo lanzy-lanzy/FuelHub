@@ -7,7 +7,8 @@ package dev.ml.fuelhub.data.model
 enum class TransactionStatus {
     PENDING,      // Transaction created but not yet confirmed
     APPROVED,     // Transaction approved by authorized user
-    COMPLETED,    // Fuel dispensed, wallet deducted
+    DISPENSED,    // Fuel dispensed at gas station (verified via QR code scan)
+    COMPLETED,    // Transaction completed and wallet deducted
     CANCELLED,    // Transaction cancelled before completion
     FAILED        // Transaction failed due to validation errors
 }

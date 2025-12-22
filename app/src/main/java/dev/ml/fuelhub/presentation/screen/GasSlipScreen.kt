@@ -8,17 +8,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.data.model.GasSlip
+import dev.ml.fuelhub.data.model.GasSlipStatus
 
 /**
  * Composable screen for displaying gas slip details.
@@ -36,8 +47,12 @@ fun GasSlipScreen(
     gasSlip: GasSlip,
     onPrintClick: (gasSlip: GasSlip) -> Unit = {},
     onBackClick: () -> Unit = {},
+    onCancelClick: (gasSlipId: String) -> Unit = {},
+    onMarkDispensedClick: (gasSlipId: String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var showCancelDialog by remember { mutableStateOf(false) }
+    
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -159,11 +174,11 @@ fun GasSlipScreen(
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Actions
+            // Actions - Primary Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
@@ -177,7 +192,7 @@ fun GasSlipScreen(
                 
                 Button(
                     onClick = { onPrintClick(gasSlip) },
-                    enabled = !gasSlip.isUsed,
+                    enabled = gasSlip.status != GasSlipStatus.CANCELLED,
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
@@ -186,8 +201,106 @@ fun GasSlipScreen(
                 }
             }
             
+            // Actions - Secondary Row
+            if (gasSlip.status != GasSlipStatus.CANCELLED) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { onMarkDispensedClick(gasSlip.id) },
+                        enabled = gasSlip.status == GasSlipStatus.PENDING,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4CAF50)
+                        )
+                    ) {
+                        Text("Mark Dispensed")
+                    }
+                    
+                    Button(
+                        onClick = { showCancelDialog = true },
+                        enabled = gasSlip.status == GasSlipStatus.PENDING,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFf44336)
+                        )
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            }
+            
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+    
+    // Cancel Confirmation Dialog
+    if (showCancelDialog) {
+        AlertDialog(
+            onDismissRequest = { showCancelDialog = false },
+            title = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.WarningAmber,
+                        contentDescription = null,
+                        tint = Color(0xFFf44336),
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Text(
+                        "Cancel Slip?",
+                        color = Color(0xFFf44336),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            text = {
+                Column(
+                    modifier = Modifier.padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        "Are you sure you want to cancel this fuel slip?",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        "Reference: ${gasSlip.referenceNumber}",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        "This action cannot be undone. The slip will be marked as cancelled and cannot be dispensed.",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onCancelClick(gasSlip.id)
+                        showCancelDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFf44336))
+                ) {
+                    Text("Cancel Slip", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCancelDialog = false }) {
+                    Text("Keep Slip")
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     }
 }
 

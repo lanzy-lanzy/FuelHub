@@ -50,6 +50,12 @@ interface GasSlipRepository {
     suspend fun getUnusedGasSlips(): List<GasSlip>
     
     /**
+     * Get all gas slips (used, unused, dispensed, etc.).
+     * Used for list views that need to show complete transaction history.
+     */
+    suspend fun getAllGasSlips(): List<GasSlip>
+    
+    /**
      * Get gas slips by date.
      */
     suspend fun getGasSlipsByDate(date: LocalDate): List<GasSlip>
@@ -58,4 +64,14 @@ interface GasSlipRepository {
      * Get gas slips by office.
      */
     suspend fun getGasSlipsByOffice(officeId: String): List<GasSlip>
-}
+    
+    /**
+     * Cancel a gas slip.
+     */
+    suspend fun cancelGasSlip(gasSlipId: String): GasSlip?
+    
+    /**
+     * Bulk mark pending gas slips as dispensed.
+     */
+    suspend fun bulkMarkPendingAsDispensed(gasSlipIds: List<String>): Boolean
+    }

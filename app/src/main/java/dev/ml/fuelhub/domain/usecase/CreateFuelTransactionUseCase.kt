@@ -113,7 +113,9 @@ class CreateFuelTransactionUseCase(
             createdAt = now
         )
 
+        Timber.d("💾 SAVING TRANSACTION TO FIRESTORE: ${transaction.referenceNumber}")
         val savedTransaction = transactionRepository.createTransaction(transaction)
+        Timber.d("✓ TRANSACTION SAVED: ${savedTransaction.referenceNumber}")
 
         // 6. Deduct from fuel wallet (atomic operation)
         val previousBalance = wallet.balanceLiters
