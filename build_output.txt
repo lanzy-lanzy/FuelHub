@@ -32,13 +32,58 @@
 > Task :app:validateSigningDebug UP-TO-DATE
 > Task :app:writeDebugAppMetadata UP-TO-DATE
 > Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:processReleaseNavigationResources
+> Task :app:compileReleaseNavigationResources UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:processReleaseGoogleServices UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
 > Task :app:processDebugManifestForPackage
+> Task :app:parseReleaseLocalResources
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseResources
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
 > Task :app:processDebugResources
+> Task :app:processReleaseResources
+> Task :app:optimizeReleaseResources
 
 > Task :app:kaptGenerateStubsDebugKotlin
 w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
 
 > Task :app:kaptDebugKotlin UP-TO-DATE
+
+> Task :app:kaptGenerateStubsReleaseKotlin
+w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
+
 > Task :app:compileDebugKotlin
 > Task :app:compileDebugJavaWithJavac UP-TO-DATE
 > Task :app:hiltAggregateDepsDebug UP-TO-DATE
@@ -46,11 +91,75 @@ w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
 > Task :app:processDebugJavaRes UP-TO-DATE
 > Task :app:mergeDebugJavaResource UP-TO-DATE
 > Task :app:transformDebugClassesWithAsm
+> Task :app:kaptReleaseKotlin
 > Task :app:dexBuilderDebug
 > Task :app:mergeProjectDexDebug
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
 
-BUILD SUCCESSFUL in 10s
-43 actionable tasks: 11 executed, 32 up-to-date
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/FuelHubApplication.kt:35:17 'var isPersistenceEnabled: Boolean' is deprecated. Deprecated in Java.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/FuelHubApplication.kt:37:17 'fun setCacheSizeBytes(p0: Long): FirebaseFirestoreSettings.Builder' is deprecated. Deprecated in Java.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/SplashActivity.kt:63:13 'fun overridePendingTransition(p0: Int, p1: Int): Unit' is deprecated. Deprecated in Java.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/SplashActivity.kt:67:18 This declaration overrides a deprecated member but is not marked as deprecated itself. Please add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/SplashActivity.kt:69:15 'fun onBackPressed(): Unit' is deprecated. This method has been deprecated in favor of using the
+      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.
+      The OnBackPressedDispatcher controls how back button events are dispatched
+      to one or more {@link OnBackPressedCallback} objects.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/AdminDashboardScreen.kt:217:45 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/DashboardScreen.kt:342:57 'val Icons.Filled.KeyboardArrowRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowRight.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/DriverManagementScreen.kt:281:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:60:53 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:108:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:159:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:186:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:216:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:246:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipDetailScreen.kt:281:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipListScreen.kt:573:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipListScreen.kt:786:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasSlipScreen.kt:322:9 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:301:49 'val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:317:49 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:569:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:725:49 'val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:749:49 'val Icons.Filled.ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/GasStationScreen.kt:837:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/HomeScreen.kt:223:57 'val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/HomeScreen.kt:1026:39 'val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/ReportScreen.kt:774:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/ReportScreenEnhanced.kt:1145:39 'val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/ReportScreenEnhanced.kt:1178:21 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreen.kt:243:45 'val outlinedButtonBorder: BorderStroke' is deprecated. Please use the version that takes an `enabled` param to get the `BorderStroke` with the correct opacity.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/TransactionScreenEnhanced.kt:759:22 'fun Modifier.menuAnchor(): Modifier' is deprecated. Use overload that takes MenuAnchorType and enabled parameters.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/VehicleManagementScreen.kt:292:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/VehicleManagementScreen.kt:740:18 'fun Modifier.menuAnchor(): Modifier' is deprecated. Use overload that takes MenuAnchorType and enabled parameters.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/presentation/screen/WalletScreen.kt:498:37 'val outlinedButtonBorder: BorderStroke' is deprecated. Please use the version that takes an `enabled` param to get the `BorderStroke` with the correct opacity.
+w: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/app/src/main/java/dev/ml/fuelhub/ui/theme/Theme.kt:91:20 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:hiltAggregateDepsRelease
+
+> Task :app:hiltJavaCompileRelease
+
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:processReleaseJavaRes
+> Task :app:transformReleaseClassesWithAsm
+> Task :app:mergeReleaseJavaResource
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+> Task :app:assemble
+
+[Incubating] Problems report is available at: file:///C:/Users/gerla/AndroidStudioProjects/FuelHub/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 53s
+99 actionable tasks: 39 executed, 60 up-to-date

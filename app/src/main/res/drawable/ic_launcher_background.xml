@@ -4,13 +4,21 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    
+    <!-- Deep Blue Background -->
     <path
-        android:fillColor="@color/splash_primary"
+        android:fillColor="#0A1929"
         android:pathData="M0,0L108,0L108,108L0,108Z"/>
     
-    <!-- Gradient-like background with gas station theme -->
+    <!-- Gradient overlay - Dark Navy to Deep Blue -->
     <path
-        android:fillColor="@color/splash_secondary"
-        android:alpha="0.3"
+        android:fillColor="#1A2332"
+        android:alpha="0.6"
         android:pathData="M0,0Q27,0 54,0Q81,0 108,0L108,54Q81,54 54,54Q27,54 0,54Z"/>
+    
+    <!-- Accent glow effect using circular path (VibrantCyan at low opacity) -->
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.08"
+        android:pathData="M54,2C80.5,2 102,23.5 102,50C102,76.5 80.5,98 54,98C27.5,98 6,76.5 6,50C6,23.5 27.5,2 54,2Z"/>
 </vector>

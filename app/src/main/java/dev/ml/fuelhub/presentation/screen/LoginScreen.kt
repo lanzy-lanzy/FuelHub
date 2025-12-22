@@ -3,6 +3,12 @@ package dev.ml.fuelhub.presentation.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,12 +48,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
+import dev.ml.fuelhub.ui.theme.DeepBlue
+import dev.ml.fuelhub.ui.theme.DarkNavy
+import dev.ml.fuelhub.ui.theme.VibrantCyan
+import dev.ml.fuelhub.ui.theme.ElectricBlue
+import dev.ml.fuelhub.ui.theme.NeonTeal
+import dev.ml.fuelhub.ui.theme.AccentOrange
 
 @Composable
 fun LoginScreen(
@@ -60,6 +73,18 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
+    
+    // Animation state
+    val infiniteTransition = rememberInfiniteTransition(label = "LoginAnimation")
+    val iconScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "IconScale"
+    )
 
     LaunchedEffect(uiState.isLoggedIn) {
         if (uiState.isLoggedIn) {
@@ -79,8 +104,8 @@ fun LoginScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF0066CC),  // Bright blue
-                        Color(0xFF00A3E0)   // Light cyan blue
+                        DeepBlue,    // #0A1929
+                        DarkNavy     // #1A2332
                     )
                 )
             )
@@ -95,19 +120,24 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Logo/Icon
+            // Animated Logo/Icon Container
             Box(
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(ElectricBlue, VibrantCyan)
+                        )
+                    )
+                    .scale(iconScale),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.LocalGasStation,
                     contentDescription = "FuelHub Logo",
                     modifier = Modifier.size(60.dp),
-                    tint = Color(0xFF0066CC)
+                    tint = Color.White
                 )
             }
 
@@ -117,13 +147,14 @@ fun LoginScreen(
             Text(
                 text = "FuelHub",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                color = VibrantCyan,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
             Text(
-                text = "Fleet Fuel Management System",
+                text = "Smart Fuel Management",
                 style = MaterialTheme.typography.labelLarge,
-                color = Color.White.copy(alpha = 0.9f),
+                color = NeonTeal.copy(alpha = 0.9f),
                 modifier = Modifier.padding(top = 8.dp)
             )
 
@@ -134,7 +165,14 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Color.White)
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF1E2936).copy(alpha = 0.95f),
+                                Color(0xFF2A3847).copy(alpha = 0.95f)
+                            )
+                        )
+                    )
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -142,13 +180,13 @@ fun LoginScreen(
                 Text(
                     text = "Welcome Back",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color(0xFF1a1a1a)
+                    color = VibrantCyan
                 )
 
                 Text(
                     text = "Sign in to your account to continue",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF666666)
+                    color = NeonTeal.copy(alpha = 0.8f)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -185,8 +223,10 @@ fun LoginScreen(
                     singleLine = true,
                     enabled = !uiState.isLoading,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF0066CC),
-                        unfocusedBorderColor = Color(0xFFCCCCCC)
+                        focusedBorderColor = VibrantCyan,
+                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                        focusedLabelColor = VibrantCyan,
+                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
                     )
                 )
 
@@ -207,13 +247,15 @@ fun LoginScreen(
                             Icon(
                                 imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                 contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                                tint = Color(0xFF666666)
+                                tint = NeonTeal.copy(alpha = 0.7f)
                             )
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF0066CC),
-                        unfocusedBorderColor = Color(0xFFCCCCCC)
+                        focusedBorderColor = VibrantCyan,
+                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                        focusedLabelColor = VibrantCyan,
+                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
                     )
                 )
 
@@ -223,7 +265,7 @@ fun LoginScreen(
                 Text(
                     text = "Forgot password?",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF0066CC),
+                    color = VibrantCyan,
                     modifier = Modifier
                         .align(Alignment.End)
                         .clickable { }
@@ -241,21 +283,21 @@ fun LoginScreen(
                         .height(48.dp),
                     enabled = !uiState.isLoading,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF0066CC)
+                        containerColor = VibrantCyan
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     if (uiState.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
-                            color = Color.White,
+                            color = DeepBlue,
                             strokeWidth = 2.dp
                         )
                     } else {
                         Text(
                             "Sign In",
                             style = MaterialTheme.typography.labelLarge,
-                            color = Color.White
+                            color = DeepBlue
                         )
                     }
                 }
@@ -273,12 +315,12 @@ fun LoginScreen(
                     Text(
                         text = "Don't have an account? ",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF666666)
+                        color = NeonTeal.copy(alpha = 0.8f)
                     )
                     Text(
                         text = "Sign Up",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF0066CC),
+                        color = AccentOrange,
                         modifier = Modifier.clickable(enabled = !uiState.isLoading) {
                             onRegisterClick()
                         }

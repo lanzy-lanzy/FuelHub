@@ -4,29 +4,146 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:fillColor="@color/splash_text"
-        android:pathData="M54,10C30,10 10,30 10,54C10,78 30,98 54,98C78,98 98,78 98,54C98,30 78,10 54,10Z"/>
     
-    <!-- Gas pump icon -->
-    <path
-        android:fillColor="@color/gas_pump_color"
-        android:pathData="M50,25C48,25 47,26 47,28L47,45C47,46.1 47.9,47 49,47L59,47C60.1,47 61,46.1 61,45L61,28C61,26 60,25 58,25Z"/>
+    <!-- Professional Gas Station Pump Icon -->
     
-    <!-- Pump nozzle -->
+    <!-- Main pump body - VibrantCyan gradient base -->
     <path
-        android:fillColor="@color/gas_pump_color"
-        android:pathData="M54,47L54,65C54,66.1 54.9,67 56,67L56,69C56,70.1 55.1,71 54,71L54,75C54,76.1 53.1,77 52,77L56,77C57.1,77 58,76.1 58,75L58,69C59.1,69 60,70.1 60,71L60,65C60,63.9 59.1,63 58,63L54,63Z"/>
+        android:fillColor="#00D9FF"
+        android:pathData="M38,15C36.9,15 36,15.9 36,17L36,65C36,66.1 36.9,67 38,67L70,67C71.1,67 72,66.1 72,65L72,17C72,15.9 71.1,15 70,15L38,15Z"
+        android:strokeWidth="0.5"
+        android:strokeColor="#0099FF"/>
     
-    <!-- Fuel drop indicator -->
+    <!-- Pump display panel - Dark tech screen -->
     <path
-        android:fillColor="@color/gas_station_secondary"
-        android:pathData="M48,50C48,48.9 47.1,48 46,48C44.9,48 44,48.9 44,50C44,52 46,54 48,54C50,54 52,52 52,50C52,48.9 51.1,48 50,48C48.9,48 48,48.9 48,50Z"/>
+        android:fillColor="#0A1929"
+        android:pathData="M40,19L68,19L68,35L40,35Z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#1DD1A1"/>
     
-    <!-- Gas station entrance line -->
+    <!-- Display screen accent lines (ElectricBlue) -->
     <path
-        android:fillColor="@color/gas_station_secondary"
-        android:pathData="M42,60L66,60C67.1,60 68,60.9 68,62L68,80C68,81.1 67.1,82 66,82L42,82C40.9,82 40,81.1 40,80L40,62C40,60.9 40.9,60 42,60Z"
-        android:strokeWidth="1.5"
-        android:strokeColor="@color/gas_station_secondary"/>
+        android:fillColor="#0099FF"
+        android:pathData="M42,21L66,21L66,23L42,23Z"/>
+    
+    <path
+        android:fillColor="#0099FF"
+        android:alpha="0.6"
+        android:pathData="M42,25L55,25L55,27L42,27Z"/>
+    
+    <path
+        android:fillColor="#0099FF"
+        android:alpha="0.6"
+        android:pathData="M42,29L60,29L60,31L42,31Z"/>
+    
+    <!-- Pump buttons area - Three buttons -->
+    <!-- Button 1 (Diesel) -->
+    <path
+        android:fillColor="#1DD1A1"
+        android:pathData="M42,38L50,38L50,46L42,46Z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#0099FF"/>
+    
+    <path
+        android:fillColor="#0099FF"
+        android:alpha="0.5"
+        android:pathData="M44,40L48,40L48,44L44,44Z"/>
+    
+    <!-- Button 2 (Premium) -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M54,38L62,38L62,46L54,46Z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#FF6B35"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:alpha="0.6"
+        android:pathData="M56,40L60,40L60,44L56,44Z"/>
+    
+    <!-- Nozzle attachment point - Connected to pump -->
+    <path
+        android:fillColor="#0099FF"
+        android:pathData="M52,47L56,47L56,52L52,52Z"/>
+    
+    <!-- Main pump nozzle - Curved design -->
+    <path
+        android:fillColor="#1DD1A1"
+        android:pathData="M50,52C48,54 46,56 44,60C42,64 42,68 44,72C46,74 50,72 52,70L54,65C55,62 56,57 56,52Z"
+        android:strokeWidth="1"
+        android:strokeColor="#00D9FF"/>
+    
+    <!-- Nozzle tip highlight -->
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.7"
+        android:pathData="M50,60C49,62 48,65 47,68C46,70 47,72 49,72C51,72 52,70 53,68C52,65 51,62 50,60Z"/>
+    
+    <!-- Fuel hose connection -->
+    <path
+        android:fillColor="#FF6B35"
+        android:alpha="0.7"
+        android:pathData="M44,72L40,80C40,83 42,85 46,85L58,85C62,85 64,83 64,80L60,72C58,73 56,74 54,74C52,74 48,73 44,72Z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#00D9FF"/>
+    
+    <!-- Fuel drop indicator on nozzle -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M52,65C52,65 51,68 50,70C50,71 51,72 52,72C53,72 54,71 54,70C53,68 52,65 52,65Z"
+        android:alpha="0.9"/>
+    
+    <!-- Pump stand support - Base -->
+    <path
+        android:fillColor="#1A2332"
+        android:pathData="M35,65L35,75C35,78 37,80 40,80L68,80C71,80 73,78 73,75L73,65Z"
+        android:strokeWidth="1"
+        android:strokeColor="#00D9FF"/>
+    
+    <!-- Base highlight/accent -->
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.4"
+        android:pathData="M35,65L73,65L73,68L35,68Z"/>
+    
+    <!-- Corner shine effect (top left) -->
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.5"
+        android:pathData="M38,17L48,17L38,27Z"/>
+    
+    <!-- Energy indicator dots (fuel level) -->
+    <!-- Indicator 1 -->
+    <path
+        android:fillColor="#FF6B35"
+        android:alpha="0.6"
+        android:pathData="M30,35C31.1,35 32,35.9 32,37C32,38.1 31.1,39 30,39C28.9,39 28,38.1 28,37C28,35.9 28.9,35 30,35Z"/>
+    
+    <!-- Indicator 2 -->
+    <path
+        android:fillColor="#FF6B35"
+        android:alpha="0.8"
+        android:pathData="M30,45C31.1,45 32,45.9 32,47C32,48.1 31.1,49 30,49C28.9,49 28,48.1 28,47C28,45.9 28.9,45 30,45Z"/>
+    
+    <!-- Indicator 3 -->
+    <path
+        android:fillColor="#FF6B35"
+        android:alpha="1.0"
+        android:pathData="M30,55C31.1,55 32,55.9 32,57C32,58.1 31.1,59 30,59C28.9,59 28,58.1 28,57C28,55.9 28.9,55 30,55Z"/>
+    
+    <!-- "F" letter indicator for fuel -->
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.7"
+        android:pathData="M78,35L78,59L80,59L80,35Z"/>
+    
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.7"
+        android:pathData="M78,35L86,35L86,37L78,37Z"/>
+    
+    <path
+        android:fillColor="#00D9FF"
+        android:alpha="0.5"
+        android:pathData="M78,45L84,45L84,47L78,47Z"/>
 </vector>
