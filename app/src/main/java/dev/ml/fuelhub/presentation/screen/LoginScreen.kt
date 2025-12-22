@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -114,6 +115,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .systemBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -212,52 +214,58 @@ fun LoginScreen(
                 }
 
                 // Email Field
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 OutlinedTextField(
+                     value = email,
+                     onValueChange = {
+                         email = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Email") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
                 // Password Field
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }, enabled = !uiState.isLoading) {
-                            Icon(
-                                imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                                tint = NeonTeal.copy(alpha = 0.7f)
-                            )
-                        }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 OutlinedTextField(
+                     value = password,
+                     onValueChange = {
+                         password = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Password") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                     trailingIcon = {
+                         IconButton(onClick = { passwordVisible = !passwordVisible }, enabled = !uiState.isLoading) {
+                             Icon(
+                                 imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                 contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                 tint = NeonTeal.copy(alpha = 0.7f)
+                             )
+                         }
+                     },
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 

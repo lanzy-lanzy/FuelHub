@@ -8,9 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.TextField
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -444,11 +447,14 @@ fun WalletActionButtons(
     onRefillClick: (String) -> Unit,
     onRefresh: () -> Unit
 ) {
+    var showRefillDialog by remember { mutableStateOf(false) }
+    var refillAmount by remember { mutableStateOf("") }
+    
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Button(
-            onClick = { onRefillClick(walletId) },
+            onClick = { showRefillDialog = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -512,6 +518,24 @@ fun WalletActionButtons(
             Spacer(modifier = Modifier.width(8.dp))
             Text("Refresh Balance", fontWeight = FontWeight.SemiBold)
         }
+    }
+    
+    if (showRefillDialog) {
+        RefillDialog(
+            onConfirm = { amount ->
+                if (amount.isNotBlank() && amount.toDoubleOrNull() != null) {
+                    onRefillClick(walletId)
+                    refillAmount = ""
+                    showRefillDialog = false
+                }
+            },
+            onDismiss = {
+                refillAmount = ""
+                showRefillDialog = false
+            },
+            refillAmount = refillAmount,
+            onAmountChange = { refillAmount = it }
+        )
     }
 }
 
@@ -670,4 +694,76 @@ fun InitialState(onLoadWallet: () -> Unit) {
             }
         }
     }
+}
+
+@Composable
+fun RefillDialog(
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+    refillAmount: String,
+    onAmountChange: (String) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                "Refill Wallet",
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    "Enter the amount of fuel (in liters) you want to refill",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextSecondary
+                )
+                TextField(
+                    value = refillAmount,
+                    onValueChange = onAmountChange,
+                    label = {
+                        Text("Amount (L)", color = TextSecondary)
+                    },
+                    placeholder = {
+                        Text("e.g., 500", color = TextSecondary)
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = SurfaceDark,
+                        focusedContainerColor = SurfaceDark,
+                        unfocusedTextColor = TextPrimary,
+                        focusedTextColor = TextPrimary,
+                        cursorColor = VibrantCyan,
+                        focusedBorderColor = VibrantCyan,
+                        unfocusedBorderColor = TextSecondary
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(refillAmount) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SuccessGreen
+                )
+            ) {
+                Text("Refill", color = Color.White)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = VibrantCyan)
+            }
+        },
+        containerColor = SurfaceDark,
+        titleContentColor = TextPrimary,
+        textContentColor = TextSecondary
+    )
 }

@@ -4,11 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.ml.fuelhub.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import android.net.Uri
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 data class AuthUiState(
@@ -18,16 +25,21 @@ data class AuthUiState(
     val successMessage: String? = null,
     val userId: String? = null,
     val userRole: String? = null,
-    val userFullName: String? = null
+    val userFullName: String? = null,
+    val userEmail: String? = null
 )
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+    
+    private val _profilePictureUrl = MutableStateFlow<String?>(null)
+    val profilePictureUrl: StateFlow<String?> = _profilePictureUrl.asStateFlow()
 
     init {
         // Observe auth state changes
@@ -39,9 +51,13 @@ class AuthViewModel @Inject constructor(
                 )
                 Timber.d("Auth state changed: isLoggedIn=$isLoggedIn")
                 
-                // Fetch user role if logged in
+                // Fetch user role and profile picture if logged in
                 if (isLoggedIn) {
                     fetchUserRole()
+                    val userId = authRepository.getCurrentUserId()
+                    if (userId != null) {
+                        loadProfilePictureUrl(userId)
+                    }
                 }
             }
         }
@@ -54,11 +70,25 @@ class AuthViewModel @Inject constructor(
                 if (userId != null) {
                     val userRole = authRepository.getUserRole(userId)
                     val userFullName = authRepository.getUserFullName(userId)
+                    
+                    // Load profile picture from Firestore
+                    val savedPath = authRepository.getUserProfilePictureUrl(userId)
+                    var profilePictureUrl: String? = null
+                    
+                    if (savedPath != null && savedPath.isNotEmpty()) {
+                        val profileFile = File(savedPath)
+                        if (profileFile.exists()) {
+                            profilePictureUrl = "file://$savedPath"
+                        }
+                    }
+                    
                     _uiState.value = _uiState.value.copy(
                         userRole = userRole,
-                        userFullName = userFullName
+                        userFullName = userFullName,
+                        userEmail = authRepository.getCurrentUserEmail()
                     )
-                    Timber.d("Fetched user role: $userRole")
+                    _profilePictureUrl.value = profilePictureUrl
+                    Timber.d("Fetched user role: $userRole, Profile picture: ${profilePictureUrl?.take(50)}...")
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch user role")
@@ -289,6 +319,129 @@ class AuthViewModel @Inject constructor(
                 "Too many login attempts. Please try again later."
             }
             else -> errorMessage
+        }
+    }
+    
+    fun updateProfilePictureUrl(url: String) {
+        _profilePictureUrl.value = url
+        Timber.d("Profile picture URL updated: $url")
+    }
+    
+    fun refreshProfilePicture() {
+        viewModelScope.launch {
+            val userId = authRepository.getCurrentUserId() ?: return@launch
+            try {
+                val savedPath = authRepository.getUserProfilePictureUrl(userId)
+                if (savedPath != null && savedPath.isNotEmpty()) {
+                    val profileFile = File(savedPath)
+                    if (profileFile.exists()) {
+                        val fileUri = "file://$savedPath"
+                        _profilePictureUrl.value = fileUri
+                        Timber.d("Refreshed profile picture: $fileUri")
+                    } else {
+                        _profilePictureUrl.value = null
+                    }
+                } else {
+                    _profilePictureUrl.value = null
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to refresh profile picture")
+            }
+        }
+    }
+    
+    fun loadProfilePictureUrl(userId: String) {
+        viewModelScope.launch {
+            try {
+                // Try to load from Firestore first
+                val savedPath = authRepository.getUserProfilePictureUrl(userId)
+                
+                if (savedPath != null && savedPath.isNotEmpty()) {
+                    // Check if the file exists on device
+                    val profileFile = File(savedPath)
+                    if (profileFile.exists()) {
+                        val fileUri = "file://$savedPath"
+                        _profilePictureUrl.value = fileUri
+                        Timber.d("Loaded profile picture from local storage: $fileUri")
+                    } else {
+                        Timber.d("Profile picture path in Firestore but file not found: $savedPath")
+                        _profilePictureUrl.value = null
+                    }
+                } else {
+                    Timber.d("No profile picture URL stored for user: $userId")
+                    _profilePictureUrl.value = null
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load profile picture URL")
+                _profilePictureUrl.value = null
+            }
+        }
+    }
+    
+    fun uploadProfilePicture(imageUri: Uri) {
+        viewModelScope.launch {
+            val userId = authRepository.getCurrentUserId() ?: run {
+                Timber.e("User not authenticated")
+                return@launch
+            }
+            
+            try {
+                // Save image to local device storage
+                val profileImagePath = saveProfilePictureLocally(userId, imageUri)
+                
+                if (profileImagePath != null) {
+                    // Convert to proper file:// URI
+                    val fileUri = "file://$profileImagePath"
+                    
+                    // Save path to Firestore
+                    authRepository.saveProfilePictureUrl(userId, profileImagePath).onSuccess {
+                        _profilePictureUrl.value = fileUri
+                        Timber.d("Profile picture saved locally and to Firestore: $fileUri")
+                    }.onFailure { error ->
+                        Timber.e(error, "Failed to save profile picture URL to Firestore")
+                        // Still update UI even if Firestore save fails
+                        _profilePictureUrl.value = fileUri
+                    }
+                } else {
+                    Timber.e("Failed to save profile picture locally")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error uploading profile picture: ${e.message}")
+            }
+        }
+    }
+    
+    /**
+     * Save profile picture to app's private files directory
+     * Returns the file path if successful, null otherwise
+     */
+    private fun saveProfilePictureLocally(userId: String, imageUri: Uri): String? {
+        return try {
+            // Create profiles directory in app's private files directory
+            val profilesDir = File(context.filesDir, "profiles")
+            if (!profilesDir.exists()) {
+                profilesDir.mkdirs()
+            }
+            
+            // Create file with user ID as filename
+            val profileFile = File(profilesDir, "$userId.jpg")
+            
+            // Read bitmap from URI and save it
+            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imageUri))
+            
+            if (bitmap != null) {
+                FileOutputStream(profileFile).use { fos ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fos)
+                }
+                Timber.d("Profile picture saved to: ${profileFile.absolutePath}")
+                profileFile.absolutePath
+            } else {
+                Timber.e("Failed to decode image bitmap")
+                null
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Error saving profile picture locally: ${e.message}")
+            null
         }
     }
 }

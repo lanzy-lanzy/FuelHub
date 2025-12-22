@@ -140,6 +140,7 @@ fun GasStationScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(DeepBlue)
+            .systemBarsPadding()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {

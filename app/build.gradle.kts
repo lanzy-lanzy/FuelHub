@@ -85,6 +85,7 @@ dependencies {
     
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation(libs.androidx.benchmark.traceprocessor)
     kapt("com.google.dagger:hilt-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     
@@ -111,6 +112,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
     
     // Testing
     testImplementation(libs.junit)

@@ -22,6 +22,10 @@ class FirebaseAuthRepository @Inject constructor(
         return firebaseAuth.currentUser?.uid
     }
 
+    override fun getCurrentUserEmail(): String? {
+        return firebaseAuth.currentUser?.email
+    }
+
     override fun isUserLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }
@@ -132,6 +136,33 @@ class FirebaseAuthRepository @Inject constructor(
         } catch (e: Exception) {
             Timber.e(e, "Failed to fetch user full name for: $userId")
             null
+        }
+    }
+    
+    override suspend fun getUserProfilePictureUrl(userId: String): String? {
+        return try {
+            val doc = firestore.collection("users").document(userId).get().await()
+            doc.getString("profilePictureUrl")
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to fetch profile picture URL for: $userId")
+            null
+        }
+    }
+    
+    override suspend fun saveProfilePictureUrl(userId: String, picturePath: String): Result<Unit> {
+        return try {
+            firestore.collection("users")
+                .document(userId)
+                .update(mapOf(
+                    "profilePictureUrl" to picturePath,
+                    "profilePictureUpdatedAt" to LocalDateTime.now().toString()
+                ))
+                .await()
+            Timber.d("Profile picture URL saved for user: $userId")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to save profile picture URL for: $userId")
+            Result.failure(e)
         }
     }
 }

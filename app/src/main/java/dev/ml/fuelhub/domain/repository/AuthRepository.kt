@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 interface AuthRepository {
     fun getCurrentUserId(): String?
     
+    fun getCurrentUserEmail(): String?
+    
     fun isUserLoggedIn(): Boolean
     
     suspend fun login(email: String, password: String): Result<String>
@@ -25,4 +27,8 @@ interface AuthRepository {
     suspend fun getUserRole(userId: String): String?
     
     suspend fun getUserFullName(userId: String): String?
+    
+    suspend fun getUserProfilePictureUrl(userId: String): String?
+    
+    suspend fun saveProfilePictureUrl(userId: String, picturePath: String): Result<Unit>
 }

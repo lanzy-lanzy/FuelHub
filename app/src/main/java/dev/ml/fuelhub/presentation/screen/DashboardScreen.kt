@@ -142,26 +142,31 @@ fun DashboardHeader() {
             )
         }
 
-        // Notification Icon
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(ElectricBlue, VibrantCyan)
-                    )
-                )
-                .clickable { },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "Notifications",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
+        // Notification Icon with Badge
+         Box(
+             modifier = Modifier
+                 .size(48.dp)
+                 .clip(CircleShape)
+                 .background(
+                     Brush.linearGradient(
+                         colors = listOf(ElectricBlue, VibrantCyan)
+                     )
+                 )
+                 .clickable { },
+             contentAlignment = Alignment.Center
+         ) {
+             Icon(
+                 imageVector = Icons.Default.Notifications,
+                 contentDescription = "Notifications",
+                 tint = Color.White,
+                 modifier = Modifier.size(24.dp)
+             )
+             // Notification Badge
+             NotificationBadgeDashboard(
+                 count = 3,
+                 modifier = Modifier.align(Alignment.TopEnd)
+             )
+         }
     }
 }
 
@@ -541,5 +546,56 @@ fun TransactionCard(transaction: TransactionItem) {
                 color = TextTertiary
             )
         }
+    }
+}
+
+@Composable
+fun NotificationBadgeDashboard(
+    count: Int,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = WarningYellow,
+    textColor: Color = Color.Black,
+    animateScale: Boolean = true
+) {
+    // Scale animation for visual appeal
+    val scale = remember { Animatable(1f) }
+    
+    LaunchedEffect(count) {
+        if (animateScale) {
+            scale.animateTo(
+                targetValue = 1.2f,
+                animationSpec = tween(durationMillis = 300)
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 300)
+            )
+        }
+    }
+    
+    Box(
+        modifier = modifier
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(backgroundColor, backgroundColor.copy(alpha = 0.8f))
+                )
+            )
+            .shadow(
+                elevation = 4.dp,
+                shape = CircleShape,
+                ambientColor = backgroundColor
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            if (count > 99) "99+" else count.toString(),
+            fontSize = if (count > 99) 8.sp else 11.sp,
+            color = textColor,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier
+                .align(Alignment.Center)
+        )
     }
 }

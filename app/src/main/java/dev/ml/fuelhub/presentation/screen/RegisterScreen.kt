@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -123,6 +124,7 @@ fun RegisterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .systemBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -267,90 +269,102 @@ fun RegisterScreen(
                 }
 
                 // Full Name Field
-                OutlinedTextField(
-                    value = fullName,
-                    onValueChange = {
-                        fullName = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Full Name") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 OutlinedTextField(
+                     value = fullName,
+                     onValueChange = {
+                         fullName = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Full Name") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
-                // Username Field
-                OutlinedTextField(
-                    value = username,
-                    onValueChange = {
-                        username = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Username") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 // Username Field
+                 OutlinedTextField(
+                     value = username,
+                     onValueChange = {
+                         username = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Username") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
-                // Email Field
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 // Email Field
+                 OutlinedTextField(
+                     value = email,
+                     onValueChange = {
+                         email = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Email") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
-                // Password Field
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        if (showError) showError = false
-                    },
-                    label = { Text("Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    enabled = !uiState.isLoading,
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }, enabled = !uiState.isLoading) {
-                            Icon(
-                                imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                                tint = NeonTeal.copy(alpha = 0.7f)
-                            )
-                        }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = VibrantCyan,
-                        unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
-                        focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
-                    )
-                )
+                 // Password Field
+                 OutlinedTextField(
+                     value = password,
+                     onValueChange = {
+                         password = it
+                         if (showError) showError = false
+                     },
+                     label = { Text("Password") },
+                     modifier = Modifier.fillMaxWidth(),
+                     singleLine = true,
+                     enabled = !uiState.isLoading,
+                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                     trailingIcon = {
+                         IconButton(onClick = { passwordVisible = !passwordVisible }, enabled = !uiState.isLoading) {
+                             Icon(
+                                 imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                 contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                 tint = NeonTeal.copy(alpha = 0.7f)
+                             )
+                         }
+                     },
+                     colors = OutlinedTextFieldDefaults.colors(
+                         focusedBorderColor = VibrantCyan,
+                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
+                         focusedLabelColor = VibrantCyan,
+                         unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                         focusedTextColor = Color.White,
+                         unfocusedTextColor = Color.White,
+                         cursorColor = VibrantCyan
+                     )
+                 )
 
                 // Confirm Password Field
                 OutlinedTextField(
@@ -377,11 +391,14 @@ fun RegisterScreen(
                         focusedBorderColor = VibrantCyan,
                         unfocusedBorderColor = ElectricBlue.copy(alpha = 0.3f),
                         focusedLabelColor = VibrantCyan,
-                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f)
+                        unfocusedLabelColor = NeonTeal.copy(alpha = 0.6f),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = VibrantCyan
                     )
-                )
+                    )
 
-                // Password mismatch validation
+                    // Password mismatch validation
                 if (password.isNotEmpty() && confirmPassword.isNotEmpty() && password != confirmPassword) {
                     Text(
                         text = "Passwords do not match",

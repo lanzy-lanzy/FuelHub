@@ -141,14 +141,15 @@ fun WalletContentEnhanced(
         }
 
         // Balance Card
-        item {
-            BalanceCardEnhanced(
-                balance = wallet.balanceLiters,
-                maxCapacity = wallet.maxCapacityLiters,
-                currency = "L",
-                animatedOffset = animatedOffset
-            )
-        }
+         item {
+             BalanceCardEnhanced(
+                 balance = wallet.balanceLiters,
+                 maxCapacity = wallet.maxCapacityLiters,
+                 currency = "L",
+                 animatedOffset = animatedOffset,
+                 onRefillClick = onRefillClick
+             )
+         }
 
         // Quick Stats
         item {
@@ -204,7 +205,8 @@ fun BalanceCardEnhanced(
     balance: Double,
     maxCapacity: Double,
     currency: String,
-    animatedOffset: Float
+    animatedOffset: Float,
+    onRefillClick: (() -> Unit)? = null
 ) {
     val usagePercentage = (balance / maxCapacity).coerceIn(0.0, 1.0)
     
@@ -298,7 +300,7 @@ fun BalanceCardEnhanced(
 
                 // Action button
                 Button(
-                    onClick = { /* Handled by parent */ },
+                    onClick = { onRefillClick?.invoke() },
                     modifier = Modifier
                         .align(Alignment.End)
                         .height(40.dp),

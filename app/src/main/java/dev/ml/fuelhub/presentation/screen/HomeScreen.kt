@@ -1,6 +1,7 @@
 package dev.ml.fuelhub.presentation.screen
 
 import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -162,42 +165,47 @@ fun HomeHeader(onLogout: () -> Unit = {}, authViewModel: AuthViewModel? = null) 
         }
 
         // Profile Circle with Notification Badge and Dropdown Menu
-        Box {
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(ElectricBlue, VibrantCyan)
-                        )
-                    )
-                    .clickable { showProfileMenu = true },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            // Notification badge
-            Box(
-                modifier = Modifier
-                    .size(16.dp)
-                    .clip(CircleShape)
-                    .background(WarningYellow)
-                    .align(Alignment.TopEnd)
-            ) {
-                Text(
-                    "3",
-                    fontSize = 10.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+         Box {
+             val profilePictureUrl by authViewModel?.profilePictureUrl?.collectAsState() ?: mutableStateOf(null)
+             
+             Box(
+                 modifier = Modifier
+                     .size(56.dp)
+                     .clip(CircleShape)
+                     .background(
+                         Brush.linearGradient(
+                             colors = listOf(ElectricBlue, VibrantCyan)
+                         )
+                     )
+                     .clickable { showProfileMenu = true },
+                 contentAlignment = Alignment.Center
+             ) {
+                 if (!profilePictureUrl.isNullOrEmpty()) {
+                     AsyncImage(
+                         model = profilePictureUrl,
+                         contentDescription = "Profile Picture",
+                         modifier = Modifier
+                             .size(56.dp)
+                             .clip(CircleShape),
+                         contentScale = ContentScale.Crop,
+                         onError = { error ->
+                             timber.log.Timber.e(error.result.throwable, "Failed to load profile picture: $profilePictureUrl")
+                         }
+                     )
+                 } else {
+                     Icon(
+                         imageVector = Icons.Default.Person,
+                         contentDescription = "Profile",
+                         tint = Color.White,
+                         modifier = Modifier.size(28.dp)
+                     )
+                 }
+             }
+             // Enhanced Notification Badge
+             NotificationBadge(
+                 count = 3,
+                 modifier = Modifier.align(Alignment.TopEnd)
+             )
             
             // Dropdown Menu
             DropdownMenu(
@@ -1125,5 +1133,56 @@ fun AlertCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun NotificationBadge(
+    count: Int,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = WarningYellow,
+    textColor: Color = Color.Black,
+    animateScale: Boolean = true
+) {
+    // Scale animation for visual appeal
+    val scale = remember { Animatable(1f) }
+    
+    LaunchedEffect(count) {
+        if (animateScale) {
+            scale.animateTo(
+                targetValue = 1.2f,
+                animationSpec = tween(durationMillis = 300)
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 300)
+            )
+        }
+    }
+    
+    Box(
+        modifier = modifier
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(backgroundColor, backgroundColor.copy(alpha = 0.8f))
+                )
+            )
+            .shadow(
+                elevation = 4.dp,
+                shape = CircleShape,
+                ambientColor = backgroundColor
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            if (count > 99) "99+" else count.toString(),
+            fontSize = if (count > 99) 8.sp else 11.sp,
+            color = textColor,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier
+                .align(Alignment.Center)
+        )
     }
 }

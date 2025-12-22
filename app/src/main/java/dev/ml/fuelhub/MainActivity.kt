@@ -1,9 +1,14 @@
 package dev.ml.fuelhub
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.benchmark.traceprocessor.Row
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -14,9 +19,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +32,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -50,6 +57,7 @@ import dev.ml.fuelhub.presentation.viewmodel.ReportsViewModel
 import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
 import dev.ml.fuelhub.presentation.screen.LoginScreen
 import dev.ml.fuelhub.presentation.screen.RegisterScreen
+import dev.ml.fuelhub.presentation.screen.SettingsScreen
 import dev.ml.fuelhub.domain.repository.AuthRepository
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.ml.fuelhub.ui.theme.FuelHubTheme
@@ -71,7 +79,7 @@ import dev.ml.fuelhub.presentation.screen.VehicleManagementScreen
 import dev.ml.fuelhub.presentation.screen.GasSlipListScreen
 import dev.ml.fuelhub.data.util.PdfPrintManager
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
+import dev.ml.fuelhub.presentation.component.CenteredActionBottomBar
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -84,14 +92,32 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import dagger.hilt.android.AndroidEntryPoint
+import dev.ml.fuelhub.ui.theme.ElectricBlue
+import dev.ml.fuelhub.ui.theme.SurfaceDark
+import dev.ml.fuelhub.ui.theme.TextPrimary
+import dev.ml.fuelhub.ui.theme.TextSecondary
+import dev.ml.fuelhub.ui.theme.VibrantCyan
+import dev.ml.fuelhub.ui.theme.WarningYellow
+import coil.compose.AsyncImage
+import androidx.compose.material3.CircularProgressIndicator
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -133,9 +159,26 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authRepository: AuthRepository
     
+    // Image picker launcher - will be passed to FuelHubApp
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    
+    // Callback to update Compose state with selected image URI
+    var setImageUriCallback: ((Uri) -> Unit)? = null
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize image picker launcher
+        imagePickerLauncher = registerForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            uri?.let { selectedUri ->
+                Timber.d("Image selected in MainActivity: $selectedUri")
+                // Call the Compose callback to update state
+                setImageUriCallback?.invoke(selectedUri)
+            }
+        }
         
         // Initialize Timber for logging
         Timber.plant(Timber.DebugTree())
@@ -181,13 +224,15 @@ class MainActivity : ComponentActivity() {
                     generateDailyReportUseCase = generateDailyReportUseCase,
                     generateWeeklyReportUseCase = generateWeeklyReportUseCase,
                     generateMonthlyReportUseCase = generateMonthlyReportUseCase,
-                    authRepository = authRepository
+                    authRepository = authRepository,
+                    imagePickerLauncher = imagePickerLauncher
                 )
             }
         }
     }
 }
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun FuelHubApp(
     transactionViewModel: TransactionViewModel,
@@ -199,7 +244,8 @@ fun FuelHubApp(
     generateDailyReportUseCase: GenerateDailyReportUseCase,
     generateWeeklyReportUseCase: GenerateWeeklyReportUseCase,
     generateMonthlyReportUseCase: GenerateMonthlyReportUseCase,
-    authRepository: AuthRepository
+    authRepository: AuthRepository,
+    imagePickerLauncher: ActivityResultLauncher<String>
 ) {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = hiltViewModel()
@@ -207,6 +253,28 @@ fun FuelHubApp(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val isUserLoggedIn = authRepository.isUserLoggedIn()
+    
+    // Use Compose state to track selected image URI - THIS IS KEY!
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    
+    // Monitor for image URI changes - will trigger when selectedImageUri changes
+    LaunchedEffect(selectedImageUri) {
+        selectedImageUri?.let { uri ->
+            Timber.d("Image URI selected in Compose: $uri")
+            authViewModel.uploadProfilePicture(uri)
+            // Reset after processing
+            selectedImageUri = null
+        }
+    }
+    
+    // Pass the image URI setter back to activity via a callback
+    val activity = LocalContext.current as? MainActivity
+    LaunchedEffect(activity) {
+        activity?.setImageUriCallback = { uri ->
+            Timber.d("Image URI set from activity: $uri")
+            selectedImageUri = uri
+        }
+    }
     
     // Determine start destination based on user role
     val startDestination = if (isUserLoggedIn) {
@@ -226,55 +294,102 @@ fun FuelHubApp(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet(
-                    drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
-                    drawerContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                    drawerContainerColor = SurfaceDark,
+                    drawerContentColor = TextPrimary,
+                    drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp),
+                    modifier = Modifier.width(320.dp)
                 ) {
-                    // Header Section with Gradient
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(170.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                                        androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer
-                                    )
-                                )
-                            )
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(24.dp)
-                        ) {
-                            // Header Icon
-                            androidx.compose.foundation.layout.Box(
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                                    .background(
-                                        color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-                                        shape = androidx.compose.foundation.shape.CircleShape
-                                    )
-                                    .padding(8.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.DirectionsCar,
-                                    "Fleet",
-                                    modifier = Modifier.height(32.dp),
-                                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                            
-                            Text(
-                                "Fleet Management",
-                                style = androidx.compose.material3.MaterialTheme.typography.titleLarge,
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // Header Section with Premium Gradient
+                     Box(
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .height(220.dp)
+                             .background(
+                                 brush = Brush.verticalGradient(
+                                     colors = listOf(ElectricBlue, VibrantCyan)
+                                 )
+                             )
+                     ) {
+                         Column(
+                             modifier = Modifier
+                                 .fillMaxSize()
+                                 .padding(24.dp),
+                             verticalArrangement = Arrangement.SpaceBetween
+                         ) {
+                             // Profile Section
+                             Row(
+                                 modifier = Modifier
+                                     .fillMaxWidth(),
+                                 horizontalArrangement = Arrangement.SpaceBetween,
+                                 verticalAlignment = Alignment.CenterVertically
+                             ) {
+                                 // Profile Picture with upload status
+                                 val profilePictureUrl by authViewModel.profilePictureUrl.collectAsState()
+                                 
+                                 Box(
+                                     modifier = Modifier
+                                         .size(64.dp)
+                                         .clip(CircleShape)
+                                         .background(Color.White.copy(alpha = 0.3f)),
+                                     contentAlignment = Alignment.Center
+                                 ) {
+                                     if (!profilePictureUrl.isNullOrEmpty()) {
+                                         AsyncImage(
+                                             model = profilePictureUrl,
+                                             contentDescription = "Profile Picture",
+                                             modifier = Modifier
+                                                 .size(64.dp)
+                                                 .clip(CircleShape),
+                                             contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                                             onError = { error ->
+                                                 Timber.e(error.result.throwable, "Failed to load profile picture in drawer: $profilePictureUrl")
+                                             }
+                                         )
+                                     } else {
+                                         Icon(
+                                             imageVector = Icons.Default.Person,
+                                             contentDescription = "Profile",
+                                             modifier = Modifier.size(36.dp),
+                                             tint = Color.White
+                                         )
+                                     }
+                                 }
+                                 
+                                 // Edit Profile Button
+                                 IconButton(
+                                     onClick = { 
+                                         // Trigger image picker, result will be processed via registerForActivityResult
+                                         imagePickerLauncher.launch("image/*")
+                                     },
+                                     modifier = Modifier.size(40.dp)
+                                 ) {
+                                     Icon(
+                                         imageVector = Icons.Default.Edit,
+                                         contentDescription = "Edit Profile",
+                                         modifier = Modifier.size(20.dp),
+                                         tint = Color.White
+                                     )
+                                 }
+                             }
+                             
+                             // User Info
+                             Column {
+                                 Text(
+                                     text = "Fleet Manager",
+                                     style = MaterialTheme.typography.headlineSmall,
+                                     fontWeight = FontWeight.Bold,
+                                     color = Color.White
+                                 )
+                                 Text(
+                                     text = "manager@fuelhub.com",
+                                     style = MaterialTheme.typography.bodySmall,
+                                     color = Color.White.copy(alpha = 0.8f)
+                                 )
+                             }
+                         }
+                     }
+                     
+                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Menu Items
                     Column(
@@ -290,14 +405,22 @@ fun FuelHubApp(
                                 ) 
                             },
                             label = { Text("Drivers") },
-                            selected = false,
+                            selected = currentRoute == "drivers",
                             onClick = {
                                 navController.navigate("drivers") {
                                     popUpTo("drivers") { inclusive = true }
                                 }
                                 scope.launch { drawerState.close() }
                             },
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            colors = NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = VibrantCyan.copy(alpha = 0.1f),
+                                unselectedContainerColor = Color.Transparent,
+                                selectedTextColor = VibrantCyan,
+                                unselectedTextColor = TextPrimary,
+                                selectedIconColor = VibrantCyan,
+                                unselectedIconColor = TextSecondary
+                            )
                         )
                         
                         NavigationDrawerItem(
@@ -308,44 +431,110 @@ fun FuelHubApp(
                                 ) 
                             },
                             label = { Text("Vehicles") },
-                            selected = false,
+                            selected = currentRoute == "vehicles",
                             onClick = {
                                 navController.navigate("vehicles") {
                                     popUpTo("vehicles") { inclusive = true }
                                 }
                                 scope.launch { drawerState.close() }
                             },
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            colors = NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = VibrantCyan.copy(alpha = 0.1f),
+                                unselectedContainerColor = Color.Transparent,
+                                selectedTextColor = VibrantCyan,
+                                unselectedTextColor = TextPrimary,
+                                selectedIconColor = VibrantCyan,
+                                unselectedIconColor = TextSecondary
+                            )
                         )
                     }
                     
                     // Divider
                     HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp)
+                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp),
+                        color = Color.White.copy(alpha = 0.1f)
                     )
                     
                     // Settings Section
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp)
-                    ) {
-                        NavigationDrawerItem(
-                            icon = { 
-                                Icon(
-                                    Icons.Default.Settings, 
-                                    "Settings"
-                                ) 
-                            },
-                            label = { Text("Settings") },
-                            selected = false,
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                            },
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
+                     Column(
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .padding(horizontal = 12.dp)
+                     ) {
+                         NavigationDrawerItem(
+                             icon = { 
+                                 Icon(
+                                     Icons.Default.Settings, 
+                                     "Settings"
+                                 ) 
+                             },
+                             label = { Text("Settings") },
+                             selected = currentRoute == "settings",
+                             onClick = {
+                                 navController.navigate("settings")
+                                 scope.launch { drawerState.close() }
+                             },
+                             modifier = Modifier.padding(vertical = 4.dp),
+                             colors = NavigationDrawerItemDefaults.colors(
+                                 selectedContainerColor = VibrantCyan.copy(alpha = 0.1f),
+                                 unselectedContainerColor = Color.Transparent,
+                                 selectedTextColor = VibrantCyan,
+                                 unselectedTextColor = TextPrimary,
+                                 selectedIconColor = VibrantCyan,
+                                 unselectedIconColor = TextSecondary
+                             )
+                         )
+                     }
+                     
+                     Spacer(modifier = Modifier.weight(1f))
+                     
+                     // Logout Button at Bottom
+                     HorizontalDivider(
+                         modifier = Modifier.padding(horizontal = 12.dp),
+                         color = TextSecondary.copy(alpha = 0.2f)
+                     )
+                     
+                     Column(
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .padding(horizontal = 12.dp, vertical = 16.dp)
+                     ) {
+                         NavigationDrawerItem(
+                             icon = { 
+                                 Icon(
+                                     Icons.Default.Logout, 
+                                     "Logout",
+                                     tint = WarningYellow
+                                 ) 
+                             },
+                             label = { 
+                                 Text(
+                                     "Logout",
+                                     color = WarningYellow,
+                                     fontWeight = FontWeight.SemiBold
+                                 ) 
+                             },
+                             selected = false,
+                             onClick = {
+                                 authViewModel.logout()
+                                 navController.navigate("login") {
+                                     popUpTo(0) { inclusive = true }
+                                 }
+                                 scope.launch { drawerState.close() }
+                             },
+                             modifier = Modifier.padding(vertical = 4.dp),
+                             colors = NavigationDrawerItemDefaults.colors(
+                                 selectedContainerColor = WarningYellow.copy(alpha = 0.1f),
+                                 unselectedContainerColor = WarningYellow.copy(alpha = 0.05f),
+                                 selectedTextColor = WarningYellow,
+                                 unselectedTextColor = WarningYellow,
+                                 selectedIconColor = WarningYellow,
+                                 unselectedIconColor = WarningYellow
+                             )
+                         )
+                     }
                     }
-                }
             }
         ) {
             Scaffold(
@@ -353,76 +542,32 @@ fun FuelHubApp(
                 bottomBar = {
                     // Hide bottom bar on login/register/gasstation screens
                     if (currentRoute !in listOf("login", "register", "gasstation")) {
-                        NavigationBar {
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.Home, "Home") },
-                                label = { Text("Home") },
-                                selected = selectedTab == 0,
-                                onClick = {
-                                    selectedTab = 0
-                                    navController.navigate("home") {
+                        CenteredActionBottomBar(
+                            selectedTab = selectedTab,
+                            onTabSelected = { tab ->
+                                selectedTab = tab
+                                when (tab) {
+                                    0 -> navController.navigate("home") {
                                         popUpTo("home") { inclusive = true }
                                     }
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.AccountBalance, "Wallet") },
-                                label = { Text("Wallet") },
-                                selected = selectedTab == 1,
-                                onClick = {
-                                    selectedTab = 1
-                                    navController.navigate("wallet") {
+                                    1 -> navController.navigate("wallet") {
                                         popUpTo("wallet") { inclusive = true }
                                     }
-                                }
-                            )
-                            // Center space for FAB
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.Menu, "Menu") },
-                                label = { Text("Menu") },
-                                selected = false,
-                                onClick = {
-                                    scope.launch { drawerState.open() }
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.LocalGasStation, "Gas Slips") },
-                                label = { Text("Gas Slips") },
-                                selected = selectedTab == 2,
-                                onClick = {
-                                    selectedTab = 2
-                                    navController.navigate("gasslips") {
+                                    2 -> navController.navigate("gasslips") {
                                         popUpTo("gasslips") { inclusive = true }
                                     }
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = { Icon(Icons.Default.BarChart, "Reports") },
-                                label = { Text("Reports") },
-                                selected = selectedTab == 3,
-                                onClick = {
-                                    selectedTab = 3
-                                    navController.navigate("reports") {
+                                    3 -> navController.navigate("reports") {
                                         popUpTo("reports") { inclusive = true }
                                     }
                                 }
-                            )
-                        }
-                    }
-                },
-                floatingActionButton = {
-                    // Hide FAB on login/register/gasstation screens
-                    if (currentRoute !in listOf("login", "register", "gasstation")) {
-                        FloatingActionButton(
-                            onClick = {
+                            },
+                            onCenterActionClick = {
                                 selectedTab = 4
                                 navController.navigate("transaction") {
                                     popUpTo("transaction") { inclusive = true }
                                 }
                             }
-                        ) {
-                            Icon(Icons.Default.Add, "Create Transaction")
-                        }
+                        )
                     }
                 }
             ) { innerPadding ->
@@ -689,6 +834,24 @@ fun FuelHubNavHost(
                     shouldLogout = true
                     navController.navigate("login") {
                         popUpTo("gasstation") { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable("settings") {
+            LaunchedEffect(Unit) {
+                onRouteChange("settings")
+            }
+            SettingsScreen(
+                authViewModel = authViewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onLogoutClick = {
+                    authViewModel.logout()
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
                     }
                 }
             )
