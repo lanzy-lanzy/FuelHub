@@ -1,0 +1,67 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   FLOATING DRAWER SWIPE INDICATOR VISUAL                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+APPEARANCE (Vertically Centered, Left Side):
+
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                                                                 │
+    │  ▶ ▶  Swipe to open      [Home Screen Content]                 │
+    │     ▶ ▶                  • Key Metrics                          │
+    │        ▶ ▶  Swipe to open• Wallet Status                       │
+    │                           • Daily Summary                      │
+    │                           • Transaction History               │
+    │                           • Reports                           │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+
+    Arrow 1: Full opacity, slides continuously
+    Arrow 2: 60% opacity (depth), offset animation
+    Text: Pulsing 30-100% opacity
+    Position: Fixed left-center overlay
+    
+ANIMATION SEQUENCE:
+
+    Frame 1:  ──▶ ───▶
+             (0%→100% opacity)
+    
+    Frame 2:      ──▶ ───▶
+             (increasing opacity)
+    
+    Frame 3:         ──▶ ───▶
+             (peak opacity ~70%)
+    
+    Frame 4:            ──▶ ───▶
+             (decreasing back to 30%)
+
+KEY FEATURES:
+
+✓ Floating overlay (doesn't push content)
+✓ Left-center positioning for drawer hint
+✓ Dual arrows show direction & motion
+✓ Smooth sequential animation
+✓ Pulsing to attract attention without annoying
+✓ Uses app's VibrantCyan theme color
+✓ 16.dp padding from left edge
+✓ Fills entire screen for positioning flexibility
+
+ANIMATION TIMING:
+
+Arrow 1:        0ms ────────► 1200ms ──►
+Arrow 2:      150ms ────────► 1200ms ──►  (150ms delayed)
+Alpha:          ┌─────────────────┐
+              30%              100%
+                    1500ms duration
+                    
+IMPLEMENTATION METHOD:
+
+Each screen wraps main content in:
+┌──────────────────────────────────────┐
+│ Box(modifier.fillMaxSize()) {         │
+│   ├─ LazyColumn/Column (main content)│
+│   └─ DrawerSwipeIndicator (floating) │
+│ }                                     │
+└──────────────────────────────────────┘
+
+This allows the indicator to float above
+all content without affecting layout.

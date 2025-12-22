@@ -3,12 +3,15 @@ package dev.ml.fuelhub.presentation.screen
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -48,6 +51,8 @@ fun GasStationScreen(
     var cancelledSlipMessage by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var showLogoutDialog by remember { mutableStateOf(false) }
+    var isRefreshing by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     
     // Load transaction history when screen is first displayed
     LaunchedEffect(Unit) {
@@ -55,6 +60,22 @@ fun GasStationScreen(
         // Use direct Firestore sync for gas station (never cached)
         vm.loadTransactionsFromFirestoreDirect()
         Timber.d("Direct Firestore sync initiated from gas station screen")
+    }
+    
+    // Handle pull-to-refresh
+    val onRefresh: () -> Unit = {
+        scope.launch {
+            isRefreshing = true
+            try {
+                vm.loadTransactionsFromFirestoreDirect()
+                delay(800) // Brief delay for visual feedback
+                Timber.d("✓ Transactions refreshed from Firestore")
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to refresh transactions")
+            } finally {
+                isRefreshing = false
+            }
+        }
     }
     
     // Log transactions whenever they change
@@ -136,68 +157,91 @@ fun GasStationScreen(
         }
     }
     
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(DeepBlue)
-            .systemBarsPadding()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
-        GasStationHeader(
-            onNavigateBack = onNavigateBack,
-            onLogout = { showLogoutDialog = true }
-        )
-        
-        // Instructions
-        InstructionCard()
-        
-        // Scan Button
-        ScanQRButton(onClick = { showScanner = true })
-        
-        // Active Transactions List
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            "Pending Transactions",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = TextPrimary
-        )
-        
-        if (transactions.isEmpty()) {
-            EmptyStateCard("No pending transactions")
-        } else {
-            val pendingTransactions = transactions.filter { 
-                it.status.name in listOf("PENDING", "APPROVED") 
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Header
+            GasStationHeader(
+                onNavigateBack = onNavigateBack,
+                onLogout = { showLogoutDialog = true },
+                onRefresh = onRefresh,
+                isRefreshing = isRefreshing
+            )
             
-            if (pendingTransactions.isEmpty()) {
-                EmptyStateCard("All transactions have been dispensed")
+            // Instructions
+            InstructionCard()
+            
+            // Scan Button
+            ScanQRButton(onClick = { showScanner = true })
+            
+            // Active Transactions List
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Pending Transactions",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+            
+            if (transactions.isEmpty()) {
+                EmptyStateCard("No pending transactions")
             } else {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    pendingTransactions.take(10).forEach { transaction ->
-                        TransactionCard(
-                            transaction = transaction,
-                            onConfirm = {
-                                matchedTransaction = transaction
-                                showConfirmDialog = true
-                            }
-                        )
+                val pendingTransactions = transactions.filter { 
+                    it.status.name in listOf("PENDING", "APPROVED") 
+                }
+                
+                if (pendingTransactions.isEmpty()) {
+                    EmptyStateCard("All transactions have been dispensed")
+                } else {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        pendingTransactions.take(10).forEach { transaction ->
+                            TransactionCard(
+                                transaction = transaction,
+                                onConfirm = {
+                                    matchedTransaction = transaction
+                                    showConfirmDialog = true
+                                }
+                            )
+                        }
                     }
                 }
             }
+            
+            // Error Message
+            if (errorMessage.isNotEmpty()) {
+                ErrorBanner(
+                    message = errorMessage,
+                    onDismiss = { errorMessage = "" }
+                )
+            }
         }
-        
-        // Error Message
-        if (errorMessage.isNotEmpty()) {
-            ErrorBanner(
-                message = errorMessage,
-                onDismiss = { errorMessage = "" }
-            )
+
+        // Pull-to-Refresh Indicator (Top-right corner)
+        if (isRefreshing) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(32.dp),
+                    color = VibrantCyan,
+                    strokeWidth = 3.dp
+                )
+            }
         }
     }
     
@@ -262,7 +306,9 @@ fun GasStationScreen(
 @Composable
 fun GasStationHeader(
     onNavigateBack: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onRefresh: () -> Unit = {},
+    isRefreshing: Boolean = false
 ) {
     Row(
         modifier = Modifier
@@ -290,6 +336,34 @@ fun GasStationHeader(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Refresh Button
+            IconButton(
+                onClick = onRefresh,
+                enabled = !isRefreshing,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        if (isRefreshing) ElectricBlue.copy(alpha = 0.5f) 
+                        else ElectricBlue.copy(alpha = 0.7f)
+                    )
+            ) {
+                if (isRefreshing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = VibrantCyan,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh",
+                        tint = VibrantCyan,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
             // Logout Button
             IconButton(
                 onClick = onLogout,

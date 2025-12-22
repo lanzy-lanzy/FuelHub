@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.domain.usecase.GenerateDailyReportUseCase
 import dev.ml.fuelhub.domain.usecase.GenerateWeeklyReportUseCase
 import dev.ml.fuelhub.domain.usecase.GenerateMonthlyReportUseCase
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 import java.time.LocalDate
@@ -90,6 +91,13 @@ fun ReportScreen(
                 }
             }
         }
+
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 32.dp)
+        )
     }
 }
 

@@ -31,6 +31,7 @@ import dev.ml.fuelhub.data.model.FuelType
 import dev.ml.fuelhub.data.model.Vehicle
 import dev.ml.fuelhub.presentation.state.TransactionUiState
 import dev.ml.fuelhub.presentation.viewmodel.TransactionViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 
@@ -226,15 +227,18 @@ fun TransactionScreenEnhanced(
             
             else -> {
                 // Idle state - show form
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    // Header
-                    TransactionHeaderEnhanced()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Header
+                        TransactionHeaderEnhanced()
 
                     // Validation Error Alert
                     if (showValidationError && validationErrorMessage.isNotEmpty()) {
@@ -538,6 +542,12 @@ fun TransactionScreenEnhanced(
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
+                    }
+                    
+                    // Floating Drawer Swipe Indicator
+                    DrawerSwipeIndicator(
+                        tintColor = VibrantCyan.copy(alpha = 0.7f)
+                    )
                 }
             }
         }

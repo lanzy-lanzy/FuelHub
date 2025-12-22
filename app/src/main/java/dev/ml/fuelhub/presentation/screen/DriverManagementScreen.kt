@@ -26,6 +26,7 @@ import dev.ml.fuelhub.data.model.User
 import dev.ml.fuelhub.data.model.UserRole
 import dev.ml.fuelhub.presentation.viewmodel.DriverManagementUiState
 import dev.ml.fuelhub.presentation.viewmodel.DriverManagementViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 
@@ -46,26 +47,29 @@ fun DriverManagementScreen(
             .fillMaxSize()
             .background(DeepBlue)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Header
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Text(
-                    "Manage Drivers",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = VibrantCyan,
-                    fontSize = 28.sp
-                )
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Manage Drivers",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = VibrantCyan,
+                        fontSize = 28.sp
+                    )
                 Button(
                     onClick = { showAddDialog = true },
                     modifier = Modifier
@@ -161,6 +165,12 @@ fun DriverManagementScreen(
 
                 else -> {}
             }
+            }
+            
+            // Floating Drawer Swipe Indicator
+            DrawerSwipeIndicator(
+                tintColor = VibrantCyan.copy(alpha = 0.7f)
+            )
         }
     }
 

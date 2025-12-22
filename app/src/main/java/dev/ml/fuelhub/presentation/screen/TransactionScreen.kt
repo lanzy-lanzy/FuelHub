@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.data.model.FuelType
 import dev.ml.fuelhub.data.model.User
 import dev.ml.fuelhub.data.model.Vehicle
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 
 /**
@@ -329,6 +330,13 @@ fun TransactionScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 32.dp)
+        )
     }
 }
 

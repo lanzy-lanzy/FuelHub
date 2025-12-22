@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.presentation.state.WalletUiState
 import dev.ml.fuelhub.presentation.viewmodel.WalletViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 
@@ -129,16 +130,19 @@ fun WalletContentEnhanced(
     onRefillClick: () -> Unit,
     animatedOffset: Float
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Header
-        item {
-            WalletHeaderEnhanced()
-        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Header
+            item {
+                WalletHeaderEnhanced()
+            }
 
         // Balance Card
          item {
@@ -174,6 +178,12 @@ fun WalletContentEnhanced(
         item {
             Spacer(modifier = Modifier.height(20.dp))
         }
+        }
+
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            tintColor = VibrantCyan.copy(alpha = 0.7f)
+        )
     }
 }
 

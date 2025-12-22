@@ -34,6 +34,7 @@ import dev.ml.fuelhub.presentation.viewmodel.WalletViewModel
 import dev.ml.fuelhub.presentation.viewmodel.TransactionViewModel
 import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
 import dev.ml.fuelhub.presentation.state.WalletUiState
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.data.model.FuelWallet
 import java.time.LocalDateTime
 import java.time.LocalDate
@@ -66,69 +67,81 @@ fun HomeScreen(
         label = "homeOffset"
     )
 
-    LazyColumn(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .background(DeepBlue),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .background(DeepBlue)
     ) {
-        // Premium Header with Profile
-        item {
-            HomeHeader(onLogout = onLogout, authViewModel = authViewModel)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Premium Header with Profile
+            item {
+                HomeHeader(onLogout = onLogout, authViewModel = authViewModel)
+            }
+
+            // Key Metrics Section
+            item {
+                SectionTitle("Key Metrics")
+                KeyMetricsGrid(animatedOffset, transactionViewModel)
+            }
+
+            // Wallet Status Card
+            item {
+                SectionTitle("Wallet Status")
+                WalletStatusCard(onNavigateToWallet, animatedOffset, walletViewModel)
+            }
+
+            // Quick Stats
+            item {
+                SectionTitle("Today's Summary")
+                TodaySummaryStats(transactionViewModel)
+            }
+
+            // Vehicle Fleet Overview
+            item {
+                SectionTitle("Active Vehicles")
+                VehicleFleetSection(transactionViewModel)
+            }
+
+            // Quick Actions
+            item {
+                SectionTitle("Quick Actions")
+                ComprehensiveQuickActions(
+                    onNavigateToTransactions = onNavigateToTransactions,
+                    onNavigateToWallet = onNavigateToWallet,
+                    onNavigateToReports = onNavigateToReports,
+                    onNavigateToHistory = onNavigateToHistory
+                )
+            }
+
+            // Recent Transactions
+            item {
+                SectionTitle("Recent Transactions")
+                RecentTransactionsHome(transactionViewModel)
+            }
+
+            // Insights & Alerts
+            item {
+                SectionTitle("Alerts & Insights")
+                InsightsAlerts(transactionViewModel, walletViewModel)
+            }
+
+            // Footer spacing
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
 
-        // Key Metrics Section
-        item {
-            SectionTitle("Key Metrics")
-            KeyMetricsGrid(animatedOffset, transactionViewModel)
-        }
-
-        // Wallet Status Card
-        item {
-            SectionTitle("Wallet Status")
-            WalletStatusCard(onNavigateToWallet, animatedOffset, walletViewModel)
-        }
-
-        // Quick Stats
-        item {
-            SectionTitle("Today's Summary")
-            TodaySummaryStats(transactionViewModel)
-        }
-
-        // Vehicle Fleet Overview
-        item {
-            SectionTitle("Active Vehicles")
-            VehicleFleetSection(transactionViewModel)
-        }
-
-        // Quick Actions
-        item {
-            SectionTitle("Quick Actions")
-            ComprehensiveQuickActions(
-                onNavigateToTransactions = onNavigateToTransactions,
-                onNavigateToWallet = onNavigateToWallet,
-                onNavigateToReports = onNavigateToReports,
-                onNavigateToHistory = onNavigateToHistory
-            )
-        }
-
-        // Recent Transactions
-        item {
-            SectionTitle("Recent Transactions")
-            RecentTransactionsHome(transactionViewModel)
-        }
-
-        // Insights & Alerts
-        item {
-            SectionTitle("Alerts & Insights")
-            InsightsAlerts(transactionViewModel, walletViewModel)
-        }
-
-        // Footer spacing
-        item {
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 32.dp)
+        )
     }
 }
 
@@ -136,7 +149,7 @@ fun HomeScreen(
 fun HomeHeader(onLogout: () -> Unit = {}, authViewModel: AuthViewModel? = null) {
     var showProfileMenu by remember { mutableStateOf(false) }
     val vm = authViewModel ?: viewModel<AuthViewModel>()
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,48 +178,48 @@ fun HomeHeader(onLogout: () -> Unit = {}, authViewModel: AuthViewModel? = null) 
         }
 
         // Profile Circle with Notification Badge and Dropdown Menu
-         Box {
-             val profilePictureUrl by authViewModel?.profilePictureUrl?.collectAsState() ?: mutableStateOf(null)
-             
-             Box(
-                 modifier = Modifier
-                     .size(56.dp)
-                     .clip(CircleShape)
-                     .background(
-                         Brush.linearGradient(
-                             colors = listOf(ElectricBlue, VibrantCyan)
-                         )
-                     )
-                     .clickable { showProfileMenu = true },
-                 contentAlignment = Alignment.Center
-             ) {
-                 if (!profilePictureUrl.isNullOrEmpty()) {
-                     AsyncImage(
-                         model = profilePictureUrl,
-                         contentDescription = "Profile Picture",
-                         modifier = Modifier
-                             .size(56.dp)
-                             .clip(CircleShape),
-                         contentScale = ContentScale.Crop,
-                         onError = { error ->
-                             timber.log.Timber.e(error.result.throwable, "Failed to load profile picture: $profilePictureUrl")
-                         }
-                     )
-                 } else {
-                     Icon(
-                         imageVector = Icons.Default.Person,
-                         contentDescription = "Profile",
-                         tint = Color.White,
-                         modifier = Modifier.size(28.dp)
-                     )
-                 }
-             }
-             // Enhanced Notification Badge
-             NotificationBadge(
-                 count = 3,
-                 modifier = Modifier.align(Alignment.TopEnd)
-             )
-            
+        Box {
+            val profilePictureUrl by authViewModel?.profilePictureUrl?.collectAsState() ?: mutableStateOf(null)
+
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(ElectricBlue, VibrantCyan)
+                        )
+                    )
+                    .clickable { showProfileMenu = true },
+                contentAlignment = Alignment.Center
+            ) {
+                if (!profilePictureUrl.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = profilePictureUrl,
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        onError = { error ->
+                            timber.log.Timber.e(error.result.throwable, "Failed to load profile picture: $profilePictureUrl")
+                        }
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+            // Enhanced Notification Badge
+            NotificationBadge(
+                count = 3,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
+
             // Dropdown Menu
             DropdownMenu(
                 expanded = showProfileMenu,
@@ -214,7 +227,7 @@ fun HomeHeader(onLogout: () -> Unit = {}, authViewModel: AuthViewModel? = null) 
                 modifier = Modifier.background(SurfaceDark)
             ) {
                 DropdownMenuItem(
-                    text = { 
+                    text = {
                         Text(
                             "Logout",
                             color = TextPrimary,

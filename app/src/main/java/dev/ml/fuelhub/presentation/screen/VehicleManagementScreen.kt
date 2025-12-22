@@ -29,6 +29,7 @@ import dev.ml.fuelhub.data.model.Vehicle
 import dev.ml.fuelhub.data.model.FuelType
 import dev.ml.fuelhub.presentation.viewmodel.VehicleManagementUiState
 import dev.ml.fuelhub.presentation.viewmodel.VehicleManagementViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 
@@ -53,26 +54,29 @@ fun VehicleManagementScreen(
             .fillMaxSize()
             .background(DeepBlue)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Header
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Text(
-                    "Manage Vehicles",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = VibrantCyan,
-                    fontSize = 28.sp
-                )
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Manage Vehicles",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = VibrantCyan,
+                        fontSize = 28.sp
+                    )
                 Button(
                     onClick = { showAddDialog = true },
                     modifier = Modifier
@@ -168,6 +172,12 @@ fun VehicleManagementScreen(
 
                 else -> {}
             }
+            }
+            
+            // Floating Drawer Swipe Indicator
+            DrawerSwipeIndicator(
+                tintColor = VibrantCyan.copy(alpha = 0.7f)
+            )
         }
     }
 

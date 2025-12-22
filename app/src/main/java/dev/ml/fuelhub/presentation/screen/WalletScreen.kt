@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.data.model.FuelWallet
 import dev.ml.fuelhub.presentation.state.WalletUiState
 import dev.ml.fuelhub.presentation.viewmodel.WalletViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 
 /**
@@ -113,53 +114,62 @@ fun WalletContent(
     onRefillClick: (String) -> Unit,
     animatedOffset: Float
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        // Header
-        item {
-            WalletHeader()
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Header
+            item {
+                WalletHeader()
+            }
+
+            // Premium Wallet Card with Gradient
+            item {
+                PremiumWalletCardDetailed(
+                    wallet = wallet,
+                    animatedOffset = animatedOffset
+                )
+            }
+
+            // Stats Row
+            item {
+                WalletStatsRow(wallet)
+            }
+
+            // Action Buttons
+            item {
+                WalletActionButtons(
+                    walletId = walletId,
+                    onRefillClick = onRefillClick,
+                    onRefresh = { walletViewModel.loadWallet(walletId) }
+                )
+            }
+
+            // Recent Activity Section
+            item {
+                Text(
+                    "Recent Activity",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = TextPrimary,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
+            // Sample transactions
+            items(getSampleTransactions()) { transaction ->
+                WalletTransactionCard(transaction)
+            }
         }
 
-        // Premium Wallet Card with Gradient
-        item {
-            PremiumWalletCardDetailed(
-                wallet = wallet,
-                animatedOffset = animatedOffset
-            )
-        }
-
-        // Stats Row
-        item {
-            WalletStatsRow(wallet)
-        }
-
-        // Action Buttons
-        item {
-            WalletActionButtons(
-                walletId = walletId,
-                onRefillClick = onRefillClick,
-                onRefresh = { walletViewModel.loadWallet(walletId) }
-            )
-        }
-
-        // Recent Activity Section
-        item {
-            Text(
-                "Recent Activity",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = TextPrimary,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-
-        // Sample transactions
-        items(getSampleTransactions()) { transaction ->
-            WalletTransactionCard(transaction)
-        }
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 32.dp)
+        )
     }
 }
 

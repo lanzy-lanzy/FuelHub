@@ -27,6 +27,7 @@ import dev.ml.fuelhub.data.model.FuelType
 import dev.ml.fuelhub.data.model.GasSlipStatus
 import dev.ml.fuelhub.presentation.viewmodel.GasSlipUiState
 import dev.ml.fuelhub.presentation.viewmodel.GasSlipManagementViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 import java.time.format.DateTimeFormatter
@@ -58,13 +59,16 @@ fun GasSlipListScreen(
             .fillMaxSize()
             .background(DeepBlue)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Header
-            if (isBulkActionMode) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                // Header
+                if (isBulkActionMode) {
                 // Bulk Action Header
                 Row(
                     modifier = Modifier
@@ -462,6 +466,12 @@ fun GasSlipListScreen(
                 
                 else -> {}
             }
+            }
+            
+            // Floating Drawer Swipe Indicator
+            DrawerSwipeIndicator(
+                tintColor = VibrantCyan.copy(alpha = 0.7f)
+            )
         }
     }
 }

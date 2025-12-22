@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.ml.fuelhub.presentation.viewmodel.AuthViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,16 +56,19 @@ fun SettingsScreen(
         },
         containerColor = DeepBlue
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Profile Section
-            SettingsSection(title = "Account") {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Profile Section
+                SettingsSection(title = "Account") {
                 SettingItem(
                     icon = Icons.Default.Person,
                     title = "Profile Information",
@@ -131,9 +135,15 @@ fun SettingsScreen(
             }
             
             Spacer(modifier = Modifier.height(40.dp))
-        }
-    }
-}
+            }
+            
+            // Floating Drawer Swipe Indicator
+            DrawerSwipeIndicator(
+                tintColor = VibrantCyan.copy(alpha = 0.7f)
+            )
+            }
+            }
+            }
 
 @Composable
 fun SettingsSection(

@@ -37,6 +37,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import dev.ml.fuelhub.data.model.FuelType
 import dev.ml.fuelhub.data.model.TransactionStatus
 import dev.ml.fuelhub.presentation.viewmodel.ReportsViewModel
+import dev.ml.fuelhub.presentation.component.DrawerSwipeIndicator
 import dev.ml.fuelhub.ui.theme.*
 import timber.log.Timber
 import java.text.NumberFormat
@@ -136,6 +137,11 @@ fun ReportScreenEnhanced(
                 }
             }
         }
+        
+        // Floating Drawer Swipe Indicator
+        DrawerSwipeIndicator(
+            tintColor = VibrantCyan.copy(alpha = 0.7f)
+        )
         
         // Pull-to-refresh indicator
         PullRefreshIndicator(
