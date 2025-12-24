@@ -1,11 +1,17 @@
 package dev.ml.fuelhub.di
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.ml.fuelhub.data.firebase.FirebaseDataSource
 import dev.ml.fuelhub.data.repository.*
+import dev.ml.fuelhub.data.service.NotificationService
 import dev.ml.fuelhub.domain.repository.*
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -45,4 +51,26 @@ object RepositoryModule {
     fun provideAuthRepository(
         firebaseAuthRepository: FirebaseAuthRepository
     ): AuthRepository = firebaseAuthRepository
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(): NotificationRepository = 
+        FirebaseNotificationRepositoryImpl(FirebaseFirestore.getInstance())
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFunctions(): FirebaseFunctions = FirebaseFunctions.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideNotificationService(
+        firebaseFunctions: FirebaseFunctions,
+        firebaseAuth: FirebaseAuth
+    ): NotificationService {
+        return NotificationService(
+            functions = firebaseFunctions,
+            firebaseAuth = firebaseAuth,
+            firebaseDataSource = FirebaseDataSource
+        )
+    }
 }

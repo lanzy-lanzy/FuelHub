@@ -1,6 +1,7 @@
 package dev.ml.fuelhub
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -8,6 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.benchmark.traceprocessor.Row
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
@@ -168,6 +172,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Request POST_NOTIFICATIONS permission for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
         
         // Initialize image picker launcher
         imagePickerLauncher = registerForActivityResult(

@@ -3,6 +3,7 @@ package dev.ml.fuelhub.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.ml.fuelhub.domain.repository.AuthRepository
+import dev.ml.fuelhub.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import android.net.Uri
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.google.firebase.messaging.FirebaseMessaging
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -32,6 +34,7 @@ data class AuthUiState(
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -89,9 +92,42 @@ class AuthViewModel @Inject constructor(
                     )
                     _profilePictureUrl.value = profilePictureUrl
                     Timber.d("Fetched user role: $userRole, Profile picture: ${profilePictureUrl?.take(50)}...")
+                    
+                    // Store FCM token for push notifications
+                    storeFcmToken(userId)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch user role")
+            }
+        }
+    }
+    
+    /**
+     * Store FCM token for push notifications
+     * Called after user successfully logs in
+     */
+    private fun storeFcmToken(userId: String) {
+        Timber.d("📱 Storing FCM token for user: $userId")
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Timber.d("📱 FCM Token received: ${token.take(20)}...")
+                
+                // Store in Firestore
+                viewModelScope.launch {
+                    try {
+                        val success = notificationRepository.storeUserFcmToken(userId, token)
+                        if (success) {
+                            Timber.d("✓ FCM token stored successfully in Firestore")
+                        } else {
+                            Timber.w("✗ Failed to store FCM token")
+                        }
+                    } catch (e: Exception) {
+                        Timber.e(e, "❌ Error storing FCM token")
+                    }
+                }
+            } else {
+                Timber.e(task.exception, "❌ Failed to get FCM token")
             }
         }
     }

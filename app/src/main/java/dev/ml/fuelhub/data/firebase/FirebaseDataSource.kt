@@ -668,6 +668,33 @@ object FirebaseDataSource {
         }
     }
     
+    // ==================== FCM TOKEN OPERATIONS ====================
+    
+    suspend fun getFcmToken(userId: String): String = try {
+        val doc = db.collection("fcm_tokens")
+            .document(userId)
+            .get()
+            .await()
+        doc.getString("token") ?: ""
+    } catch (e: Exception) {
+        Timber.e(e, "Error getting FCM token for user: $userId")
+        ""
+    }
+    
+    suspend fun saveFcmToken(userId: String, token: String): Result<Unit> = try {
+        db.collection("fcm_tokens")
+            .document(userId)
+            .set(mapOf(
+                "token" to token,
+                "updatedAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+            ))
+            .await()
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Timber.e(e, "Error saving FCM token for user: $userId")
+        Result.failure(e)
+    }
+    
     // ==================== HELPER FUNCTIONS ====================
     
     private fun LocalDateTime.toDate(): Date {

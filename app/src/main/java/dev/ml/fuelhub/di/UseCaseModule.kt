@@ -23,14 +23,16 @@ object UseCaseModule {
         gasSlipRepository: GasSlipRepository,
         auditLogRepository: AuditLogRepository,
         vehicleRepository: VehicleRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        notificationRepository: NotificationRepository
     ): CreateFuelTransactionUseCase = CreateFuelTransactionUseCase(
         walletRepository = walletRepository,
         transactionRepository = transactionRepository,
         gasSlipRepository = gasSlipRepository,
         auditLogRepository = auditLogRepository,
         vehicleRepository = vehicleRepository,
-        userRepository = userRepository
+        userRepository = userRepository,
+        sendTransactionCreatedNotificationUseCase = SendTransactionCreatedNotificationUseCase(notificationRepository)
     )
     
     @Provides
@@ -71,5 +73,21 @@ object UseCaseModule {
     ): CompleteTransactionUseCase = CompleteTransactionUseCase(
         transactionRepository = transactionRepository,
         walletRepository = walletRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideSendTransactionCreatedNotificationUseCase(
+        notificationRepository: NotificationRepository
+    ): SendTransactionCreatedNotificationUseCase = SendTransactionCreatedNotificationUseCase(
+        notificationRepository = notificationRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideSendTransactionVerifiedNotificationUseCase(
+        notificationRepository: NotificationRepository
+    ): SendTransactionVerifiedNotificationUseCase = SendTransactionVerifiedNotificationUseCase(
+        notificationRepository = notificationRepository
     )
 }

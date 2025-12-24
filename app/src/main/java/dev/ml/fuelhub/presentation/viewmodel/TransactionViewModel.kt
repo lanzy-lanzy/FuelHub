@@ -17,6 +17,7 @@ import dev.ml.fuelhub.domain.repository.VehicleRepository
 import dev.ml.fuelhub.domain.repository.FuelTransactionRepository
 import dev.ml.fuelhub.domain.repository.FuelWalletRepository
 import dev.ml.fuelhub.domain.repository.GasSlipRepository
+import dev.ml.fuelhub.data.service.NotificationService
 import dev.ml.fuelhub.presentation.state.TransactionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +38,8 @@ class TransactionViewModel @Inject constructor(
     private val vehicleRepository: VehicleRepository,
     private val transactionRepository: FuelTransactionRepository,
     private val walletRepository: FuelWalletRepository,
-    private val gasSlipRepository: GasSlipRepository
+    private val gasSlipRepository: GasSlipRepository,
+    private val notificationService: NotificationService
 ) : ViewModel() {
      
     private val _uiState = MutableStateFlow<TransactionUiState>(TransactionUiState.Idle)
@@ -154,12 +156,27 @@ class TransactionViewModel @Inject constructor(
                 )
                 
                 val output = createFuelTransactionUseCase.execute(input)
+                val transaction = output.transaction
+                
                 _uiState.value = TransactionUiState.Success(
-                    transaction = output.transaction,
+                    transaction = transaction,
                     gasSlip = output.gasSlip,
                     newWalletBalance = output.newWalletBalance
                 )
-                Timber.d("Transaction created successfully: ${output.transaction.referenceNumber}")
+                
+                // Notify gas stations about the new transaction
+                Timber.d("🔔 Attempting to notify gas stations...")
+                val vehicle = vehicleRepository.getVehicleById(vehicleId)
+                Timber.d("Vehicle: ${vehicle?.plateNumber}")
+                notificationService.notifyGasStationsOnTransactionCreated(
+                    transactionId = transaction.id,
+                    referenceNumber = transaction.referenceNumber,
+                    vehiclePlateNumber = vehicle?.plateNumber ?: "Unknown",
+                    litersToPump = litersToPump
+                )
+                Timber.d("🔔 Notification request sent")
+                
+                Timber.d("Transaction created successfully: ${transaction.referenceNumber}")
             } catch (e: InsufficientFuelException) {
                 _uiState.value = TransactionUiState.Error("Insufficient fuel: ${e.message}")
                 Timber.e("Insufficient fuel: ${e.message}")

@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.ml.fuelhub.data.service.NotificationService
 import dev.ml.fuelhub.domain.usecase.*
 import dev.ml.fuelhub.domain.repository.*
 import dev.ml.fuelhub.presentation.viewmodel.*
@@ -25,7 +26,8 @@ object ViewModelModule {
         vehicleRepository: VehicleRepository,
         transactionRepository: FuelTransactionRepository,
         walletRepository: FuelWalletRepository,
-        gasSlipRepository: GasSlipRepository
+        gasSlipRepository: GasSlipRepository,
+        notificationService: NotificationService
     ): TransactionViewModel = TransactionViewModel(
         createFuelTransactionUseCase = createFuelTransactionUseCase,
         completeTransactionUseCase = completeTransactionUseCase,
@@ -33,7 +35,8 @@ object ViewModelModule {
         vehicleRepository = vehicleRepository,
         transactionRepository = transactionRepository,
         walletRepository = walletRepository,
-        gasSlipRepository = gasSlipRepository
+        gasSlipRepository = gasSlipRepository,
+        notificationService = notificationService
     )
     
     @Provides

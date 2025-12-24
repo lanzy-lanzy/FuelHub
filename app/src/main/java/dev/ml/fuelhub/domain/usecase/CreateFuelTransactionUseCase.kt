@@ -34,7 +34,8 @@ class CreateFuelTransactionUseCase(
     private val gasSlipRepository: GasSlipRepository,
     private val auditLogRepository: AuditLogRepository,
     private val vehicleRepository: VehicleRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val sendTransactionCreatedNotificationUseCase: SendTransactionCreatedNotificationUseCase? = null
 ) {
     
     data class CreateTransactionInput(
@@ -164,6 +165,18 @@ class CreateFuelTransactionUseCase(
             newBalance = newBalance,
             litersDifference = -input.litersToPump,
             description = "Fuel transaction created: ${input.litersToPump}L for ${input.tripPurpose}"
+        )
+
+        // 9. Send notification to gas station users
+        sendTransactionCreatedNotificationUseCase?.execute(
+            SendTransactionCreatedNotificationUseCase.Input(
+                transactionId = transactionId,
+                referenceNumber = referenceNumber,
+                vehicleType = vehicle.vehicleType,
+                litersToPump = input.litersToPump,
+                driverName = input.createdBy,
+                driverFullName = user?.fullName
+            )
         )
 
         return CreateTransactionOutput(

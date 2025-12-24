@@ -1,0 +1,272 @@
+================================================================================
+                    FCM NOTIFICATION ARCHITECTURE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          ANDROID APP SIDE                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────┐
+    │     FuelHubApplication.kt            │
+    │   Initializes Firebase & Timber      │
+    └──────────────────────────────────────┘
+                       │
+                       ↓
+    ┌──────────────────────────────────────┐
+    │    FuelHubMessagingService.kt        │
+    │  (FirebaseMessagingService extends)  │
+    │                                      │
+    │  • onMessageReceived()               │
+    │    → Shows notification              │
+    │    → Stores in Firestore             │
+    │                                      │
+    │  • onNewToken()                      │
+    │    → Stores in SharedPreferences     │
+    │    → Calls sendTokenToServer()       │
+    └──────────────────────────────────────┘
+                       │
+                       ↓
+    ┌──────────────────────────────────────┐
+    │    AuthViewModel.kt                  │
+    │                                      │
+    │  When user logs in:                  │
+    │  1. Get FCM token                    │
+    │  2. Call storeFcmToken()             │
+    │  3. Token saved to Firestore         │
+    └──────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        FIREBASE BACKEND SIDE                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────┐
+    │      Firestore Database              │
+    │                                      │
+    │  Collections:                        │
+    │  ├─ users/                           │
+    │  │  ├─ {userId}/                     │
+    │  │  │  ├─ notifications/             │
+    │  │  │  │  └─ {notificationId}        │
+    │  │  │  └─ fcmToken (field)           │
+    │  │                                   │
+    │  ├─ fcm_tokens/                      │
+    │  │  └─ {userId}                      │
+    │  │     └─ token: "abc123..."         │
+    │  │                                   │
+    │  └─ notifications/                   │
+    │     └─ {notificationId}              │
+    │        ├─ userId                     │
+    │        ├─ title                      │
+    │        ├─ body                       │
+    │        ├─ type                       │
+    │        └─ sentAt                     │
+    └──────────────────────────────────────┘
+                       │
+                       ↓
+    ┌──────────────────────────────────────┐
+    │   Cloud Functions (4 functions)      │
+    │                                      │
+    │  1. sendNotification()               │
+    │     (HTTP Callable)                  │
+    │     Input: token, title, body        │
+    │     → Sends via FCM Admin SDK        │
+    │                                      │
+    │  2. sendNotificationToRole()         │
+    │     (HTTP Callable)                  │
+    │     Input: role, title, body         │
+    │     → Queries users with role        │
+    │     → Sends to each                  │
+    │                                      │
+    │  3. onTransactionCreated()           │
+    │     (Firestore Trigger)              │
+    │     Trigger: new transaction         │
+    │     → Get driver FCM token           │
+    │     → Send notification              │
+    │                                      │
+    │  4. onTransactionVerified()          │
+    │     (Firestore Trigger)              │
+    │     Trigger: status = verified       │
+    │     → Notify driver                  │
+    │     → Notify gas station staff       │
+    └──────────────────────────────────────┘
+                       │
+                       ↓
+    ┌──────────────────────────────────────┐
+    │     Firebase Cloud Messaging         │
+    │     (FCM Service)                    │
+    │                                      │
+    │  • Receives messages from Cloud Fn   │
+    │  • Manages device tokens             │
+    │  • Sends push notifications          │
+    │  • Handles delivery tracking         │
+    └──────────────────────────────────────┘
+                       │
+                       ↓
+    ┌──────────────────────────────────────┐
+    │    Google Cloud Infrastructure       │
+    │    (Routes to device)                │
+    └──────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      NOTIFICATION FLOW (EXAMPLE)                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+SCENARIO: Gas Station creates a transaction → Driver should be notified
+
+     ┌─────────────────────────────────────────────────┐
+     │  Gas Station Staff (app or web)                 │
+     │  Creates Transaction in Firestore               │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  Firestore: transactions/{id} created           │
+     │  Field: driverId = "driver123"                  │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  Cloud Function: onTransactionCreated()         │
+     │  Trigger: Document created                      │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  Cloud Function:                                │
+     │  1. Get driverId from transaction               │
+     │  2. Query fcm_tokens/driver123                  │
+     │  3. Get token: "eO6mN5i..."                     │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  FCM Message:                                   │
+     │  {                                              │
+     │    token: "eO6mN5i...",                         │
+     │    notification: {                              │
+     │      title: "New Transaction",                  │
+     │      body: "You have a new gas slip"            │
+     │    },                                           │
+     │    data: {                                      │
+     │      type: "TRANSACTION_CREATED",               │
+     │      transactionId: "tx_123"                    │
+     │    }                                            │
+     │  }                                              │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  FCM Service (Google Cloud)                     │
+     │  Routes message to device with token            │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  Driver's Device (Android)                      │
+     │  Receives push notification                     │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  FuelHubMessagingService.onMessageReceived()    │
+     │  • Parse message                                │
+     │  • Create notification                          │
+     │  • Store in Firestore (optional)                │
+     │  • Show in system tray                          │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  System Notification Tray                       │
+     │  "New Transaction"                              │
+     │  "You have a new gas slip"                      │
+     │  [DISMISS]  [ACTION]                            │
+     └─────────────────────────────────────────────────┘
+                            │
+                            ↓
+     ┌─────────────────────────────────────────────────┐
+     │  Driver Taps Notification                       │
+     │  App Opens → Transaction Screen                 │
+     │  (Can add deep linking for specific transaction)│
+     └─────────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       DATA FLOW DIAGRAM (DETAILED)                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+   ┌──────────────────────┐
+   │ User Logs In         │
+   └──────────────────────┘
+            │
+            ↓
+   ┌──────────────────────────────────────────────┐
+   │ AuthViewModel.kt                             │
+   │ onLoginSuccess()                             │
+   │ • Call storeFcmToken(userId)                 │
+   └──────────────────────────────────────────────┘
+            │
+            ↓
+   ┌──────────────────────────────────────────────┐
+   │ Get FCM Token from Firebase Messaging        │
+   │ FirebaseMessaging.getInstance().token        │
+   └──────────────────────────────────────────────┘
+            │
+            ↓
+   ┌──────────────────────────────────────────────┐
+   │ NotificationRepository.storeUserFcmToken()   │
+   │ • Store in Firestore: fcm_tokens/{userId}    │
+   │ • Update user doc: fcmToken field            │
+   └──────────────────────────────────────────────┘
+            │
+            ↓
+   ┌──────────────────────────────────────────────┐
+   │ Ready to Receive Notifications               │
+   │ Device is registered with FCM                │
+   └──────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    HOW TO SEND NOTIFICATION FROM APP CODE                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+In your ViewModel or Repository:
+
+    notificationRepository.sendNotification(
+        userId = "driver123",
+        title = "New Transaction",
+        body = "You have a new gas slip waiting",
+        notificationType = NotificationType.TRANSACTION_CREATED,
+        transactionId = "tx_456",
+        referenceNumber = "REF_789"
+    )
+
+This will:
+1. Store notification in Firestore
+2. Get driver's FCM token from firestore
+3. Call Cloud Function: sendNotification()
+4. Cloud Function sends FCM message to device
+5. Device receives and shows notification
+
+
+================================================================================
+                           COMPONENTS CHECKLIST
+================================================================================
+
+✅ ANDROID APP (Completed)
+  ├─ FuelHubMessagingService.kt (handles incoming messages)
+  ├─ FirebaseNotificationRepositoryImpl.kt (sends notifications)
+  ├─ AuthViewModel.kt (stores token on login)
+  ├─ AndroidManifest.xml (service declaration + permissions)
+  ├─ build.gradle.kts (dependencies added)
+  └─ FuelHubApplication.kt (Firebase initialized)
+
+⏳ FIREBASE BACKEND (To Deploy)
+  ├─ Cloud Functions (4 functions)
+  ├─ Firestore Rules (fcm_tokens collection)
+  └─ Firestore Collections (created automatically)
+
+
+================================================================================

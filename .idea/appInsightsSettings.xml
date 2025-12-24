@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="dev.ml.fuelhub" />
-                  <option name="mobileSdkAppId" value="1:244724940436:android:104d24abcc7e443d367e81" />
-                  <option name="projectId" value="drrfuel" />
-                  <option name="projectNumber" value="244724940436" />
+                  <option name="mobileSdkAppId" value="1:374039000206:android:d5db1e40e5af08ae6b85df" />
+                  <option name="projectId" value="fueltracker-7c395" />
+                  <option name="projectNumber" value="374039000206" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
