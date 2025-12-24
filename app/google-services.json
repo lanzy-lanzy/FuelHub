@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "244724940436",
-    "project_id": "drrfuel",
-    "storage_bucket": "drrfuel.firebasestorage.app"
+    "project_number": "374039000206",
+    "project_id": "fueltracker-7c395",
+    "storage_bucket": "fueltracker-7c395.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:244724940436:android:104d24abcc7e443d367e81",
+        "mobilesdk_app_id": "1:374039000206:android:3d93252936f87b036b85df",
+        "android_client_info": {
+          "package_name": "com.drr.fueltracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUvIfUZ5sgf9bAyW-XGJd4MlYQl1mZSEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374039000206:android:d5db1e40e5af08ae6b85df",
         "android_client_info": {
           "package_name": "dev.ml.fuelhub"
         }
@@ -15,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCmaBkb5RiDJrykVVnfwMal3JM7xjHIFGs"
+          "current_key": "AIzaSyAUvIfUZ5sgf9bAyW-XGJd4MlYQl1mZSEA"
         }
       ],
       "services": {
