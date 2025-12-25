@@ -311,6 +311,8 @@ fun FuelHubApp(
     if (currentRoute != "gasstation") {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            scrimColor = if (currentRoute in listOf("login", "register")) Color.Transparent else Color.Black.copy(alpha = 0.32f),
+            gesturesEnabled = currentRoute !in listOf("login", "register"),
             drawerContent = {
                 ModalDrawerSheet(
                     drawerContainerColor = SurfaceDark,
