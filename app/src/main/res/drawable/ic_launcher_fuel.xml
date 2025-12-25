@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background square (DeepBlue) -->
+    <path
+        android:pathData="M0,0 L108,0 L108,108 L0,108 Z"
+        android:fillColor="#0A1929" />
+
+    <!-- Gradient overlay (DarkNavy) -->
+    <path
+        android:pathData="M0,0 L108,0 Q108,0 108,0 L108,108 Q108,108 0,108 L0,0 Q0,0 0,0 Z"
+        android:fillColor="#1A2332"
+        android:alpha="0.5" />
+
+    <!-- Main fuel pump shape (VibrantCyan) -->
+    <path
+        android:pathData="M54,25 C42.95,25 34,33.95 34,45 L34,75 C34,86.05 42.95,95 54,95 C65.05,95 74,86.05 74,75 L74,45 C74,33.95 65.05,25 54,25 M54,32 C61.18,32 67,37.82 67,45 L67,75 C67,82.18 61.18,88 54,88 C46.82,88 41,82.18 41,75 L41,45 C41,37.82 46.82,32 54,32 M49,50 L59,50 C60.1,50 61,50.9 61,52 L61,55 C61,56.1 60.1,57 59,57 L49,57 C47.9,57 47,56.1 47,55 L47,52 C47,50.9 47.9,50 49,50 Z"
+        android:fillColor="#00D4FF" />
+
+    <!-- Left accent dot (smaller circle as path) -->
+    <path
+        android:pathData="M32,37 C30.9,37 30,37.9 30,39 C30,40.1 30.9,41 32,41 C33.1,41 34,40.1 34,39 C34,37.9 33.1,37 32,37 Z"
+        android:fillColor="#00D4FF"
+        android:alpha="0.7" />
+
+    <!-- Right accent dot (smaller circle as path) -->
+    <path
+        android:pathData="M74,57 C73.2,57 72.5,57.4 72.2,58 C71.9,58.6 71.9,59.4 72.2,60 C72.5,60.6 73.2,61 74,61 C74.8,61 75.5,60.6 75.8,60 C76.1,59.4 76.1,58.6 75.8,58 C75.5,57.4 74.8,57 74,57 Z"
+        android:fillColor="#00D4FF"
+        android:alpha="0.5" />
+
+</vector>

@@ -219,6 +219,21 @@ class TransactionViewModel @Inject constructor(
                     Timber.w("No gas slip found for transaction $transactionId")
                 }
                 
+                // Send notification when fuel is successfully dispensed
+                try {
+                    val vehicle = vehicleRepository.getVehicleById(transaction.vehicleId)
+                    val vehiclePlate = vehicle?.plateNumber ?: "Unknown"
+                    
+                    notificationService.notifyGasStationsOnSuccessfulDispense(
+                        referenceNumber = transaction.referenceNumber,
+                        litersPumped = transaction.litersToPump,
+                        vehiclePlate = vehiclePlate
+                    )
+                    Timber.d("🔔 Dispense success notification sent for ${transaction.referenceNumber}")
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to send dispense notification")
+                }
+                
                 loadTransactionHistory()
                 Timber.d("Transaction $transactionId marked as DISPENSED")
             } catch (e: Exception) {

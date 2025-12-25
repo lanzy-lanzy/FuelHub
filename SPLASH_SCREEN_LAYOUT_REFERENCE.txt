@@ -1,0 +1,214 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                 FUELHUB SPLASH SCREEN - LAYOUT REFERENCE              ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+VISUAL HIERARCHY (Top to Bottom):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                                                                     │
+│  ◌ DECORATIVE BLOB (Top Right, 280x280dp, Alpha 0.08)              │
+│  Positioned: -80dp top, -80dp end                                   │
+│  Color: Vibrant Cyan (#00D9FF)                                      │
+│                                                                     │
+│                                                                     │
+│                    ┌──────────────────────┐                         │
+│                    │   [ICON CARD]        │ 160x160dp               │
+│                    │  ╔════════════════╗  │ Rounded: 40dp           │
+│                    │  ║  ⛽ ICON ⛽    ║  │ Background: White       │
+│                    │  ║  (100x100dp)  ║  │ Centered               │
+│                    │  ║  No Tinting    ║  │ Animation:             │
+│                    │  ╚════════════════╝  │ Scale 1.0→1.1          │
+│                    │                      │ Float (up/down)        │
+│                    └──────────────────────┘                         │
+│                                                                     │
+│                      FUELHUB                   Size: 52sp           │
+│                      (Bold, Cyan)              Color: #00D9FF      │
+│                                                                     │
+│                   Smart Fuel Management       Size: 15sp           │
+│                   (Medium, Teal)              Color: #1DD1A1      │
+│                      Alpha: 0.85                                   │
+│                                                                     │
+│                      ─────────────            Width: 50dp          │
+│                   (Gradient Line)             Height: 2dp         │
+│                                               Animation: Breathe   │
+│                                                                     │
+│ ◌ DECORATIVE BLOB (Bottom Left, 320x320dp, Alpha 0.1)              │
+│ Positioned: -100dp bottom, -100dp start                             │
+│ Color: Teal (#1DD1A1)                                               │
+│                                                                     │
+│                        ⟳                    Size: 80x80dp          │
+│                    [LOADING]                 Animation:            │
+│                    Progress + Dot            Pulse + Float        │
+│                      • Orange                Duration: 1200ms     │
+│                                                                     │
+│                      Loading...              Size: 12sp            │
+│                                              Color: Teal (#1DD1A1)│
+│                                              Alpha: 0.6            │
+│                                              Animation: Breathe    │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+KEY METRICS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Screen Layout:
+  ├─ Top Padding: Dynamic (decorative blob)
+  ├─ Icon Card Container:
+  │  ├─ Width: 160dp
+  │  ├─ Height: 160dp
+  │  ├─ Margin Bottom: 40dp
+  │  ├─ Border Radius: 40dp
+  │  └─ Icon Inside:
+  │     ├─ Width: 100dp
+  │     ├─ Height: 100dp
+  │     ├─ Centered: Yes
+  │     └─ Tint: @null (NO TINTING)
+  │
+  ├─ Branding Section:
+  │  ├─ App Name:
+  │  │  ├─ Size: 52sp
+  │  │  ├─ Weight: Bold
+  │  │  ├─ Color: #00D9FF (Cyan)
+  │  │  └─ Letter-Spacing: 0.01
+  │  │
+  │  ├─ Tagline:
+  │  │  ├─ Size: 15sp
+  │  │  ├─ Weight: Medium
+  │  │  ├─ Color: #1DD1A1 (Teal)
+  │  │  └─ Alpha: 0.85
+  │  │
+  │  └─ Separator Line:
+  │     ├─ Width: 50dp
+  │     ├─ Height: 2dp
+  │     ├─ Color: Gradient (Cyan → Teal)
+  │     └─ Margin: 8dp bottom
+  │
+  ├─ Spacer (Flexible): Pushes loading to bottom
+  │
+  └─ Loading Section:
+     ├─ Container: 80x80dp
+     ├─ Margin Bottom: 60dp
+     ├─ Progress Bar: 50x50dp
+     │  ├─ Stroke: 3dp
+     │  ├─ Color: Cyan
+     │  └─ Animation: Circular indeterminate
+     ├─ Center Dot: 12x12dp
+     │  ├─ Shape: Circle
+     │  ├─ Color: #FF6B35 (Orange)
+     │  └─ Centered: Yes
+     └─ Loading Text:
+        ├─ Size: 12sp
+        ├─ Color: Teal (#1DD1A1)
+        └─ Alpha: 0.6
+
+ANIMATIONS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Icon Card:
+  ├─ Scale Animation:
+  │  ├─ From: 1.0
+  │  ├─ To: 1.1
+  │  ├─ Duration: 1500ms
+  │  ├─ Easing: FastOutSlowInEasing
+  │  └─ Repeat: Reverse (Infinite)
+  │
+  ├─ Float Animation:
+  │  ├─ Offset: 0 → 15dp
+  │  ├─ Duration: 2000ms
+  │  ├─ Easing: FastOutSlowInEasing
+  │  └─ Repeat: Reverse (Infinite)
+  │
+  └─ Combined Effect:
+     └─ Smooth pulsing with gentle vertical bounce
+
+Background Blobs:
+  ├─ Opacity Animation:
+  │  ├─ From: 0.3
+  │  ├─ To: 0.8
+  │  ├─ Duration: 1800ms
+  │  ├─ Easing: FastOutSlowInEasing
+  │  └─ Repeat: Reverse (Infinite)
+  │
+  └─ Effect: Subtle breathing animation
+
+Loading Indicator:
+  ├─ Opacity Animation:
+  │  ├─ From: 0.6
+  │  ├─ To: 1.0
+  │  ├─ Duration: 1200ms
+  │  ├─ Easing: FastOutSlowInEasing
+  │  └─ Repeat: Reverse (Infinite)
+  │
+  └─ Built-in: CircularProgressIndicator (rotating)
+
+COLORS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Background:
+  ├─ Start: #0A1929 (Deep Blue)
+  ├─ End: #0D1B2A (Dark Navy)
+  └─ Gradient: Vertical (135° angle)
+
+Primary Accent:
+  ├─ Color: #00D9FF (Vibrant Cyan)
+  └─ Usage: App name, progress bar, decorative line
+
+Secondary Accent:
+  ├─ Color: #1DD1A1 (Neon Teal)
+  └─ Usage: Tagline, loading text, blob circles
+
+Highlight:
+  ├─ Color: #FF6B35 (Accent Orange)
+  └─ Usage: Progress dot center
+
+Cards & Surfaces:
+  ├─ Color: #FFFFFF (White)
+  └─ Usage: Icon card background
+
+RESPONSIVE DESIGN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ All measurements in DP (density-independent pixels)
+✓ Horizontal centering for all elements
+✓ Flexible spacer accommodates different screen heights
+✓ Padding scaled proportionally
+✓ Works on all screen sizes (phones, tablets, foldables)
+
+TIMING & DURATION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Splash Display Duration: 3000ms (3 seconds)
+  ├─ Icon Scale Duration: 1500ms (repeating)
+  ├─ Float Offset Duration: 2000ms (repeating)
+  ├─ Accent Alpha Duration: 1800ms (repeating)
+  ├─ Loading Alpha Duration: 1200ms (repeating)
+  └─ All animations loop infinitely until app transitions
+
+TRANSITION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Event: 3000ms after launch
+Action: Launch MainActivity
+Animation: Fade in/out transition
+Duration: System default (~300ms)
+
+TINTING FIX:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE (Tinted):
+  ❌ Icon colors changed by theme
+  ❌ Unwanted color shifting
+  ❌ Illustration unclear
+
+AFTER (Fixed):
+  ✅ android:tint="@null" applied
+  ✅ Original SVG colors preserved
+  ✅ Icon displays as designed
+  ✅ Professional appearance
+
+═══════════════════════════════════════════════════════════════════════════════
+
+This layout creates a modern, professional, and interactive splash screen
+that properly displays icons, features smooth animations, and provides
+premium visual feedback to users during app launch.

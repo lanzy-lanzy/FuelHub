@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Fuel pump nozzle top (orange) -->
+    <path
+        android:pathData="M90,30 L110,30 L110,50 Q110,55 105,55 L95,55 Q90,55 90,50 Z"
+        android:fillColor="#FF6B35" />
+
+    <!-- Pump body/column (blue) -->
+    <path
+        android:pathData="M80,55 L120,55 L120,120 Q120,130 110,135 L90,135 Q80,130 80,120 Z"
+        android:fillColor="#1E90FF" />
+
+    <!-- Display screen (cyan) -->
+    <path
+        android:pathData="M90,65 L110,65 L110,80 L90,80 Z"
+        android:fillColor="#00D4FF" />
+
+    <!-- Display text lines (dark) -->
+    <path
+        android:pathData="M92,68 L108,68"
+        android:strokeColor="#0A1929"
+        android:strokeWidth="1"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M92,72 L108,72"
+        android:strokeColor="#0A1929"
+        android:strokeWidth="1"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M92,76 L108,76"
+        android:strokeColor="#0A1929"
+        android:strokeWidth="1"
+        android:strokeLineCap="round" />
+
+    <!-- Handle (blue) -->
+    <path
+        android:pathData="M75,90 Q70,90 70,100 L70,120 Q70,130 75,130 L80,130 L80,90 Z"
+        android:fillColor="#1E90FF" />
+
+    <!-- Nozzle attachment point (cyan) -->
+    <path
+        android:pathData="M67,135 C67,139.42 70.58,143 75,143 C79.42,143 83,139.42 83,135 C83,130.58 79.42,127 75,127 C70.58,127 67,130.58 67,135 Z"
+        android:fillColor="#00D4FF" />
+
+    <!-- Fuel stream left (orange) -->
+    <path
+        android:pathData="M73,143 Q70,155 72,165"
+        android:strokeColor="#FF6B35"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+
+    <!-- Fuel stream right (orange) -->
+    <path
+        android:pathData="M77,143 Q75,155 78,165"
+        android:strokeColor="#FF6B35"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+
+    <!-- Base platform (cyan) -->
+    <path
+        android:pathData="M60,160 L140,160 L140,170 L60,170 Z"
+        android:fillColor="#00D4FF" />
+
+    <!-- Left support leg (blue) -->
+    <path
+        android:pathData="M70,170 L80,170 L80,190 L70,190 Z"
+        android:fillColor="#1E90FF" />
+
+    <!-- Right support leg (blue) -->
+    <path
+        android:pathData="M120,170 L130,170 L130,190 L120,190 Z"
+        android:fillColor="#1E90FF" />
+
+    <!-- Decorative accent line 1 (cyan) -->
+    <path
+        android:pathData="M85,120 L115,120"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+    <!-- Decorative accent line 2 (cyan) -->
+    <path
+        android:pathData="M85,128 L115,128"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+</vector>

@@ -163,6 +163,33 @@ class NotificationService(
     }
 
     /**
+     * Notify all GAS_STATION operators when fuel is successfully dispensed via QR code scan.
+     * 
+     * @param referenceNumber Transaction reference number
+     * @param litersPumped Amount of fuel dispensed
+     * @param vehiclePlate Vehicle plate number
+     */
+    suspend fun notifyGasStationsOnSuccessfulDispense(
+        referenceNumber: String,
+        litersPumped: Double,
+        vehiclePlate: String
+    ) {
+        try {
+            val title = "✓ Fuel Dispensed Successfully"
+            val body = "Transaction #$referenceNumber: $litersPumped L dispensed for $vehiclePlate"
+
+            sendNotificationToGasStations(
+                title = title,
+                body = body,
+                type = "TRANSACTION_DISPENSED"
+            )
+            Timber.d("Dispense success notification sent for: $referenceNumber")
+        } catch (e: Exception) {
+            Timber.e(e, "Error sending dispense success notification")
+        }
+    }
+
+    /**
      * Send notification to a specific gas station by user ID.
      * This will fetch the user's FCM token from Firestore and send the notification.
      * 

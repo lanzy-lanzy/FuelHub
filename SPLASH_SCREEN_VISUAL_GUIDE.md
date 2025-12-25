@@ -1,432 +1,151 @@
-# Splash Screen Visual Guide
+# Splash Screen Visual Design Guide
 
-## Color Palette Breakdown
-
-```
-MODERN PREMIUM THEME
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-PRIMARY COLORS (Background)
-┌────────────────────────────────┐
-│ Deep Blue      #0A1929         │  ← Used for main background
-│ 10, 25, 41 (RGB)              │
-└────────────────────────────────┘
-
-┌────────────────────────────────┐
-│ Dark Navy      #0D1B2A         │  ← Used for gradient endpoint
-│ 13, 27, 42 (RGB)              │
-└────────────────────────────────┘
-
-ACCENT COLORS (Interactive)
-┌────────────────────────────────┐
-│ Vibrant Cyan   #00D9FF         │  ← App name, progress
-│ 0, 217, 255 (RGB)             │  Premium, attention-grabbing
-└────────────────────────────────┘
-
-┌────────────────────────────────┐
-│ Electric Blue  #0099FF         │  ← Icon gradient start
-│ 0, 153, 255 (RGB)             │  Bold, modern
-└────────────────────────────────┘
-
-┌────────────────────────────────┐
-│ Neon Teal      #00FFD1         │  ← Tagline, decorative
-│ 0, 255, 209 (RGB)             │  Fresh, tech-forward
-└────────────────────────────────┘
-
-┌────────────────────────────────┐
-│ Accent Orange  #FF6B35         │  ← Loading pulse, interactive
-│ 255, 107, 53 (RGB)            │  Warm, energetic
-└────────────────────────────────┘
-```
-
----
-
-## Layout Structure
+## Layout Structure (Top to Bottom)
 
 ```
-FULL SCREEN (1080x2400 pixels typical)
-┌────────────────────────────────────────┐
-│                                        │
-│    ◯ (TopEnd)                          │  ← Cyan circle, 10% opacity
-│    Cyan Circle                         │     100x100dp
-│    100dp x 100dp                       │
-│                                        │
-│                                        │
-│        ┌──────────────────────┐       │
-│        │  Animated Rings      │       │
-│        │  (Pulsing)           │       │
-│        │                      │       │
-│        │  ┌────────────────┐  │       │  ← Electric Blue gradient
-│        │  │ White Box      │  │       │  ← Rounded square (40dp)
-│        │  │  with Icon     │  │       │
-│        │  │      ⛽       │  │       │
-│        │  │  70sp emoji    │  │       │
-│        │  └────────────────┘  │       │
-│        │                      │       │
-│        └──────────────────────┘       │
-│                                        │
-│          FuelHub                       │  ← Vibrant Cyan
-│       (44sp, Bold)                    │
-│                                        │
-│   Smart Fuel Management                │  ← Neon Teal (15sp)
-│   ────────────────────                 │  ← Gradient line separator
-│                                        │
-│          (Vertical Space)              │
-│                                        │
-│         ◯ (Loading Ring)               │  ← Pulsing orange
-│        ◯◯◯◯◯◯◯◯◯                     │
-│       ◯ ◉◉◉◉◉◉◉◉◉ ◯                 │  ← Spinning cyan progress
-│      ◯ ◉ ◾ ◉ ◯                      │  ← Center orange dot
-│       ◯ ◉◉◉◉◉◉◉◉◉ ◯                 │
-│        ◯◯◯◯◯◯◯◯◯                     │
-│                                        │
-│       Loading...                       │  ← Neon Teal, fading
-│                                        │
-│                                        │
-│    ◯ (BottomStart)                     │  ← Teal circle, 10% opacity
-│    Teal Circle                         │     120x120dp
-│    120dp x 120dp                       │
-└────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│                                         │
+│  ╱╲ GRADIENT BACKGROUND ╱╲             │
+│  Modern diagonal gradient (45°)         │
+│  Deep Blue → Dark Navy → Cyan           │
+│                                         │
+│  ╔═══════════════════════════════╗     │
+│  ║  ◯  ICON CONTAINER            ║     │
+│  ║  ╚═══════════════════════════╝     │
+│  ║    • Shadow circle behind      ║     │
+│  ║    • Fuel Station Illustration ║     │
+│  ║    • 220x220dp centered        ║     │
+│  ║    • NO TINTING applied        ║     │
+│  ╚═══════════════════════════════╝     │
+│                                         │
+│          FUELHUB                        │ (48sp, Bold, Cyan-ish tint)
+│                                         │
+│    Smart Fuel Management Solution      │ (14sp, Alpha 0.75)
+│                                         │
+│            ━━━━━━━━                    │ (Accent line separator)
+│                                         │
+│         ⧖ LOADING...                   │ (40x40dp ProgressBar)
+│                                         │
+│          Loading...                    │ (12sp, Alpha 0.6)
+│                                         │
+└─────────────────────────────────────────┘
 ```
 
----
+## Color Palette
 
-## Animation Timeline Visualization
+| Element | Color | Hex Code | Purpose |
+|---------|-------|----------|---------|
+| Primary Background | Deep Blue | #0A1929 | Main gradient start |
+| Secondary Background | Dark Navy | #0D1B2A | Gradient transition |
+| Accent | Vibrant Cyan | #00D9FF | Highlights & separators |
+| Text | White | #FFFFFF | All text elements |
 
-```
-ANIMATION CYCLE (Repeating)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## Sizing & Spacing
 
-0ms       Icon Scale (1500ms cycle)
-│         1.0x ─→ 1.1x ─→ 1.0x
-├─────┬────────────────────────────┬──────────────
-│     ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁              │
-└─────┴────────────────────────────┴──────────────
-      (breathing pulse)
+| Element | Size | Notes |
+|---------|------|-------|
+| Icon Container | 250x250dp | Outer frame |
+| Icon | 220x220dp | Centered, scalable |
+| App Name | 48sp | Bold, letter-spaced |
+| Tagline | 14sp | Secondary text |
+| Separator Line | 40dp width, 3dp height | Accent color |
+| Progress Bar | 40x40dp | Animated indicator |
+| Padding (Top) | 60dp | From content area bottom |
+| Padding (Bottom) | 40dp | From loading indicator |
 
-0ms       Float Animation (2000ms cycle)  
-│         0dp → 15dp ↓ → 0dp ↑
-├──────┬────────────────────────────┬─────────────
-│      ╱╲                          ╱╲           │
-│     ╱  ╲                        ╱  ╲          │
-└─────┴────────────────────────────┴─────────────
-      (smooth float motion)
+## Key Design Principles
 
-0ms       Accent Ring Alpha (1800ms cycle)
-│         0.3 → 0.8 → 0.3
-├────┬────────────────────────────┬────────────
-│    ░░░▓▓▓▓▓▓▓▓▓▓▓░░░░░          │
-└────┴────────────────────────────┴────────────
-     (pulsing visibility)
-
-0ms       Loading Alpha (1200ms cycle)
-│         0.6 → 1.0 → 0.6
-├──┬──────────────────────┬──────────────────
-│  ░░▓▓▓▓▓▓▓▓▓▓░░░░░      │
-└──┴──────────────────────┴──────────────────
-   (fading in/out)
-
-Total Duration: 3000ms (3 seconds)
-Then transition to MainActivity with fade animation
+### 1. **No Icon Tinting**
+```xml
+<ImageView
+    android:src="@drawable/fuel_station_rafiki"
+    android:tint="@null" />  <!-- Prevents theme tinting -->
 ```
 
----
+### 2. **Visual Hierarchy**
+- Large icon draws attention first
+- App name is prominent (48sp, bold)
+- Tagline provides context (smaller, subtle)
+- Loading indicator at bottom (non-intrusive)
 
-## Color Usage by Component
+### 3. **Modern Aesthetics**
+- Diagonal gradient (45° angle) suggests movement/progress
+- Subtle shadow effect adds depth
+- Decorative separator line breaks visual monotony
+- Proper whitespace creates breathing room
 
-```
-COMPONENT BREAKDOWN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+### 4. **Professional Typography**
+- Letter-spacing: 0.02 (premium feel)
+- Line-spacing: 1.4 (better readability)
+- Consistent font hierarchy (48sp → 14sp → 12sp)
+- High contrast (white on dark background)
 
-┌─ BACKGROUND ─────────────────────────────────┐
-│  Deep Blue (#0A1929) → Dark Navy (#0D1B2A)   │
-│  Vertical gradient for depth                  │
-│  Creates premium, professional feel           │
-└──────────────────────────────────────────────┘
+### 5. **Responsive Design**
+- Uses DP units (density-independent pixels)
+- Supports all screen sizes
+- Centered layout works in portrait/landscape
+- Padding scales appropriately
 
-┌─ DECORATIVE CIRCLES ──────────────────────────┐
-│  Top-Right: Cyan (#00D9FF) @ 10% opacity     │
-│  Bottom-Left: Teal (#00FFD1) @ 10% opacity   │
-│  Subtle visual interest without clutter       │
-└──────────────────────────────────────────────┘
+## Animation & Interaction
 
-┌─ ICON CONTAINER BORDER ───────────────────────┐
-│  Gradient: Electric Blue → Vibrant Cyan      │
-│  Rounded Square (40dp radius)                │
-│  Animated with scale & float effects          │
-└──────────────────────────────────────────────┘
+### Progress Bar
+- 40x40dp circular progress indicator
+- Smooth indeterminate animation
+- Cyan accent tint for brand consistency
+- Margin: 12dp above "Loading..." text
 
-┌─ ICON INNER BOX ──────────────────────────────┐
-│  White (#FFFFFF @ 95% opacity)               │
-│  Rounded Square (35dp radius)                │
-│  Centered gas pump emoji (70sp)              │
-└──────────────────────────────────────────────┘
+### Gradient Background
+- No animation (static for stability)
+- Smooth color transitions via centerColor
+- Decorative shapes provide visual interest
 
-┌─ APP NAME TEXT ───────────────────────────────┐
-│  Color: Vibrant Cyan (#00D9FF)               │
-│  Size: 44sp | Weight: ExtraBold              │
-│  Primary branding element                    │
-└──────────────────────────────────────────────┘
+## Professional Touches
 
-┌─ TAGLINE TEXT ────────────────────────────────┐
-│  Color: Neon Teal (#00FFD1) @ 85% opacity   │
-│  Size: 15sp | Weight: Medium                 │
-│  Descriptive subtitle                        │
-└──────────────────────────────────────────────┘
+✨ **Depth**: Shadow circle behind icon
+✨ **Elegance**: Diagonal gradient with smooth transitions
+✨ **Clarity**: High contrast text on dark background
+✨ **Balance**: Proper spacing and alignment
+✨ **Authenticity**: Original SVG colors (no tinting)
+✨ **Polish**: Decorative separator line
+✨ **Feedback**: Loading indicator + label
 
-┌─ SEPARATOR LINE ──────────────────────────────┐
-│  Gradient: Blue → Cyan → Teal                │
-│  Width: 60dp | Height: 2dp                   │
-│  Decorative element below tagline            │
-└──────────────────────────────────────────────┘
+## Implementation Notes
 
-┌─ LOADING OUTER RING ──────────────────────────┐
-│  Color: Accent Orange (#FF6B35)              │
-│  Size: 70dp circle                           │
-│  Pulsing alpha animation                     │
-└──────────────────────────────────────────────┘
-
-┌─ LOADING SPINNER ─────────────────────────────┐
-│  Color: Vibrant Cyan (#00D9FF)               │
-│  Size: 50dp circle                           │
-│  Stroke: 3dp width                           │
-│  Rotating progress indicator                 │
-└──────────────────────────────────────────────┘
-
-┌─ CENTER DOT ──────────────────────────────────┐
-│  Color: Accent Orange (#FF6B35)              │
-│  Size: 8dp circle                            │
-│  Centered in loading area                    │
-└──────────────────────────────────────────────┘
-
-┌─ LOADING TEXT ────────────────────────────────┐
-│  Text: "Loading..."                          │
-│  Color: Neon Teal (#00FFD1) @ 60% opacity   │
-│  Size: 12sp | Weight: Medium                 │
-│  Fading animation with loading spinner       │
-└──────────────────────────────────────────────┘
+### Activity Setup
+```kotlin
+// In SplashActivity
+setContentView(R.layout.activity_splash)
+// Progress bar animates automatically
 ```
 
----
+### Drawable Assets Required
+1. ✅ `fuel_station_rafiki.xml` - Main illustration (SVG)
+2. ✅ `shadow_circle.xml` - Shadow effect (simple oval)
+3. ✅ `splash_screen.xml` - Background gradient
 
-## Animation Easing Curve
-
-```
-FASTIN/SLOWOUT EASING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Progress (0-100%)
-    │
- 100│                  ╱╲
-    │              ╱╱  ╲╲
-    │          ╱╱      ╲╲
-    │      ╱╱            ╲╲
-    │  ╱╱                  ╲╲
-    │╱╱                      ╲╲
-    ├─────────────────────────────────
-    0                             Time
-    
-→ Starts quick (catches attention)
-→ Slows at peak (emphasizes destination)
-→ Smooth reverse motion (natural feel)
+### Color Resources Required
+```xml
+<color name="splash_primary">#0A1929</color>
+<color name="splash_secondary">#0D1B2A</color>
+<color name="splash_accent">#00D9FF</color>
+<color name="splash_text">#ffffff</color>
 ```
 
----
+## Testing Checklist
 
-## Responsive Sizing
+- [ ] Icons display with original colors (no tint)
+- [ ] Gradient appears smooth and professional
+- [ ] Text is crisp and readable
+- [ ] Progress bar animates smoothly
+- [ ] Layout centered on all screen sizes
+- [ ] No layout stretching or distortion
+- [ ] Loading indicator visible and working
+- [ ] Overall appearance is modern and professional
 
-```
-PADDING & SPACING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## Future Enhancements (Optional)
 
-Top Decorative Circle:
-├─ Position: TopEnd
-├─ Padding: top=40dp, end=30dp
-└─ Size: 100x100dp
-
-Main Content Column:
-├─ Padding: bottom=60dp (from screen bottom)
-├─ Icon to Name spacing: 32dp
-├─ Name to Tagline spacing: 8dp
-└─ Tagline to Line spacing: 16dp
-
-Bottom Loading:
-├─ Position: BottomCenter
-├─ Padding: bottom=50dp
-└─ Text padding: bottom=15dp
-
-Bottom Decorative Circle:
-├─ Position: BottomStart
-├─ Padding: bottom=80dp, start=30dp
-└─ Size: 120x120dp
-```
-
----
-
-## Typography Scale
-
-```
-TEXT HIERARCHY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Primary (App Name):
-├─ Size: 44sp
-├─ Weight: ExtraBold
-├─ Color: Vibrant Cyan
-└─ Purpose: Main branding
-
-Secondary (Tagline):
-├─ Size: 15sp
-├─ Weight: Medium
-├─ Color: Neon Teal
-└─ Purpose: Description
-
-Tertiary (Loading):
-├─ Size: 12sp
-├─ Weight: Medium
-├─ Color: Neon Teal @ 60% opacity
-└─ Purpose: Status indicator
-```
-
----
-
-## Theme Consistency
-
-```
-FuelHub App Palette Integration
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Splash Screen Colors ↔ App Colors
-┌─────────────────────────────────┐
-│ Deep Blue       #0A1929         │ Background
-│ Vibrant Cyan    #00D9FF         │ Primary buttons/icons
-│ Electric Blue   #0099FF         │ Interactive elements
-│ Neon Teal       #00FFD1         │ Secondary accents
-│ Accent Orange   #FF6B35         │ Call-to-action
-└─────────────────────────────────┘
-
-These colors are consistent across:
-✓ Splash Screen
-✓ Home Screen
-✓ Navigation UI
-✓ Cards & Components
-✓ Interactive Elements
-```
-
----
-
-## Before & After Comparison
-
-```
-BEFORE (Old Design)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-┌────────────────────────────────────────┐
-│ Static green gradient                  │
-│ #1a472a → #2d6b42                      │
-│                                        │
-│     ◯ (Static green circle)            │
-│    ⛽  (Emoji, 80sp)                    │
-│    FuelHub                             │
-│    Smart Fuel Management               │
-│                                        │
-│   ◯ (Simple spinner)                   │
-│                                        │
-└────────────────────────────────────────┘
-
-Issues:
-✗ Generic green theme
-✗ No animations
-✗ Static layout
-✗ Doesn't match app colors
-
-
-AFTER (New Design)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-┌────────────────────────────────────────┐
-│ Premium gradient (Blue → Navy)         │
-│ #0A1929 → #0D1B2A                      │
-│                                        │
-│ ◯ ◯ ◯ (Decorative animated circles)   │
-│  ┌────────────────────────┐           │
-│  │ ▁▂▃ (Pulsing outline)  │           │
-│  │ ┌──────────────────┐   │           │
-│  │ │ ⛽ (Floating 70sp)│   │           │
-│  │ └──────────────────┘   │           │
-│  └────────────────────────┘           │
-│    FuelHub (Cyan, animated)            │
-│    Smart Fuel Management (Teal)        │
-│    ─ (Gradient line)                   │
-│                                        │
-│   ◎◎ ◯◉◯ ◎◎ (Complex loading)         │
-│    Loading... (Fading text)            │
-│ ◯ ◯ ◯ (Decorative animated circles)   │
-└────────────────────────────────────────┘
-
-Improvements:
-✓ Modern premium colors
-✓ 4 synchronized animations
-✓ Interactive visual feedback
-✓ Matches FuelHub branding
-✓ Professional appearance
-```
-
----
-
-## Quick Reference Card
-
-```
-╔════════════════════════════════════════════════════════════╗
-║         FUELHUB SPLASH SCREEN COLOR PALETTE              ║
-╠════════════════════════════════════════════════════════════╣
-║                                                            ║
-║  Primary     Deep Blue      #0A1929  ███████   BG Base   ║
-║  Secondary   Dark Navy      #0D1B2A  ███████   BG End    ║
-║  Accent 1    Vibrant Cyan   #00D9FF  ███████   Primary   ║
-║  Accent 2    Electric Blue  #0099FF  ███████   Gradient  ║
-║  Accent 3    Neon Teal      #00FFD1  ███████   Accent    ║
-║  Interactive Orange         #FF6B35  ███████   Loading   ║
-║                                                            ║
-╠════════════════════════════════════════════════════════════╣
-║ Animations: Scale (1.5s) + Float (2s) + Alpha (1.8s)     ║
-║ Duration: 3 seconds total display time                   ║
-║ Transition: Fade in/out to MainActivity                  ║
-╚════════════════════════════════════════════════════════════╝
-```
-
----
-
-## Design Philosophy Summary
-
-```
-MODERN PREMIUM AESTHETIC
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-✨ Elegant Gradient Backgrounds
-   → Deep Blue → Dark Navy creates depth
-
-🎬 Continuous Smooth Animations  
-   → Multiple synchronized effects
-   → FastOutSlowInEasing for natural motion
-
-🎨 Premium Color Palette
-   → Vibrant Cyan for primary branding
-   → Neon Teal for accents
-   → Accent Orange for interactive elements
-
-💡 Strategic Visual Hierarchy
-   → Large cyan "FuelHub" name
-   → Descriptive teal tagline
-   → Animated loading indicator
-
-🔄 Interactive Feedback
-   → Pulsing icon draws attention
-   → Spinning loader indicates progress
-   → Animated elements feel responsive
-
-⚡ Professional Appearance
-   → Tech-forward color scheme
-   → Smooth, modern animations
-   → Aligned with app branding
-```
+- Add subtle animation to icon (fade-in or scale)
+- Implement curved animation for gradient colors
+- Add success/completion state with checkmark
+- Customize progress bar style (circular indicator)
+- Add pulse effect to separator line

@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,6 +37,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.ui.res.painterResource
 import dev.ml.fuelhub.ui.theme.DeepBlue
 import dev.ml.fuelhub.ui.theme.DarkNavy
 import dev.ml.fuelhub.ui.theme.VibrantCyan
@@ -166,39 +171,43 @@ fun SplashScreen() {
                 .padding(bottom = 60.dp)
         ) {
             // Main Icon Container with gradient - Animated
-            Box(
-                modifier = Modifier
-                    .width(140.dp)
-                    .height(140.dp)
-                    .scale(iconScale)
-                    .padding(top = floatOffset.dp)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                ElectricBlue,
-                                VibrantCyan
-                            )
-                        ),
-                        shape = RoundedCornerShape(40.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                // Gas Station Icon (modern design)
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.White.copy(alpha = 0.95f),
-                            shape = RoundedCornerShape(35.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "⛽",
-                        fontSize = 70.sp,
-                    )
-                }
-            }
+             Box(
+                 modifier = Modifier
+                     .width(140.dp)
+                     .height(140.dp)
+                     .scale(iconScale)
+                     .padding(top = floatOffset.dp)
+                     .background(
+                         brush = Brush.linearGradient(
+                             colors = listOf(
+                                 ElectricBlue,
+                                 VibrantCyan
+                             )
+                         ),
+                         shape = RoundedCornerShape(40.dp)
+                     ),
+                 contentAlignment = Alignment.Center
+             ) {
+                 // SVG Icon from assets
+                 Box(
+                     modifier = Modifier
+                         .fillMaxSize()
+                         .background(
+                             color = Color.White.copy(alpha = 0.95f),
+                             shape = RoundedCornerShape(35.dp)
+                         ),
+                     contentAlignment = Alignment.Center
+                 ) {
+                     Icon(
+                         painter = painterResource(id = R.drawable.fuel_station_rafiki),
+                         contentDescription = "FuelHub Fuel Pump Icon",
+                         modifier = Modifier
+                             .size(80.dp)
+                             .padding(8.dp),
+                         tint = Color.Unspecified
+                     )
+                 }
+             }
             
             // Animated outer ring (below icon)
             Box(
@@ -306,5 +315,41 @@ fun SplashScreen() {
                 .padding(bottom = 15.dp)
                 .alpha(loadingAlpha)
         )
+        
+        // Developer Attribution - Bottom with visual appeal
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .systemBarsPadding()
+                .padding(bottom = 24.dp)
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            ElectricBlue.copy(alpha = 0.15f),
+                            VibrantCyan.copy(alpha = 0.1f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Developed by",
+                    fontSize = 11.sp,
+                    color = NeonTeal.copy(alpha = 0.7f),
+                    fontWeight = FontWeight.Normal
+                )
+                Text(
+                    "Gerlan Dorona",
+                    fontSize = 13.sp,
+                    color = VibrantCyan,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+        }
     }
 }

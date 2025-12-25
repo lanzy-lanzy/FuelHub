@@ -30,7 +30,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Button
+import dev.ml.fuelhub.R
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -123,25 +125,19 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             // Animated Logo/Icon Container
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(ElectricBlue, VibrantCyan)
-                        )
-                    )
-                    .scale(iconScale),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.LocalGasStation,
-                    contentDescription = "FuelHub Logo",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.White
-                )
-            }
+             Box(
+                 modifier = Modifier
+                     .size(140.dp)
+                     .scale(iconScale),
+                 contentAlignment = Alignment.Center
+             ) {
+                 Icon(
+                     painter = painterResource(id = R.drawable.fuel_station_rafiki),
+                     contentDescription = "FuelHub Logo",
+                     modifier = Modifier.size(140.dp),
+                     tint = Color.Unspecified
+                 )
+             }
 
             Spacer(modifier = Modifier.height(24.dp))
 

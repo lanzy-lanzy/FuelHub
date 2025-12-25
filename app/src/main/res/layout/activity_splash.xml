@@ -4,49 +4,133 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash_screen">
 
+    <!-- Decorative Blob Top Right -->
+    <View
+        android:id="@+id/blob_top_right"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-80dp"
+        android:layout_marginEnd="-80dp"
+        android:background="@drawable/blob_circle"
+        android:alpha="0.08" />
+
+    <!-- Decorative Blob Bottom Left -->
+    <View
+        android:id="@+id/blob_bottom_left"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="-100dp"
+        android:layout_marginStart="-100dp"
+        android:background="@drawable/blob_circle"
+        android:alpha="0.1" />
+
+    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="100dp">
+        android:gravity="center"
+        android:paddingHorizontal="24dp">
 
-        <!-- App Icon -->
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginBottom="20dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_gas_pump_icon" />
+        <!-- Icon Card Container -->
+        <FrameLayout
+            android:id="@+id/icon_card_container"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="40dp">
 
-        <!-- App Name -->
-        <TextView
-            android:layout_width="wrap_content"
+            <!-- White Card Background -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/card_background"
+                android:contentDescription="@null" />
+
+            <!-- App Icon - NO TINT APPLIED -->
+            <ImageView
+                android:id="@+id/splash_icon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/fuel_station_rafiki"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/app_name"
+                android:tint="@null" />
+        </FrameLayout>
+
+        <!-- Branding Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/splash_text"
-            android:textSize="42sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp" />
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <!-- Tagline -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_tagline"
-            android:textColor="@color/splash_text"
-            android:textSize="16sp"
-            android:alpha="0.8" />
+            <!-- App Name -->
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/splash_accent"
+                android:textSize="52sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.01" />
+
+            <!-- Tagline -->
+            <TextView
+                android:id="@+id/app_tagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_tagline"
+                android:textColor="@color/splash_accent"
+                android:textSize="15sp"
+                android:alpha="0.85"
+                android:layout_marginBottom="16dp"
+                android:gravity="center" />
+
+            <!-- Decorative Separator Line -->
+            <View
+                android:id="@+id/separator_line"
+                android:layout_width="50dp"
+                android:layout_height="2dp"
+                android:background="@color/splash_accent"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Loading Indicator Section -->
+        <FrameLayout
+            android:id="@+id/loading_container"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="60dp">
+
+            <!-- Circular Progress Background -->
+            <ProgressBar
+                android:id="@+id/splash_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminateTint="@color/splash_accent"
+                android:layout_gravity="center" />
+
+            <!-- Center Dot -->
+            <View
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/progress_dot"
+                android:contentDescription="@null" />
+        </FrameLayout>
 
     </LinearLayout>
-
-    <!-- Loading indicator at bottom -->
-    <ProgressBar
-        android:id="@+id/splashProgressBar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="30dp"
-        android:indeterminateTint="@color/splash_accent" />
 
 </FrameLayout>
